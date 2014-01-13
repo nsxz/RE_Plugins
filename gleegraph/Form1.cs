@@ -11,6 +11,7 @@ using System.Threading;
 using System.IO;
 using System.Diagnostics;
 using System.Collections;
+using ListViewSorter;
 
 namespace gleeGraph
 {
@@ -20,6 +21,7 @@ namespace gleeGraph
         Node selNode;
         Node mouseOverNode;
         ida_client ida = null;
+        ListViewColumnSorter lvSorter;
 
         public void debugLog(string msg){
             lst.Items.Add(msg);
@@ -33,7 +35,29 @@ namespace gleeGraph
             mnuPopup.MouseLeave += new EventHandler(mnuPopup_MouseLeave);
             graph = new CGraph(gViewer, lvNodes, this);
             lst.Width = lvNodes.Width;
-            lvNodes.Columns[0].Width = lvNodes.Width - 20;
+            lvNodes.ContextMenuStrip = mnuLVPopup;
+            lvNodes.Columns[0].Width = lvNodes.Width - 5;
+            lvSorter = new ListViewColumnSorter();
+            ListViewColumnSorter.SortTypes[] columns = { 
+                    ListViewColumnSorter.SortTypes.stText,              
+            };
+            lvSorter.columnSortType = columns;
+            this.lvNodes.ListViewItemSorter = lvSorter;
+        }
+
+        private void lvNodes_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            if (e.Column == lvSorter.SortColumn)
+            {
+                if (lvSorter.Order == SortOrder.Ascending) { lvSorter.Order = SortOrder.Descending; }
+                else { lvSorter.Order = SortOrder.Ascending; }
+            }
+            else
+            {
+                lvSorter.SortColumn = e.Column;
+                lvSorter.Order = SortOrder.Descending;
+            }
+            this.lvNodes.Sort();
         }
 
         protected override void WndProc(ref Message m)
@@ -130,7 +154,7 @@ namespace gleeGraph
                 }
             }
 
-            lvNodes.Columns[0].Text = "Nodes: ( " + gViewer.Graph.NodeMap.Count + " )";
+            lvNodes.Columns[0].Text = gViewer.Graph.NodeMap.Count + " Nodes";
 
         }
 
@@ -396,6 +420,57 @@ namespace gleeGraph
 
         }
 
+        private void copyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string tmp="";
+            foreach (ListViewItem li in lvNodes.Items)
+            {
+                tmp += li.Text + ",";
+            }
+            if (tmp.Length > 0) tmp = tmp.Substring(0, tmp.Length - 1);
+            Clipboard.Clear();
+            Clipboard.SetText(tmp);
+        }
+
+        private void searchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string tmp = "";
+            int found = 0;
+            string find = Program.InputBox("Enter text to osearch for");
+
+            if (find.Length == 0) return;
+           
+            foreach (ListViewItem li in lvNodes.Items)
+            {
+                li.Selected = false; //deselect all others
+                if (li.Text.IndexOf(find, 0, li.Text.Length, StringComparison.CurrentCultureIgnoreCase) >= 0)
+                {
+                    found++;
+                    if (tmp.Length == 0) li.Selected = true;
+                    tmp += li.Text + ", ";
+                    if (found % 5 == 0) tmp += "\r\n";
+                }
+
+            }
+
+            if (found == 0)
+            {
+                MessageBox.Show("No results found");
+            }
+            else
+            {
+                if (tmp.Length > 0) tmp = tmp.Substring(0, tmp.Length - 2);
+                if (found > 1)
+                {
+                    MessageBox.Show( found + " results found. The first one has been selected.\n\n" + tmp);
+                }                
+            }
+        }
+
+        private void zoomToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (selNode != null) gViewer.ShowBBox(selNode.BBox); //zoom to node..
+        }
 
     }
 }

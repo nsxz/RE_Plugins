@@ -78,6 +78,7 @@
   <ItemGroup>
     <Compile Include="CGraph.cs" />
     <Compile Include="CIDA.cs" />
+    <Compile Include="CLVColumnSorter.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

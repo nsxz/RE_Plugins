@@ -37,6 +37,7 @@
             this.loadGraphToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.zoomAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.originalWIngraphToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.setTopMostToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuPopup = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.removeNodesBelowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.renameNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -45,9 +46,13 @@
             this.dlg = new System.Windows.Forms.OpenFileDialog();
             this.hScroll = new System.Windows.Forms.HScrollBar();
             this.pb = new System.Windows.Forms.ProgressBar();
-            this.setTopMostToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuLVPopup = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.zoomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.mnuPopup.SuspendLayout();
+            this.mnuLVPopup.SuspendLayout();
             this.SuspendLayout();
             // 
             // lvNodes
@@ -55,12 +60,14 @@
             this.lvNodes.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1});
             this.lvNodes.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lvNodes.HideSelection = false;
             this.lvNodes.Location = new System.Drawing.Point(0, 27);
             this.lvNodes.Name = "lvNodes";
             this.lvNodes.Size = new System.Drawing.Size(251, 428);
             this.lvNodes.TabIndex = 0;
             this.lvNodes.UseCompatibleStateImageBehavior = false;
             this.lvNodes.View = System.Windows.Forms.View.Details;
+            this.lvNodes.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.lvNodes_ColumnClick);
             this.lvNodes.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.lvNodes_ItemSelectionChanged);
             // 
             // columnHeader1
@@ -131,6 +138,13 @@
             this.originalWIngraphToolStripMenuItem.Text = "Original Wingraph";
             this.originalWIngraphToolStripMenuItem.Click += new System.EventHandler(this.originalWIngraphToolStripMenuItem_Click);
             // 
+            // setTopMostToolStripMenuItem
+            // 
+            this.setTopMostToolStripMenuItem.Name = "setTopMostToolStripMenuItem";
+            this.setTopMostToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.setTopMostToolStripMenuItem.Text = "Set TopMost";
+            this.setTopMostToolStripMenuItem.Click += new System.EventHandler(this.setTopMostToolStripMenuItem_Click);
+            // 
             // mnuPopup
             // 
             this.mnuPopup.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -189,12 +203,35 @@
             this.pb.Size = new System.Drawing.Size(280, 10);
             this.pb.TabIndex = 6;
             // 
-            // setTopMostToolStripMenuItem
+            // mnuLVPopup
             // 
-            this.setTopMostToolStripMenuItem.Name = "setTopMostToolStripMenuItem";
-            this.setTopMostToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
-            this.setTopMostToolStripMenuItem.Text = "Set TopMost";
-            this.setTopMostToolStripMenuItem.Click += new System.EventHandler(this.setTopMostToolStripMenuItem_Click);
+            this.mnuLVPopup.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.searchToolStripMenuItem,
+            this.copyToolStripMenuItem,
+            this.zoomToolStripMenuItem});
+            this.mnuLVPopup.Name = "mnuLVPopup";
+            this.mnuLVPopup.Size = new System.Drawing.Size(163, 70);
+            // 
+            // searchToolStripMenuItem
+            // 
+            this.searchToolStripMenuItem.Name = "searchToolStripMenuItem";
+            this.searchToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.searchToolStripMenuItem.Text = "Search";
+            this.searchToolStripMenuItem.Click += new System.EventHandler(this.searchToolStripMenuItem_Click);
+            // 
+            // copyToolStripMenuItem
+            // 
+            this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
+            this.copyToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.copyToolStripMenuItem.Text = "Copy Nodes List";
+            this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
+            // 
+            // zoomToolStripMenuItem
+            // 
+            this.zoomToolStripMenuItem.Name = "zoomToolStripMenuItem";
+            this.zoomToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.zoomToolStripMenuItem.Text = "Zoom to Node";
+            this.zoomToolStripMenuItem.Click += new System.EventHandler(this.zoomToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -215,6 +252,7 @@
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.mnuPopup.ResumeLayout(false);
+            this.mnuLVPopup.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -239,6 +277,10 @@
         private System.Windows.Forms.ToolStripMenuItem originalWIngraphToolStripMenuItem;
         public System.Windows.Forms.ProgressBar pb;
         private System.Windows.Forms.ToolStripMenuItem setTopMostToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip mnuLVPopup;
+        private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem searchToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem zoomToolStripMenuItem;
     }
 }
 
