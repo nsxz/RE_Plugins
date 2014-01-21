@@ -40,7 +40,7 @@ LIBRARY IDASrvr
 		FirstCodeFrom
 		FirstCodeTo
 		ImageBase
-	 
+	    DecompileFunction
 
 
 

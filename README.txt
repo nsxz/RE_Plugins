@@ -30,15 +30,17 @@ IDASrvr:
 
 uGrapher:
    replaces default wingraph32, uses uDrawGraph. graphing up, still needs features. once
-   idasrvr working again, it can navigate to nodes as you click then in the graph..not sure
-   i like uDraw graph after having used some other activeX controls. I already have this 
-   working and more in another way using the socket based ida control in idavbscript. but 
-   the uDrawGraph classes are nice and debugged. ported from pedrams python work on openrce.
+   idasrvr working again, it can navigate to nodes as you click then in the graph..not 
+   sure i like uDraw graph after having used some other activeX controls. I already have
+   this working and more in another way using the socket based ida control in idavbscript.
+   but the uDrawGraph classes are nice and debugged. ported from pedrams python work on 
+   openrce.
 
 IdaVbScript:
-   ton of small tools for IDA all thrown into one interface. see screenshot.png for details.
-   also include a udp based command socket to send commands and receive data from IDA from 
-   external apps. Used by olly_vbscript and wingraph32 replacement. (not uGrapher)
+   ton of small tools for IDA all thrown into one interface. see screenshot.png for 
+   details. also include a udp based command socket to send commands and receive data 
+   from IDA from external apps. Used by olly_vbscript and wingraph32 replacement. 
+   (not uGrapher)
 
 Wingraph32:
    another wingraph32 replacement using a 3rd party graphing ocx (see readme), see screen 

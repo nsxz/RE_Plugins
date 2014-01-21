@@ -590,7 +590,7 @@ Private Sub txtJS_AutoCompleteEvent(className As String)
                                "hideea showea hideblock showblock removename setname makecode " & _
                                "getcomment addcomment addcodexref adddataxref delcodexref deldataxref " & _
                                "funcindexfromva funcvabyname nextea prevea patchstring makestr makeunk " & _
-                               "renamefunc"
+                               "renamefunc decompile"
     ElseIf className = "list" Then
         txtJS.ShowAutoComplete "additem clear"
     ElseIf className = "app" Then

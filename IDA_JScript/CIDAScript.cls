@@ -184,6 +184,20 @@ Function Find(startea, endea, hexstr) '-1 if fail
     Find = ipc.SendCmdRecvInt("findcode:" & startea & ":" & endea & ":" & hexstr)
 End Function
 
+Function Decompile(va) As String
+    Dim pth As String, r As Long
+    
+    pth = Environ("temp")
+    pth = fso.GetFreeFileName(pth)
+                                                        'its our token we will need to replace it latter :-\ foresight denied!
+    r = ipc.SendCmdRecvInt("decompile:" & va & ":" & Replace(pth, ":", "_"))
+    
+    If r = 1 And fso.FileExists(pth) Then
+        Decompile = fso.ReadFile(pth)
+    End If
+    
+End Function
+
 
 
 '--------------[ QUICK CALLS ]----------------------------------------

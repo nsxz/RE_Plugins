@@ -54,3 +54,4 @@ BenchMark()
 GetName(offset)
 EnableIDADebugMessages(Optional enabled As Boolean = True)
 Find(startea, endea, hexstr) '-1 if fail
+Decompile(va) As String 'requires hexrays decompiler v6.5+

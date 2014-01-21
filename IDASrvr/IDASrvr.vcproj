@@ -184,7 +184,7 @@
 				OutputFile="./bin/IDASrvr.plw"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="$(IDASDK)\libvc.w32"
+				AdditionalLibraryDirectories="$(IDASDK)\libvc.w32;$(IDASDK)\lib\x86_win_vc_32"
 				ModuleDefinitionFile=".\IDASrvr.def"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/IDASrvr.pdb"
@@ -275,6 +275,10 @@
 			</File>
 			<File
 				RelativePath="..\..\idasdk55\idasdk55\include\funcs.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\idasdk55\idasdk55\include\hexrays.hpp"
 				>
 			</File>
 			<File

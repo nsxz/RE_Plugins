@@ -7,7 +7,8 @@ the C/C++ property tab, Preprocessor catagory, Additional include directories
 texbox so that this project can be built without having to be in a specific path
 Also used in the Linker - additional include directories.
 
-todo: add error handling around HandleMsg
+Note: this includes a decompile function that requires the hexrays decompiler. If you
+	  dont have it, you can just comment out the few lines that reference it. 
 */
  
 
@@ -27,8 +28,21 @@ todo: add error handling around HandleMsg
 #include <search.hpp>
 #include <xref.hpp>
 
+#define HAS_DECOMPILER //if you dont have the hexrays decompiler comment this line out..
+
+#ifdef HAS_DECOMPILER
+	#include <hexrays.hpp>    
+	hexdsp_t *hexdsp = NULL;  
+	int hasDecompiler = 0;
+	int __stdcall DecompileFunction(int offset, char* fpath);
+#endif
+
 #undef sprintf
 #undef strcpy
+#undef strtok
+#undef fopen
+#undef fprintf
+#undef fclose
 
 #pragma warning(disable:4996)
 
@@ -53,7 +67,10 @@ CRITICAL_SECTION m_cs;
 UINT IDASRVR_BROADCAST_MESSAGE=0;
 UINT IDA_QUICKCALL_MESSAGE = 0;
 
+
+
 int __stdcall ImageBase(void);
+
 
 int EaForFxName(char* fxName){
 	
@@ -316,6 +333,7 @@ int HandleMsg(char* m){
 	   36 makeunk:va:size
 	   37 screenea:
 	   38 findcode:start:end:hexstr  //indexes no longer aligned with quick call..
+	   39 decompile:va:fpath         //replace the c:\ with c_\ so we dont break tokenization..humm that sucks..
     */
 
 	const int MAX_ARGS = 6;
@@ -335,8 +353,8 @@ int HandleMsg(char* m){
 					"setname","refsto","refsfrom","undefine","getname","hide","show","remname","makecode",
     /*               26            27           28             29           30             31              */
 	                "addcomment","getcomment","addcodexref","adddataxref","delcodexref","deldataxref",
-	/*               32          33         34        35           36        37           38       */
-					"funcindex","nextea","prevea","makestring","makeunk", "screenea", "findcode",
+	/*               32          33         34        35           36        37           38         39    */
+					"funcindex","nextea","prevea","makestring","makeunk", "screenea", "findcode", "decompile",
 					"\x00"};
 	int i=0;
 	int argc=0;
@@ -550,6 +568,12 @@ int HandleMsg(char* m){
 				    if( argc != 3 ){msg("findcode needs 3 args\n"); return -1;}
 					return find_binary( atoi(args[1]), atoi(args[2]), args[3], 16, SEARCH_DOWN);
 
+#ifdef HAS_DECOMPILER
+		  case 39: //decompile:va:fpath
+					if( argc != 2 ){msg("decompile needs 2 args\n"); return -1;}
+					if( hasDecompiler == 0) {msg("HexRays Decompiler either not installed or version to old (this binary built against 6.5 SDK)\n"); return -1;}
+					return DecompileFunction( atoi(args[1]), args[2]);
+#endif
 
 	}				
 
@@ -628,12 +652,23 @@ int idaapi init(void)
   IDASRVR_BROADCAST_MESSAGE = RegisterWindowMessage(IPC_NAME);
   IDA_QUICKCALL_MESSAGE = RegisterWindowMessage("IDA_QUICKCALL");
   InitializeCriticalSection(&m_cs);
+
+	#ifdef HAS_DECOMPILER
+	  if( init_hexrays_plugin() ){
+		  hasDecompiler = 1;
+		  msg("IDASrvr: detected hexrays decompiler version %s\n", get_hexrays_version() );
+	  }
+	#endif
+
   return PLUGIN_KEEP;
 }
 
 void idaapi term(void)
 {
 	try{	
+		#ifdef HAS_DECOMPILER 
+			if ( hasDecompiler ) term_hexrays_plugin();
+		#endif
 		SetWindowLong(ServerHwnd, GWL_WNDPROC, (LONG)oldProc);
 		DestroyWindow(ServerHwnd);
 		HWND saved_hwnd = ReadReg("IDA_SERVER");
@@ -896,3 +931,47 @@ int __stdcall GetRefsFrom(int offset, int hwnd){
 	return count;
 
 }
+
+int __stdcall DecompileFunction(int offset, char* fpath)
+{
+#ifdef HAS_DECOMPILER
+		func_t *pfn = get_func(offset);
+		if ( pfn == NULL )
+		{
+			warning("Please position the cursor within a function");
+			return 0;
+		}
+
+		hexrays_failure_t hf;
+		cfuncptr_t cfunc = decompile(pfn, &hf);
+		if ( cfunc == NULL )
+		{
+			warning("#error \"%a: %s", hf.errea, hf.desc().c_str());
+			return 0;
+		}
+
+		if( fpath[1] == '_' ) fpath[1] = ':'; //fix cheesy workaround to tokinizer reserved char..
+
+		FILE* f = fopen(fpath, "w");
+		if(f==NULL)
+		{
+			warning("Error could not open %s", fpath);
+			return 0;
+		}
+		
+		/*if(debug)*/ msg("%a: successfully decompiled\n", pfn->startEA);
+
+		const strvec_t &sv = cfunc->get_pseudocode();
+		for ( int i=0; i < sv.size(); i++ )
+		{
+			char buf[MAXSTR];
+			tag_remove(sv[i].line.c_str(), buf, MAXSTR);
+			fprintf(f,"%s\n", buf);
+		}
+		fclose(f);
+		return 1;
+#else
+		return -1;
+#endif
+	}
+
