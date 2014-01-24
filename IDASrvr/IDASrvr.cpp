@@ -386,21 +386,32 @@ int HandleMsg(char* m){
 	//handle specific command
 	switch(i){
 		case -1: msg("IDASrv Unknown Command\n"); break; //unknown command
-		case  0: msg(args[1]);					  break; //msg:UI_MESSAGE
-		case  1: jumpto( atoi(args[1]) );		  break; //jmp:lngAdr
-		case  2:                                         //jmp_name:fx_name
+		
+		case  0: //msg:UI_MESSAGE
+				if( argc < 1 ){msg("jmp_name needs 1 args\n"); return -1;}
+				msg(args[1]);					  
+				break; 
+		
+		case  1: //jmp:lngAdr
+				if( argc != 1 ){msg("jmp needs 1 args\n"); return -1;}
+				jumpto( atoi(args[1]) );		  
+				break; 
+		case  2: //jmp_name:fx_name
+			     if( argc != 1 ){msg("jmp_name needs 1 args\n"); return -1;}
 				 i = EaForFxName(args[1]);
 				 if(i==0) break;
 				 jumpto(i);
 				 break;
 
 		case 3: //name_va:fx_name[:hwnd]  (returns va) hwnd optional - specify if want response as data callback default returns int 
+			    if( argc < 1 ){msg("name_va needs 1 args\n"); return -1;}
 				i =  EaForFxName(args[1]);
 				if(argc == 2) SendIntMessage( atoi(args[2]), i);
 				return i;
 				break;
 		
 		case 4: //rename:oldname:newname[:hwnd]
+				if( argc < 2 ){msg("rename needs 2 args\n"); return -1;}
 				i = EaForFxName(args[1]);
 				if(i==0){
 					if(argc == 3) SendIntMessage( atoi(args[3]), 0); //fail
@@ -416,18 +427,21 @@ int HandleMsg(char* m){
 				}
 				break;
 
-		case 5: //loadedfile:Senders_ipc_hwnd
+		case 5: //loadedfile:hwnd
+			    if( argc != 1 ){msg("loadedfile needs 1 args\n"); return -1;}
 				x = FilePath(buf, 499);
 				SendTextMessage( atoi(args[1]), buf, strlen(buf) );
 				break;
 
 		case 6: //getasm:va:hwnd
+			     if( argc != 2 ){msg("getasm needs 2 args\n"); return -1;}
 				  x = GetAsm(atoi(args[1]),buf,499);
 				  if(x==0) sprintf(buf,"Fail");
 				  SendTextMessage(atoi(args[2]),buf,strlen(buf));
 				  break;
 
-		case 7: 
+		case 7: //jmp_rva:rva
+				if( argc != 1 ){msg("jmp_rva needs 1 args\n"); return -1;}
 				i = ImageBase();  
 			    x = atoi(args[1]);
 				if(x == 0 || x > i){ msg("Invalid rva to jmp_rva\n"); break;}
@@ -441,10 +455,12 @@ int HandleMsg(char* m){
 				break;
 
 		case 9: //patchbyte:lng_va:byte_newval
+			    if( argc != 2 ){msg("patchbyte needs 1 args\n"); return -1;}
 				PatchByte( atoi(args[1]), atoi(args[2]) );
 				break;
 
 		case 10: //readbyte:lngva[:HWND]
+			    if( argc < 1 ){msg("readbyte needs 1 args\n"); return -1;}
 				GetBytes( atoi(args[1]), buf, 1); //on a patched byte this is reading a 4 byte int?
 				if(argc == 2){
 					sprintf( tmp, "%x", buf[0]);
@@ -456,6 +472,7 @@ int HandleMsg(char* m){
 				break;
 
 		case 11: //orgbyte:lngva[:HWND]
+			    if( argc < 1 ){msg("orgbyte needs 1 args\n"); return -1;}
 				buf[0] = OriginalByte(atoi(args[1]));
 				if(argc == 2){ 
 					sprintf( tmp, "%x", buf[0]);
@@ -476,56 +493,70 @@ int HandleMsg(char* m){
 				 break;
 
 		case 14: //funcstart:funcIndex[:hwnd]
+			     if( argc < 1 ){msg("funcstart needs 1 args\n"); return -1;}
 				 x = FunctionStart(atoi(args[1]));
 				 if(argc == 2) SendIntMessage(atoi(args[2]),x);
 				 return x;
 				 break;
 
 		 case 15: //funcend:funcIndex[:hwnd]
+			     if( argc < 1 ){msg("funcend needs 1 args\n"); return -1;}
 				 x = FunctionEnd(atoi(args[1]));
 				 if(argc == 2) SendIntMessage(atoi(args[2]),x);
 				 return x;
 				 break;
 
 		 case 16: //funcname:funcIndex:hwnd
+			     if( argc != 2 ){msg("funcname needs 2 args\n"); return -1;}
 			     x = FunctionStart(atoi(args[1]));
 				 FuncName(x,buf,499);
 				 SendTextMessage(atoi(args[2]),buf,strlen(buf));
 				 break;
 
 		  case 17: //setname:va:name
+			      if( argc != 2 ){msg("setname needs 2 args\n"); return -1;}
 				  Setname( atoi(args[1]), args[2]);
 				  break;
 
 		  case 18: //refsto:offset:hwnd
+			        if( argc != 2 ){msg("refsto needs 2 args\n"); return -1;}
 					GetRefsTo( atoi(args[1]), atoi(args[2]) );
 					break;
 		  case 19: //refsfrom:offset:hwnd
+			        if( argc != 2 ){msg("refsfrom needs 2 args\n"); return -1;}
 					GetRefsFrom( atoi(args[1]), atoi(args[2]) );
 					break;
 		  case 20: //undefine:offset
+			        if( argc != 1 ){msg("undefine needs 1 args\n"); return -1;}
 					Undefine(atoi(args[1]));
 					break;
 		  case 21: //getname:offset:hwnd
+				    if( argc != 2 ){msg("getname needs 2 args\n"); return -1;}
 					GetName(atoi(args[1]), buf,499);
 					SendTextMessage( atoi(args[2]), buf, strlen(buf));
 					break;
 		  case 22: //hide:offset
+			        if( argc != 1 ){msg("hide needs 1 args\n"); return -1;}
 					HideEA( atoi(args[1]) );
 					break;
 		  case 23: //show:offset
+			        if( argc != 1 ){msg("show needs 1 args\n"); return -1;}
 					ShowEA( atoi(args[1]) );
 					break;
 		  case 24: //remname:offset
+			        if( argc != 1 ){msg("remname needs 1 args\n"); return -1;}
 					RemvName(  atoi(args[1]) );
 					break;
 		  case 25: //makecode:offset
+				   if( argc != 1 ){msg("makecode needs 1 args\n"); return -1;}
 				   MakeCode( atoi(args[1]) );
 				   break;
 		  case 26: //addcomment:offset:comment
+				   if( argc != 2 ){msg("addcomment needs 2 args\n"); return -1;}
 				   SetComment( atoi(args[1]), args[2] );
 				   break;
 		  case 27: //getcomment:offset:hwnd
+				   if( argc != 2 ){msg("getcomment needs 2 args\n"); return -1;}
 				   GetComment( atoi(args[1]),buf, 499);
 				   SendTextMessage( atoi(args[2]), buf, strlen(buf) );
 				   break;
@@ -533,34 +564,42 @@ int HandleMsg(char* m){
 				   AddCodeXRef( atoi(args[1]), atoi(args[2]) );
 				   break;
 		  case 29: //adddataxref:offset:tova
+				   if( argc != 2 ){msg("adddataxref needs 2 args\n"); return -1;}
 				   AddDataXRef( atoi(args[1]), atoi(args[2]) );
 			       break;
 		  case 30: //delcodexref:offset:tova
+				   if( argc != 2 ){msg("delcodexref needs 2 args\n"); return -1;}
                    DelCodeXRef( atoi(args[1]), atoi(args[2]) );
 				   break;
 		  case 31: //deldataxref:offset:tova
+				   if( argc != 2 ){msg("deldataxref needs 2 args\n"); return -1;}
 				   DelDataXRef( atoi(args[1]), atoi(args[2]) );
 				   break;
 		  case 32: //funcindex:va[:hwnd]
+					if( argc < 1 ){msg("funcindex needs 1 args\n"); return -1;}
 					x = get_func_num( atoi(args[1]) );
 					if( argc == 2 ) SendIntMessage( atoi(args[2]), x);
 					return x;
 					break;
 		  case 33: //nextea:va[:hwnd]  should this return null if it crosses function boundaries? yes probably...
+					if( argc < 1 ){msg("nextea needs 1 args\n"); return -1;}
 					x = find_code( atoi(args[1]), SEARCH_DOWN | SEARCH_NEXT );
 					if( argc == 2 )SendIntMessage( atoi(args[2]), x);
 					return x;
 					break;
 		  case 34: //prevea:va[:hwnd]  should this return null if it crosses function boundaries? yes probably...
+					if( argc < 1 ){msg("prevea needs 1 args\n"); return -1;}
 					x = find_code( atoi(args[1]), SEARCH_UP | SEARCH_NEXT );
 					if( argc == 2 ) SendIntMessage( atoi(args[2]), x);
 					return x;
 					break;
 		  case 35: //makestring:va:[ascii | unicode]
+					if( argc != 2 ){msg("makestring needs 2 args\n"); return -1;}
 					x = strcmp(args[2],"ascii") == 0 ? ASCSTR_TERMCHR : ASCSTR_UNICODE ;
 					make_ascii_string( atoi(args[1]), 0 /*auto*/, x);
 					break;
 		  case 36: //makeunk:va:size
+					if( argc != 2 ){msg("makeunk needs 2 args\n"); return -1;}
 					do_unknown_range( atoi(args[1]), atoi(args[2]), DOUNK_SIMPLE);
 					break;
 
@@ -938,6 +977,11 @@ int __stdcall GetRefsFrom(int offset, int hwnd){
 int __stdcall DecompileFunction(int offset, char* fpath)
 {
 #ifdef HAS_DECOMPILER
+			
+	 
+		if(fpath==NULL) return 0;
+		if(strlen(fpath)==0) return 0;
+	
 		func_t *pfn = get_func(offset);
 		if ( pfn == NULL )
 		{

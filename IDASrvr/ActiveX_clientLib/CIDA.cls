@@ -132,18 +132,22 @@ Function DecompilerActive(Optional hwnd As Long) As Boolean
 End Function
 
 Sub JumpName(name As String, Optional hwnd As Long)
+    If Len(name) = 0 Then Exit Sub
     SendCMD "jmp_name:" & name, hwnd
 End Sub
 
 Function Message(msg As String)
+    If Len(msg) = 0 Then Exit Function
     SendCMD "msg:" & msg
 End Function
 
 Function MakeStr(va, Optional ascii As Boolean = True)
+    If va = 0 Or va = -1 Then Exit Function
     SendCMD "makestring:" & va & ":" & IIf(ascii, "ascii", "unicode")
 End Function
 
 Function MakeUnk(va, size)
+    If va = 0 Or va = -1 Then Exit Function
     SendCMD "makeunk:" & va & ":" & size
 End Function
 
@@ -152,6 +156,8 @@ Function LoadedFile(Optional ByVal hwnd As Long = 0) As String
 End Function
 
 Function PatchString(va, str, Optional isUnicode = False)
+    
+    If va = 0 Or va = -1 Then Exit Function
     
     Dim b() As Byte, i As Long
     b() = StrConv(str, vbFromUnicode)
@@ -164,7 +170,8 @@ Function PatchString(va, str, Optional isUnicode = False)
 End Function
 
 Function PatchByte(va, newVal)
-    If CInt(newVal) > 255 Then Err.Raise 1, "PatchByte", "byte value must be 0-254"
+    If va = 0 Or va = -1 Then Exit Function
+    If CInt(newVal) > 255 Or CInt(newVal) < 0 Then Err.Raise 1, "PatchByte", "byte value must be 0-254"
     SendCMD "patchbyte:" & va & ":" & newVal
 End Function
 
@@ -178,6 +185,7 @@ Function intToHex(x)
 End Function
 
 Function GetAsm(va)
+    If va = 0 Or va = -1 Then Exit Function
     GetAsm = SendCmdRecvText("getasm:" & va & ":" & SUBCLASSED_HWND)
 End Function
 
@@ -211,6 +219,7 @@ Function GetName(offset)
 End Function
 
  Function FunctionName(functionIndex)
+    If functionIndex < 0 Then Exit Function
     FunctionName = SendCmdRecvText("funcname:" & functionIndex & ":" & SUBCLASSED_HWND)
  End Function
 
@@ -234,6 +243,7 @@ Function ShowBlock(offset, leng)
 End Function
 
 Sub Setname(offset, name)
+    If Len(name) = 0 Then Exit Sub
     SendCMD "setname:" & offset & ":" & CStr(name)
  End Sub
 
@@ -264,20 +274,26 @@ End Function
  End Sub
  
 Function FuncVAByName(name)
+    If Len(name) = 0 Then Exit Function
     FuncVAByName = SendCmdRecvLong("name_va:" & name)
 End Function
 
 Function RenameFunc(oldname, newName) As Boolean
+    If Len(oldname) = 0 Or Len(newName) = 0 Then Exit Function
     RenameFunc = IIf(SendCmdRecvLong("rename:" & oldname & ":" & newName) = 1, True, False)
 End Function
 
 Function Find(startea, endea, hexstr) '-1 if fail
-    'findcode:start:end:hexstr
+    If startea = 0 Or startea = -1 Then Exit Function
+    If endea = 0 Or endea = -1 Then Exit Function
+    If Len(hexstr) = 0 Then Exit Function
     Find = SendCmdRecvLong("findcode:" & startea & ":" & endea & ":" & hexstr)
 End Function
 
 Function Decompile(va) As String
     Dim pth As String, r As Long
+    
+    If va = 0 Or va = -1 Then Exit Function
     
     pth = Environ("temp")
     pth = GetFreeFileName(pth)
@@ -295,10 +311,12 @@ End Function
 '--------------[ QUICK CALLS ]----------------------------------------
 
 Function Jump(va As Long, Optional ByVal hwnd As Long = 0)
+    If va = 0 Or va = -1 Then Exit Function
     QuickCall qcmJmpAddr, va, hwnd
 End Function
 
 Function JumpRVA(rva As Long)
+    If rva = 0 Or rva = -1 Then Exit Function
     QuickCall qcmJmpRVA, rva
 End Function
 
@@ -327,14 +345,17 @@ Sub MakeCode(offset)
 End Sub
 
 Function FuncIndexFromVA(va)
+    If va = 0 Or va = -1 Then Exit Function
     FuncIndexFromVA = QuickCall(qcmFuncIdx, CLng(va))
 End Function
 
 Function NextEA(va)
+    If va = 0 Or va = -1 Then Exit Function
     NextEA = QuickCall(qcmNextEa, CLng(va))
 End Function
 
 Function PrevEA(va)
+    If va = 0 Or va = -1 Then Exit Function
     PrevEA = QuickCall(qcmPrevEa, CLng(va))
 End Function
 
@@ -347,18 +368,22 @@ End Function
  End Function
 
  Function FunctionStart(functionIndex)
+    If functionIndex < 0 Then Exit Function
     FunctionStart = QuickCall(qcmFuncStart, CLng(functionIndex))
  End Function
 
  Function FunctionEnd(functionIndex)
+    If functionIndex < 0 Then Exit Function
     FunctionEnd = QuickCall(qcmFuncEnd, CLng(functionIndex))
  End Function
   
  Function ReadByte(va)
+    If va = 0 Or va = -1 Then Exit Function
     ReadByte = CByte(QuickCall(qcmReadByte, CLng(va)))
 End Function
 
 Function OriginalByte(va)
+    If va = 0 Or va = -1 Then Exit Function
     OriginalByte = CByte(QuickCall(qcmOrgByte, CLng(va)))
 End Function
 
