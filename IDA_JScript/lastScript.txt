@@ -1,2 +1,2 @@
 
-alert( ida.Decompile(0x7E1A1CD0) ) 
+alert( ida.getasm(0x7E1A1CD0) ) 

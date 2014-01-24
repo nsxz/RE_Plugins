@@ -53,7 +53,7 @@ It handles the following messages
 	   36 makeunk:va:size
 
 
-compiles with vs2008, make sure IDASDK envirnoment variable is set to your
+compiles with vs2008 Express, make sure IDASDK envirnoment variable is set to your
 root sdk directory or you will have to fix include and lib directories in project.
 
 clients are provided for a variety of languages see sub directories.

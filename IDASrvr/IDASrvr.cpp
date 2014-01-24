@@ -33,9 +33,10 @@ Note: this includes a decompile function that requires the hexrays decompiler. I
 #ifdef HAS_DECOMPILER
 	#include <hexrays.hpp>    
 	hexdsp_t *hexdsp = NULL;  
-	int hasDecompiler = 0;
 	int __stdcall DecompileFunction(int offset, char* fpath);
 #endif
+
+int hasDecompiler = 0;
 
 #undef sprintf
 #undef strcpy
@@ -274,7 +275,9 @@ int HandleQuickCall(int fIndex, int arg1){
 		case 38: //debugmsgs: 1/0
 				m_debug = arg1 == 1 ? true : false;
 				return 0;
-					
+
+		case 39: //decompiler active
+				return hasDecompiler;
 
 	}
 
@@ -961,7 +964,7 @@ int __stdcall DecompileFunction(int offset, char* fpath)
 		
 		/*if(debug)*/ msg("%a: successfully decompiled\n", pfn->startEA);
 
-		const strvec_t &sv = cfunc->get_pseudocode();
+		const strvec_t &sv = cfunc->get_pseudocode(); //not available in 6.2 known ok in 6.5..
 		for ( int i=0; i < sv.size(); i++ )
 		{
 			char buf[MAXSTR];
