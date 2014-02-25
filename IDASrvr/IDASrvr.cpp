@@ -848,21 +848,37 @@ void __stdcall MakeCode(int offset){
 
 
 int __stdcall FunctionStart(int n){
+	if(n < 0 || n >  NumFuncs()){
+		if(debug) msg("Invalid function index specified!");
+		return -1;
+	}
 	func_t *clsFx = getn_func(n);
 	return clsFx->startEA;
 }
 
 int __stdcall FunctionEnd(int n){
+	if(n < 0 || n >  NumFuncs()){
+		if(debug) msg("Invalid function index specified!");
+		return -1;
+	}
 	func_t *clsFx = getn_func(n);
 	return clsFx->endEA;
 }
 
 int __stdcall FuncArgSize(int index){
+		if(index < 0 || index >  NumFuncs()){
+			if(debug) msg("Invalid function index specified!");
+			return -1;
+		}
 		func_t *clsFx = getn_func(index);
 		return clsFx->argsize ;
 }
 
 int __stdcall FuncColor(int index){
+		if(index < 0 || index >  NumFuncs()){
+			if(debug) msg("Invalid function index specified!");
+			return -1;
+		}
 		func_t *clsFx = getn_func(index);
 		return clsFx->color  ;
 }

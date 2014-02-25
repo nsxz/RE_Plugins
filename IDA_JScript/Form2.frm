@@ -112,6 +112,11 @@ Private Sub cmdSelect_Click()
     Me.Hide
 End Sub
 
+Private Sub Form_Load()
+    On Error Resume Next
+    Me.Icon = Form1.Icon
+End Sub
+
 Private Sub List1_DblClick()
     If List1.ListIndex >= 0 Then Me.Hide
 End Sub

@@ -1,11 +1,12 @@
 VERSION 5.00
 Object = "{0E59F1D2-1FBE-11D0-8FF2-00A0D10038BC}#1.0#0"; "msscript.ocx"
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.ocx"
+Object = "{FBE17B58-A1F0-4B91-BDBD-C9AB263AC8B0}#78.0#0"; "scivb_lite.ocx"
 Begin VB.Form Form1 
    Caption         =   "IDA JScript - http://sandsprite.com"
    ClientHeight    =   7020
    ClientLeft      =   165
-   ClientTop       =   735
+   ClientTop       =   450
    ClientWidth     =   10230
    BeginProperty Font 
       Name            =   "Courier New"
@@ -16,13 +17,31 @@ Begin VB.Form Form1
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
+   Icon            =   "Form1.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    ScaleHeight     =   7020
    ScaleWidth      =   10230
-   StartUpPosition =   3  'Windows Default
+   StartUpPosition =   2  'CenterScreen
+   Begin SCIVB_LITE.SciSimple txtJS 
+      Height          =   3660
+      Left            =   180
+      TabIndex        =   9
+      Top             =   45
+      Width           =   9960
+      _ExtentX        =   17568
+      _ExtentY        =   6456
+   End
+   Begin MSScriptControlCtl.ScriptControl sc 
+      Left            =   8190
+      Top             =   45
+      _ExtentX        =   1005
+      _ExtentY        =   1005
+      Language        =   "JScript"
+   End
    Begin MSScriptControlCtl.ScriptControl sc2 
-      Left            =   9630
-      Top             =   30
+      Left            =   9675
+      Top             =   0
       _ExtentX        =   1005
       _ExtentY        =   1005
       Language        =   "jscript"
@@ -39,8 +58,8 @@ Begin VB.Form Form1
          Strikethrough   =   0   'False
       EndProperty
       Height          =   3195
-      Left            =   150
-      TabIndex        =   1
+      Left            =   135
+      TabIndex        =   0
       Top             =   3780
       Width           =   9975
       Begin VB.Frame fraSaved 
@@ -57,13 +76,13 @@ Begin VB.Form Form1
          EndProperty
          Height          =   495
          Left            =   4500
-         TabIndex        =   7
+         TabIndex        =   6
          Top             =   2640
          Width           =   3765
          Begin MSComctlLib.ImageCombo cboSaved 
             Height          =   375
             Left            =   1080
-            TabIndex        =   8
+            TabIndex        =   7
             TabStop         =   0   'False
             Top             =   0
             Width           =   2655
@@ -97,7 +116,7 @@ Begin VB.Form Form1
             EndProperty
             Height          =   315
             Left            =   0
-            TabIndex        =   9
+            TabIndex        =   8
             Top             =   30
             Width           =   1155
          End
@@ -115,7 +134,7 @@ Begin VB.Form Form1
          EndProperty
          Height          =   255
          Left            =   150
-         TabIndex        =   5
+         TabIndex        =   4
          TabStop         =   0   'False
          Top             =   2670
          Width           =   1935
@@ -133,7 +152,7 @@ Begin VB.Form Form1
          EndProperty
          Height          =   465
          Left            =   8460
-         TabIndex        =   4
+         TabIndex        =   3
          TabStop         =   0   'False
          Top             =   2550
          Width           =   1320
@@ -150,7 +169,7 @@ Begin VB.Form Form1
          EndProperty
          Height          =   2010
          Left            =   1020
-         TabIndex        =   2
+         TabIndex        =   1
          TabStop         =   0   'False
          Top             =   360
          Visible         =   0   'False
@@ -170,7 +189,7 @@ Begin VB.Form Form1
          Left            =   120
          MultiLine       =   -1  'True
          ScrollBars      =   2  'Vertical
-         TabIndex        =   3
+         TabIndex        =   2
          TabStop         =   0   'False
          Top             =   240
          Width           =   9615
@@ -188,26 +207,10 @@ Begin VB.Form Form1
          EndProperty
          Height          =   375
          Left            =   2160
-         TabIndex        =   6
+         TabIndex        =   5
          Top             =   2670
          Width           =   6135
       End
-   End
-   Begin MSScriptControlCtl.ScriptControl sc 
-      Left            =   135
-      Top             =   4410
-      _ExtentX        =   1005
-      _ExtentY        =   1005
-      Language        =   "JScript"
-   End
-   Begin Project1.ucScint txtJS 
-      Height          =   3495
-      Left            =   135
-      TabIndex        =   0
-      Top             =   135
-      Width           =   10005
-      _ExtentX        =   17648
-      _ExtentY        =   6165
    End
    Begin VB.Menu mnuTools 
       Caption         =   "Tools"
@@ -251,7 +254,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Public ida As New CIDAScript
 Public LoadedFile As String
-
+      
 Private Sub cboSaved_Click()
     On Error Resume Next
     Dim ci As ComboItem, f As String
@@ -334,17 +337,17 @@ Private Sub Form_Load()
     Dim idb As String
     Dim windows As Long
     
-    
     'quick way for IDASrvr to be able to find us for launching..
     SaveSetting "IPC", "HANDLES", "IDAJSCRIPT", App.path & "\IDA_JScript.exe"
     
     FormPos Me, True
     Me.Visible = True
     
+    txtJS.LoadCallTips App.path & "\api.txt"
+    txtJS.DisplayCallTips = True
     txtJS.WordWrap = True
-    txtJS.LineIndentGuide = True
+    txtJS.ShowIndentationGuide = True
     txtJS.Folding = True
-    txtJS.AutoCompleteOnCTRLSpace = False
     
     List1.AddItem "Listening on hwnd: " & Me.hwnd & " (0x" & Hex(Me.hwnd) & ")"
     
@@ -481,7 +484,7 @@ End Sub
 Private Sub mnuSave_Click()
     
     If Len(LoadedFile) > 0 Then
-        txtJS.Save LoadedFile
+        txtJS.SaveFile LoadedFile
     Else
         mnuSaveAs_Click
     End If
@@ -501,10 +504,6 @@ Private Sub mnuSaveAs_Click()
     fso.WriteFile fpath, txtJS.Text
     txtJS.LoadFile fpath
     
-End Sub
-
-Private Sub mnuScintOpts_Click()
-    txtJS.ShowOptions
 End Sub
 
 Private Sub mnuSelectIDAInstance_Click()
@@ -532,11 +531,11 @@ Private Sub mnuSHellExt_Click()
     On Error Resume Next
     Shell cmd, vbHide
     
-'    Dim wsh As Object 'WshShell
-'    Set wsh = CreateObject("WScript.Shell")
-'    If Not wsh Is Nothing Then
-'        wsh.RegWrite "HKCR\IDAJS.Document\DefaultIcon\", homedir & ",0"
-'    End If
+    Dim wsh As Object 'WshShell
+    Set wsh = CreateObject("WScript.Shell")
+    If Not wsh Is Nothing Then
+        wsh.RegWrite "HKCR\IDAJS.Document\DefaultIcon\", homedir & ",0"
+    End If
     
     
 End Sub
@@ -560,10 +559,10 @@ Private Sub sc_Error()
     'if showing debug log, switch back to textbox view for error message
     If Check1.Value Then Check1.Value = 0
     
-    adjustedLine = sc.Error.line - 1   '-1 is for the extra line we add silently for wrappers
+    adjustedLine = sc.Error.Line - 1   '-1 is for the extra line we add silently for wrappers
     
     Text1 = "Error on line: " & adjustedLine & vbCrLf & sc.Error.Description
-    txtJS.GotoLine sc.Error.line
+    txtJS.GotoLine sc.Error.Line
      
     tmp = Split(txtJS.Text, vbCrLf)
     For i = 0 To adjustedLine - 1
@@ -579,10 +578,17 @@ Private Sub sc_Error()
 End Sub
 
 Private Sub txtJS_AutoCompleteEvent(className As String)
-
-    If className = "fso" Then
+    
+    Dim prev As String
+    prev = txtJS.PreviousWord() 'scintinilla is smart enough that if partial word shows up in list it will auto select it.
+                                'so fso.rea [CTRL-H] will display list and auto jump to readfile
+    
+    If className = "fso" Or prev = "fso" Then
+        
         txtJS.ShowAutoComplete "readfile writefile appendfile fileexists deletefile"
-    ElseIf className = "ida" Then
+        
+    ElseIf className = "ida" Or prev = "ida" Then
+    
         'do i want to break these up into smaller chunks for intellisense?
         txtJS.ShowAutoComplete "imagebase() loadedfile() jump patchbyte originalbyte readbyte inttohex refresh() " & _
                                "numfuncs() functionstart functionend functionname getasm instsize xrefsto " & _
@@ -591,10 +597,15 @@ Private Sub txtJS_AutoCompleteEvent(className As String)
                                "getcomment addcomment addcodexref adddataxref delcodexref deldataxref " & _
                                "funcindexfromva funcvabyname nextea prevea patchstring makestr makeunk " & _
                                "renamefunc decompile"
-    ElseIf className = "list" Then
+                               
+    ElseIf className = "list" Or prev = "list" Then
+    
         txtJS.ShowAutoComplete "additem clear"
-    ElseIf className = "app" Then
+    
+    ElseIf className = "app" Or prev = "app" Then
+    
         txtJS.ShowAutoComplete "getclipboard setclipboard askvalue openfiledialog savefiledialog exec list benchmark enableIDADebugMessages"
+       
     End If
         
     'divide up into these classes for intellise sense cleanliness?

@@ -1,2 +1,5 @@
+IF(A){
 
-alert( ida.getasm(0x7E1A1CD0) ) 
+}
+
+
