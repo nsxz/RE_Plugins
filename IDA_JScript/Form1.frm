@@ -236,8 +236,7 @@ Begin VB.Form Form1
          Caption         =   "-"
       End
       Begin VB.Menu mnuScintOpts 
-         Caption         =   "Scintinella Options"
-         Visible         =   0   'False
+         Caption         =   "Scintinella Version"
       End
       Begin VB.Menu mnuSelectIDAInstance 
          Caption         =   "Reconnect to IDA"
@@ -506,6 +505,10 @@ Private Sub mnuSaveAs_Click()
     
 End Sub
 
+Private Sub mnuScintOpts_Click()
+    txtJS.ShowAbout
+End Sub
+
 Private Sub mnuSelectIDAInstance_Click()
     Dim hwnd As Long
     Dim idb As String
@@ -596,7 +599,7 @@ Private Sub txtJS_AutoCompleteEvent(className As String)
                                "hideea showea hideblock showblock removename setname makecode " & _
                                "getcomment addcomment addcodexref adddataxref delcodexref deldataxref " & _
                                "funcindexfromva funcvabyname nextea prevea patchstring makestr makeunk " & _
-                               "renamefunc decompile"
+                               "renamefunc decompile quickcall"
                                
     ElseIf className = "list" Or prev = "list" Then
     

@@ -211,11 +211,11 @@ int HandleQuickCall(int fIndex, int arg1){
 
 	switch(fIndex){
 		case 1: // jmp:lngAdr
-				jumpto( arg1 );
+				Jump( arg1 );
 				return 0;
 
 		case 7: // jmp_rva:lng_rva
-				jumpto( ImageBase()+arg1 );
+				Jump( ImageBase()+arg1 );
 				return 0;
 
 		case 8: // imgbase 
@@ -279,6 +279,15 @@ int HandleQuickCall(int fIndex, int arg1){
 		case 39: //decompiler active
 				return hasDecompiler;
 
+		case 40: //Flush all cached decompilation results. 
+			#ifdef HAS_DECOMPILER
+				clear_cached_cfuncs();
+				return 1;
+			#endif
+				return 0;
+
+		case 41: //getIDAHwnd
+			return (int)callui(ui_get_hwnd).vptr;
 	}
 
 	return -1; //not implemented
@@ -394,13 +403,13 @@ int HandleMsg(char* m){
 		
 		case  1: //jmp:lngAdr
 				if( argc != 1 ){msg("jmp needs 1 args\n"); return -1;}
-				jumpto( atoi(args[1]) );		  
+				Jump( atoi(args[1]) );		  
 				break; 
 		case  2: //jmp_name:fx_name
 			     if( argc != 1 ){msg("jmp_name needs 1 args\n"); return -1;}
 				 i = EaForFxName(args[1]);
 				 if(i==0) break;
-				 jumpto(i);
+				 Jump(i);
 				 break;
 
 		case 3: //name_va:fx_name[:hwnd]  (returns va) hwnd optional - specify if want response as data callback default returns int 
@@ -445,7 +454,7 @@ int HandleMsg(char* m){
 				i = ImageBase();  
 			    x = atoi(args[1]);
 				if(x == 0 || x > i){ msg("Invalid rva to jmp_rva\n"); break;}
-				jumpto(i+x);
+				Jump(i+x);
 				break;
 
 		case 8: //imgbase[:HWND]
@@ -750,12 +759,27 @@ plugin_t PLUGIN =
 
 
 
-
+ 
 
 
 //Export API for the VB app to call and access IDA API data
 //_________________________________________________________________
-void __stdcall Jump      (int addr)  { jumpto(addr);           }
+void __stdcall Jump(int addr)  { 
+
+	HWND ida = (HWND)callui(ui_get_hwnd).vptr;
+
+	jumpto(addr);           
+
+	SetForegroundWindow(ida);	//make ida window active and send HOME+ SHIFT+END keys to select the current line
+	keybd_event(VK_HOME,0x4F,KEYEVENTF_EXTENDEDKEY | 0,0);
+	keybd_event(VK_HOME,0x4F,KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP,0);
+	keybd_event(VK_SHIFT,0x2A,0,0);
+	keybd_event(VK_END,0x4F,KEYEVENTF_EXTENDEDKEY | 0,0);
+	keybd_event(VK_END,0x4F,KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP,0);
+	keybd_event(VK_SHIFT,0x2A,KEYEVENTF_KEYUP,0); 
+
+}
+
 void __stdcall Refresh   (void)      { refresh_idaview();      }
 int  __stdcall ScreenEA  (void)      { return get_screen_ea(); }
 int  __stdcall NumFuncs  (void)      { return get_func_qty();  }

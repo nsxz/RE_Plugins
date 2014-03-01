@@ -282,6 +282,9 @@ Function EnableIDADebugMessages(Optional enabled As Boolean = True)
     ipc.QuickCall qcmDebugMessages, IIf(enabled, 1, 0)
 End Function
 
+Function QuickCall(msg As Long, Optional arg1 As Long = 0) As Long
+    QuickCall = ipc.QuickCall(msg, arg1)
+End Function
 
 
 ' Sub DelFunc(addr)

@@ -1,5 +1,2 @@
-IF(A){
-
-}
-
+alert(ida.quickcall(40))
 

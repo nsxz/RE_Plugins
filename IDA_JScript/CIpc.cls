@@ -51,6 +51,9 @@ Public Enum quickCallMessages
     qcmPrevEa = 34    ' prevea:va
     qcmScreenEA = 37  ' screenea:
     qcmDebugMessages = 38
+    qcmhasDecompiler = 39
+    qcmFlushDecompilationResults = 40
+    qcmIDAHwnd = 41     'gets main IDA Window HWND
 End Enum
 
 Private Const WM_COPYDATA = &H4A

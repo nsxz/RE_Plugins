@@ -37,6 +37,8 @@ Public Enum quickCallMessages
     qcmScreenEA = 37  ' screenea:
     qcmDebugMessages = 38
     qcmDecompilerActive = 39
+    qcmFlushDecomp = 40 'flush cached decompiler results
+    qcmIDAHwnd = 41     'gets main IDA Window HWND
 End Enum
 
 Property Get ActiveIDA() As Long

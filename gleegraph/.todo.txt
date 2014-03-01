@@ -1,0 +1,2 @@
+right click  - graph from here
+	     - hover on node show disasm in floating edit or list control like ida does?
