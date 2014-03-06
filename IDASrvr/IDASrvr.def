@@ -41,6 +41,7 @@ LIBRARY IDASrvr
 		FirstCodeTo
 		ImageBase
 	    DecompileFunction
+	    SetFocusSelectLine
 
 
 

@@ -39,7 +39,10 @@ Public Enum quickCallMessages
     qcmDecompilerActive = 39
     qcmFlushDecomp = 40 'flush cached decompiler results
     qcmIDAHwnd = 41     'gets main IDA Window HWND
+    qcmGetVersion = 42  'version of interface
+    qcmSetFocusSelectLine = 43 'bring IDA to forefront and select current line
 End Enum
+
 
 Property Get ActiveIDA() As Long
     ActiveIDA = IDA_HWND

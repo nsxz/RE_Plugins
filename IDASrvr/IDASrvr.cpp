@@ -37,6 +37,7 @@ Note: this includes a decompile function that requires the hexrays decompiler. I
 #endif
 
 int hasDecompiler = 0;
+int InterfaceVersion = 1;
 
 #undef sprintf
 #undef strcpy
@@ -71,7 +72,7 @@ UINT IDA_QUICKCALL_MESSAGE = 0;
 
 
 int __stdcall ImageBase(void);
-
+void __stdcall SetFocusSelectLine(void);
 
 int EaForFxName(char* fxName){
 	
@@ -287,7 +288,14 @@ int HandleQuickCall(int fIndex, int arg1){
 				return 0;
 
 		case 41: //getIDAHwnd
-			return (int)callui(ui_get_hwnd).vptr;
+				return (int)callui(ui_get_hwnd).vptr;
+
+		case 42: //getVersion
+				return InterfaceVersion;
+
+		case 43:
+				SetFocusSelectLine();
+				return 0;
 	}
 
 	return -1; //not implemented
@@ -764,12 +772,9 @@ plugin_t PLUGIN =
 
 //Export API for the VB app to call and access IDA API data
 //_________________________________________________________________
-void __stdcall Jump(int addr)  { 
 
+void __stdcall SetFocusSelectLine(void){ 
 	HWND ida = (HWND)callui(ui_get_hwnd).vptr;
-
-	jumpto(addr);           
-
 	SetForegroundWindow(ida);	//make ida window active and send HOME+ SHIFT+END keys to select the current line
 	keybd_event(VK_HOME,0x4F,KEYEVENTF_EXTENDEDKEY | 0,0);
 	keybd_event(VK_HOME,0x4F,KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP,0);
@@ -777,9 +782,9 @@ void __stdcall Jump(int addr)  {
 	keybd_event(VK_END,0x4F,KEYEVENTF_EXTENDEDKEY | 0,0);
 	keybd_event(VK_END,0x4F,KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP,0);
 	keybd_event(VK_SHIFT,0x2A,KEYEVENTF_KEYUP,0); 
-
 }
 
+void __stdcall Jump(int addr)  { jumpto(addr);}
 void __stdcall Refresh   (void)      { refresh_idaview();      }
 int  __stdcall ScreenEA  (void)      { return get_screen_ea(); }
 int  __stdcall NumFuncs  (void)      { return get_func_qty();  }
