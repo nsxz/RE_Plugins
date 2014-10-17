@@ -1,6 +1,8 @@
 
 //creates an IDC script of all of the user defined names in an IDB and saves them to the clipboard.
 
+namesOnly = true
+
 cnt = ida.numfuncs();
 ret = '';
 
@@ -9,7 +11,10 @@ for(i=0;i<cnt;i++){
     n = ida.functionname(i); 
     //MakeName(0X00405014,"CreateRemoteThread_");
     if(n.substring(0,4) != "sub_"){
-        ret += "MakeName(0X" + h(start) + ",\"" + n + "\");\r\n"
+        if( namesOnly )
+            ret += n + "\r\n"
+        else
+            ret += "MakeName(0X" + h(start) + ",\"" + n + "\");\r\n";
     }
 } 
 

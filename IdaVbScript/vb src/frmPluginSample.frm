@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.ocx"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Begin VB.Form frmPluginSample 
    Caption         =   "Misc IDA Functionality"
    ClientHeight    =   9075
@@ -670,6 +670,7 @@ Private Sub Command3_Click()
     Dim x
     Dim tmp
     
+    On Error GoTo hell
     
     l = CLng(InputBox("Enter hex addr: ", "", "&h" & Module1.ScreenEA))
     'MsgBox "Using " & Hex(l)
@@ -696,6 +697,9 @@ Private Sub Command3_Click()
     
     'Module1.AddCodeXRef &H814EE977, &H814EB798
     
+    Exit Sub
+hell:
+    MsgBox Err.Description
     
 End Sub
 

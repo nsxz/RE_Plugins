@@ -1,6 +1,6 @@
 Type=Exe
 Reference=*\G{DDC88AC2-2723-4C1B-9D61-C4F4D7CF5375}#2.5#0#C:\WINDOWS\vbDevKit.dll#Vb Developers Library From Sandsprite.com
-Reference=*\G{60FF6824-F68B-4DF1-9ECF-6F0893AAD2B8}#1.2#0#C:\Program Files\Sleuth\spSubclass.dll#SandSprite_SubClass Component
+Reference=*\G{60FF6824-F68B-4DF1-9ECF-6F0893AAD2B8}#1.2#0#..\..\libs\Subclass\spSubclass.dll#SandSprite_SubClass Component
 Object={DE173711-6CFE-432E-A95E-F4EF3EE03231}#5.4#0; AddFlow5.ocx
 Object={69CCB013-9626-43EA-BE8E-4316B96BF952}#2.0#0; HFlow2.ocx
 Object={248DD890-BB45-11CF-9ABC-0080C7E7B78D}#1.0#0; MSWINSCK.OCX
@@ -20,8 +20,8 @@ IconForm="Navig"
 Startup="Navig"
 HelpFile=""
 Title="WinGraph32"
-ExeName32="wingraph32.exe"
-Path32="C:\IDA"
+ExeName32="qwingraph32.exe"
+Path32="C:\IDA6.6"
 Command32=""
 Name="vb6projectNavig"
 HelpContextID="0"
@@ -50,3 +50,6 @@ MaxNumberOfThreads=1
 
 [MS Transaction Server]
 AutoRefresh=1
+
+[fastBuild]
+fullPath=C:\IDA6.6\qwingraph32.exe

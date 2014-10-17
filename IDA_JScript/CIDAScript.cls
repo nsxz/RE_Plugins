@@ -26,6 +26,12 @@ Property Get isUp() As Boolean
     isUp = IIf(IsWindow(ipc.RemoteHWND) = 1, True, False)
 End Property
 
+Sub Caption(msg)
+    Form1.Caption = msg
+    Form1.refresh
+    DoEvents
+End Sub
+
 Function alert(msg)
     If IsArray(msg) Then
         MsgBox "Array: " & vbCrLf & vbCrLf & Join(msg, vbCrLf), vbInformation, "IDAJScript"

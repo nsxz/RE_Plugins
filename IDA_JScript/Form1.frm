@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0E59F1D2-1FBE-11D0-8FF2-00A0D10038BC}#1.0#0"; "msscript.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.ocx"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Object = "{FBE17B58-A1F0-4B91-BDBD-C9AB263AC8B0}#78.0#0"; "scivb_lite.ocx"
 Begin VB.Form Form1 
    Caption         =   "IDA JScript - http://sandsprite.com"
@@ -596,7 +596,7 @@ Private Sub txtJS_AutoCompleteEvent(className As String)
         txtJS.ShowAutoComplete "imagebase() loadedfile() jump patchbyte originalbyte readbyte inttohex refresh() " & _
                                "numfuncs() functionstart functionend functionname getasm instsize xrefsto " & _
                                "xrefsfrom undefine getname jumprva screenea() funccount() find " & _
-                               "hideea showea hideblock showblock removename setname makecode " & _
+                               "hideea showea hideblock showblock removename setname makecode message " & _
                                "getcomment addcomment addcodexref adddataxref delcodexref deldataxref " & _
                                "funcindexfromva funcvabyname nextea prevea patchstring makestr makeunk " & _
                                "renamefunc decompile quickcall"
@@ -607,7 +607,7 @@ Private Sub txtJS_AutoCompleteEvent(className As String)
     
     ElseIf className = "app" Or prev = "app" Then
     
-        txtJS.ShowAutoComplete "getclipboard setclipboard askvalue openfiledialog savefiledialog exec list benchmark enableIDADebugMessages"
+        txtJS.ShowAutoComplete "caption getclipboard setclipboard askvalue openfiledialog savefiledialog exec list benchmark enableIDADebugMessages"
        
     End If
         

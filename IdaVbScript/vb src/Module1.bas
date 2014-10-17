@@ -12,60 +12,60 @@ Global gfso As New clsFileSystem
 
 'Global hash As New CWinHash
 
-Public Declare Sub HideEA Lib "vcSample.plw" (ByVal addr As Long)
-Public Declare Sub ShowEA Lib "vcSample.plw" (ByVal addr As Long)
+Public Declare Sub HideEA Lib "idavbscript.plw" (ByVal addr As Long)
+Public Declare Sub ShowEA Lib "idavbscript.plw" (ByVal addr As Long)
 
-Public Declare Function NextAddr Lib "vcSample.plw" (ByVal addr As Long) As Long
-Public Declare Function PrevAddr Lib "vcSample.plw" (ByVal addr As Long) As Long
+Public Declare Function NextAddr Lib "idavbscript.plw" (ByVal addr As Long) As Long
+Public Declare Function PrevAddr Lib "idavbscript.plw" (ByVal addr As Long) As Long
 
-Public Declare Function OriginalByte Lib "vcSample.plw" (ByVal addr As Long) As Byte
-Public Declare Function IDAFilePath Lib "vcSample.plw" Alias "FilePath" (ByVal buf_maxpath As String) As Long
-Public Declare Function RootFileName Lib "vcSample.plw" (ByVal buf_maxpath As String) As Long
-Public Declare Function ProcessState Lib "vcSample.plw" () As Long
+Public Declare Function OriginalByte Lib "idavbscript.plw" (ByVal addr As Long) As Byte
+Public Declare Function IDAFilePath Lib "idavbscript.plw" Alias "FilePath" (ByVal buf_maxpath As String) As Long
+Public Declare Function RootFileName Lib "idavbscript.plw" (ByVal buf_maxpath As String) As Long
+Public Declare Function ProcessState Lib "idavbscript.plw" () As Long
 
-Public Declare Function FuncIndex Lib "vcSample.plw" (ByVal addr As Long) As Long
-Public Declare Function FuncArgSize Lib "vcSample.plw" (ByVal Index As Long) As Long
-Public Declare Function FuncColor Lib "vcSample.plw" (ByVal Index As Long) As Colors
-Public Declare Sub PatchByte Lib "vcSample.plw" (ByVal addr As Long, ByVal valu As Byte)
-Public Declare Sub PatchWord Lib "vcSample.plw" (ByVal addr As Long, ByVal valu As Long)
-Public Declare Sub DelFunc Lib "vcSample.plw" (ByVal addr As Long)
-Public Declare Sub AddComment Lib "vcSample.plw" (ByVal cmt As String)
-Public Declare Sub AddProgramComment Lib "vcSample.plw" (ByVal cmt As String)
-Public Declare Sub AddCodeXRef Lib "vcSample.plw" (ByVal start As Long, ByVal endd As Long)
-Public Declare Sub DelCodeXRef Lib "vcSample.plw" (ByVal start As Long, ByVal endd As Long)
-Public Declare Sub AddDataXRef Lib "vcSample.plw" (ByVal start As Long, ByVal endd As Long)
-Public Declare Sub DelDataXRef Lib "vcSample.plw" (ByVal start As Long, ByVal endd As Long)
-Public Declare Sub MessageUI Lib "vcSample.plw" (ByVal msg As String)
+Public Declare Function FuncIndex Lib "idavbscript.plw" (ByVal addr As Long) As Long
+Public Declare Function FuncArgSize Lib "idavbscript.plw" (ByVal Index As Long) As Long
+Public Declare Function FuncColor Lib "idavbscript.plw" (ByVal Index As Long) As Colors
+Public Declare Sub PatchByte Lib "idavbscript.plw" (ByVal addr As Long, ByVal valu As Byte)
+Public Declare Sub PatchWord Lib "idavbscript.plw" (ByVal addr As Long, ByVal valu As Long)
+Public Declare Sub DelFunc Lib "idavbscript.plw" (ByVal addr As Long)
+Public Declare Sub AddComment Lib "idavbscript.plw" (ByVal cmt As String)
+Public Declare Sub AddProgramComment Lib "idavbscript.plw" (ByVal cmt As String)
+Public Declare Sub AddCodeXRef Lib "idavbscript.plw" (ByVal start As Long, ByVal endd As Long)
+Public Declare Sub DelCodeXRef Lib "idavbscript.plw" (ByVal start As Long, ByVal endd As Long)
+Public Declare Sub AddDataXRef Lib "idavbscript.plw" (ByVal start As Long, ByVal endd As Long)
+Public Declare Sub DelDataXRef Lib "idavbscript.plw" (ByVal start As Long, ByVal endd As Long)
+Public Declare Sub MessageUI Lib "idavbscript.plw" (ByVal msg As String)
  
 
-Public Declare Sub MakeCode Lib "vcSample.plw" (ByVal addr As Long)
-Public Declare Sub Undefine Lib "vcSample.plw" (ByVal addr As Long)
-Public Declare Sub AnalyzeArea Lib "vcSample.plw" (ByVal startat As Long, ByVal endat As Long)
-Public Declare Sub aGetName Lib "vcSample.plw" Alias "GetName" (ByVal addr As Long, ByVal buf As String, ByVal bufsize As Long)
+Public Declare Sub MakeCode Lib "idavbscript.plw" (ByVal addr As Long)
+Public Declare Sub Undefine Lib "idavbscript.plw" (ByVal addr As Long)
+Public Declare Sub AnalyzeArea Lib "idavbscript.plw" (ByVal startat As Long, ByVal endat As Long)
+Public Declare Sub aGetName Lib "idavbscript.plw" Alias "GetName" (ByVal addr As Long, ByVal buf As String, ByVal bufsize As Long)
  
-Public Declare Function SetComment Lib "vcSample.plw" (ByVal addr As Long, ByVal comment As String) As Long
-Private Declare Function GetComment Lib "vcSample.plw" (ByVal addr As Long, ByVal comment As String) As Long
-Private Declare Function GetRComment Lib "vcSample.plw" (ByVal addr As Long, ByVal comment As String) As Long
+Public Declare Function SetComment Lib "idavbscript.plw" (ByVal addr As Long, ByVal comment As String) As Long
+Private Declare Function GetComment Lib "idavbscript.plw" (ByVal addr As Long, ByVal comment As String) As Long
+Private Declare Function GetRComment Lib "idavbscript.plw" (ByVal addr As Long, ByVal comment As String) As Long
 
 
-Public Declare Function NumFuncs Lib "vcSample.plw" () As Long
-Public Declare Function FunctionStart Lib "vcSample.plw" (ByVal functionIndex As Long) As Long
-Public Declare Function FunctionEnd Lib "vcSample.plw" (ByVal functionIndex As Long) As Long
-Public Declare Sub Jump Lib "vcSample.plw" (ByVal offset As Long)
-Public Declare Sub RemvName Lib "vcSample.plw" (ByVal offset As Long)
-Public Declare Sub Setname Lib "vcSample.plw" (ByVal offset As Long, ByVal Name As String)
-Public Declare Sub aRefresh Lib "vcSample.plw" Alias "Refresh" ()
-Public Declare Function ScreenEA Lib "vcSample.plw" () As Long
-Public Declare Sub SelBounds Lib "vcSample.plw" (selstart As Long, selend As Long)
-Public Declare Function GetBytes Lib "vcSample.plw" (ByVal offset As Long, buf As Byte, ByVal Length As Long) As Long
-Private Declare Sub FuncName Lib "vcSample.plw" (ByVal offset As Long, ByVal buf As String, ByVal bufsize As Long)
-Private Declare Function GetAsm Lib "vcSample.plw" (ByVal offset As Long, ByVal buf As String, ByVal Length As Long) As Long
+Public Declare Function NumFuncs Lib "idavbscript.plw" () As Long
+Public Declare Function FunctionStart Lib "idavbscript.plw" (ByVal functionIndex As Long) As Long
+Public Declare Function FunctionEnd Lib "idavbscript.plw" (ByVal functionIndex As Long) As Long
+Public Declare Sub Jump Lib "idavbscript.plw" (ByVal offset As Long)
+Public Declare Sub RemvName Lib "idavbscript.plw" (ByVal offset As Long)
+Public Declare Sub Setname Lib "idavbscript.plw" (ByVal offset As Long, ByVal Name As String)
+Public Declare Sub aRefresh Lib "idavbscript.plw" Alias "Refresh" ()
+Public Declare Function ScreenEA Lib "idavbscript.plw" () As Long
+Public Declare Sub SelBounds Lib "idavbscript.plw" (selstart As Long, selend As Long)
+Public Declare Function GetBytes Lib "idavbscript.plw" (ByVal offset As Long, buf As Byte, ByVal Length As Long) As Long
+Private Declare Sub FuncName Lib "idavbscript.plw" (ByVal offset As Long, ByVal buf As String, ByVal bufsize As Long)
+Private Declare Function GetAsm Lib "idavbscript.plw" (ByVal offset As Long, ByVal buf As String, ByVal Length As Long) As Long
 
 'int __stdcall SearchTextStart(int addr, char* buf){
-Declare Function SearchText Lib "vcSample.plw" (ByVal offset As Long, ByVal buf As String, Optional ByVal stype As Searchtype = 1, Optional ByVal ddebug As Long = 0) As Long
+Declare Function SearchText Lib "idavbscript.plw" (ByVal offset As Long, ByVal buf As String, Optional ByVal stype As Searchtype = 1, Optional ByVal ddebug As Long = 0) As Long
 
-Private Declare Function GetRefsTo Lib "vcSample.plw" (ByVal offset As Long, ByVal callback As Long) As Long
-Private Declare Function GetRefsFrom Lib "vcSample.plw" (ByVal offset As Long, ByVal callback As Long) As Long
+Private Declare Function GetRefsTo Lib "idavbscript.plw" (ByVal offset As Long, ByVal callback As Long) As Long
+Private Declare Function GetRefsFrom Lib "idavbscript.plw" (ByVal offset As Long, ByVal callback As Long) As Long
 
 Private RefsTo As Collection
 Private RefsFrom As Collection
