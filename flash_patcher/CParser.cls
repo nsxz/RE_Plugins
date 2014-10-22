@@ -26,7 +26,6 @@ Public StringPool As New Collection
 Public blocks As New Collection 'of abcblock
 Public BinaryData As New Collection
 
-
 Private Type disasmTimes
     main As Date
     decomp As Date
@@ -226,6 +225,10 @@ Function LoadDecompilation() As Boolean
         a = InStr(a + 1, fdata, "<DoABC2>")
         If a > 0 Then
             b = InStr(a, fdata, "</DoABC2>")
+            If b = 0 Then
+                dbg.AddItem "DoAbc2 end tag not found..disassembler must have failed..trying to work with what we have anyway.."
+                b = Len(fdata)
+            End If
             If b > 0 Then
                 Set abc = New CAbcBlock
                 abc.Index = i
