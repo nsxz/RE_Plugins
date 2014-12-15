@@ -1,0 +1,35 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: dll - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\david\LOCALS~1\Temp\RSP62.tmp" with contents
+[
+/nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "DLL_EXPORTS" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"C:\Documents and Settings\david\Desktop\wininet_hooks\dllsrc\dll.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\david\LOCALS~1\Temp\RSP62.tmp" 
+Creating temporary file "C:\DOCUME~1\david\LOCALS~1\Temp\RSP63.tmp" with contents
+[
+hooker.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib urlmon.lib ws2_32.lib wininet.lib /nologo /dll /incremental:yes /pdb:"./../httpsendhook.pdb" /debug /machine:I386 /def:".\exports.def" /out:"./../httpsendhook.dll" /implib:"Debug/httpsendhook.lib" /pdbtype:sept 
+".\Debug\dll.obj"
+]
+Creating command line "link.exe @C:\DOCUME~1\david\LOCALS~1\Temp\RSP63.tmp"
+<h3>Output Window</h3>
+Compiling...
+dll.cpp
+Linking...
+LINK : LNK6004: ./../httpsendhook.dll not found or not built by the last incremental link; performing full link
+   Creating library Debug/httpsendhook.lib and object Debug/httpsendhook.exp
+LINK : warning LNK4098: defaultlib "LIBCD" conflicts with use of other libs; use /NODEFAULTLIB:library
+
+
+
+<h3>Results</h3>
+httpsendhook.dll - 0 error(s), 1 warning(s)
+</pre>
+</body>
+</html>

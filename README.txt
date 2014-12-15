@@ -51,3 +51,6 @@ gleegraph:
    c# wingraph32 replacement using Microsoft GLEE library (free for non-commercial use)
    click on a node to navigate IDA to it. Right click menu to also rename functions within
    IDA, or prefix all nodes below. Uses IDASrvr see screen shot.
+
+wininet_hooks:
+   logs http/https traffic with api injection to capture raw data regardless of ssl. 

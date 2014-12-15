@@ -152,6 +152,35 @@ Sub LV_LastColumnResize(lv As ListView)
     lv.ColumnHeaders(lv.ColumnHeaders.Count).Width = lv.Width - lv.ColumnHeaders(lv.ColumnHeaders.Count).Left - 100
 End Sub
 
+Public Sub LV_ColumnSort(ListViewControl As ListView, Column As ColumnHeader)
+     On Error Resume Next
+    With ListViewControl
+       If .SortKey <> Column.Index - 1 Then
+             .SortKey = Column.Index - 1
+             .SortOrder = lvwAscending
+       Else
+             If .SortOrder = lvwAscending Then
+              .SortOrder = lvwDescending
+             Else
+              .SortOrder = lvwAscending
+             End If
+       End If
+       .Sorted = -1
+    End With
+End Sub
+
+Function pad(v, Optional l As Long = 4)
+    On Error GoTo hell
+    Dim x As Long
+    x = Len(v)
+    If x < l Then
+        pad = String(l - x, " ") & v
+    Else
+hell:
+        pad = v
+    End If
+End Function
+
 Function isDecimalNumber(x) As Boolean
     
     'Debug.Print isDecimalNumber("32")    'true
@@ -194,12 +223,12 @@ Function StringOpcodesToBytes(OpCodes) As Byte()
     
 End Function
 
-Function pad(x, Optional sz = 8)
+Function lpad(x, Optional sz = 8)
     a = Len(x) - sz
     If a < 0 Then
-        pad = x & Space(Abs(a))
+        lpad = x & Space(Abs(a))
     Else
-        pad = x
+        lpad = x
     End If
 End Function
 

@@ -12,36 +12,21 @@ Begin VB.Form Form1
    ScaleHeight     =   10335
    ScaleWidth      =   23070
    StartUpPosition =   3  'Windows Default
-   Begin VB.CommandButton cmdOpenSelection 
-      Caption         =   "Selection To New File"
-      Height          =   375
-      Left            =   20820
-      TabIndex        =   15
-      Top             =   60
-      Width           =   2055
-   End
-   Begin VB.CommandButton cmdBrowse 
-      Caption         =   "..."
-      Height          =   375
-      Left            =   7920
-      TabIndex        =   14
-      Top             =   60
-      Width           =   735
-   End
-   Begin VB.CommandButton cmdSaveEdits 
-      Caption         =   "Save Patches"
-      Height          =   375
-      Left            =   19380
-      TabIndex        =   12
-      Top             =   60
-      Width           =   1215
+   Begin VB.CommandButton cmdClearFilter 
+      Caption         =   "Clear Search"
+      Enabled         =   0   'False
+      Height          =   285
+      Left            =   7965
+      TabIndex        =   19
+      Top             =   495
+      Width           =   1995
    End
    Begin VB.Frame fraOpts 
       Caption         =   "Options"
       Height          =   8355
-      Left            =   660
+      Left            =   855
       TabIndex        =   6
-      Top             =   720
+      Top             =   1215
       Visible         =   0   'False
       Width           =   14475
       Begin VB.ListBox List1 
@@ -97,6 +82,74 @@ Begin VB.Form Form1
          Top             =   300
          Width           =   915
       End
+   End
+   Begin MSComctlLib.ListView lv2 
+      Height          =   2190
+      Left            =   495
+      TabIndex        =   18
+      Top             =   945
+      Visible         =   0   'False
+      Width           =   9210
+      _ExtentX        =   16245
+      _ExtentY        =   3863
+      View            =   3
+      LabelEdit       =   1
+      MultiSelect     =   -1  'True
+      LabelWrap       =   -1  'True
+      HideSelection   =   0   'False
+      FullRowSelect   =   -1  'True
+      GridLines       =   -1  'True
+      _Version        =   393217
+      ForeColor       =   -2147483640
+      BackColor       =   -2147483643
+      BorderStyle     =   1
+      Appearance      =   1
+      NumItems        =   3
+      BeginProperty ColumnHeader(1) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         Text            =   "Offset"
+         Object.Width           =   2540
+      EndProperty
+      BeginProperty ColumnHeader(2) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         SubItemIndex    =   1
+         Text            =   "Size"
+         Object.Width           =   2540
+      EndProperty
+      BeginProperty ColumnHeader(3) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         SubItemIndex    =   2
+         Text            =   "Function"
+         Object.Width           =   2540
+      EndProperty
+   End
+   Begin VB.TextBox txtSearch 
+      Height          =   330
+      Left            =   855
+      TabIndex        =   17
+      Top             =   405
+      Width           =   6945
+   End
+   Begin VB.CommandButton cmdOpenSelection 
+      Caption         =   "Selection To New File"
+      Height          =   375
+      Left            =   20820
+      TabIndex        =   15
+      Top             =   60
+      Width           =   2055
+   End
+   Begin VB.CommandButton cmdBrowse 
+      Caption         =   "..."
+      Height          =   375
+      Left            =   7920
+      TabIndex        =   14
+      Top             =   60
+      Width           =   735
+   End
+   Begin VB.CommandButton cmdSaveEdits 
+      Caption         =   "Save Patches"
+      Height          =   375
+      Left            =   19380
+      TabIndex        =   12
+      Top             =   60
+      Width           =   1215
    End
    Begin rhexed.HexEd he 
       Height          =   8835
@@ -161,13 +214,13 @@ Begin VB.Form Form1
       EndProperty
    End
    Begin MSComctlLib.ListView lv 
-      Height          =   3495
+      Height          =   3135
       Left            =   120
       TabIndex        =   0
-      Top             =   480
+      Top             =   840
       Width           =   11235
       _ExtentX        =   19817
-      _ExtentY        =   6165
+      _ExtentY        =   5530
       View            =   3
       LabelEdit       =   1
       MultiSelect     =   -1  'True
@@ -195,6 +248,14 @@ Begin VB.Form Form1
          Text            =   "Function"
          Object.Width           =   2540
       EndProperty
+   End
+   Begin VB.Label Label5 
+      Caption         =   "Search"
+      Height          =   240
+      Left            =   90
+      TabIndex        =   16
+      Top             =   495
+      Width           =   690
    End
    Begin VB.Label lblLoadedFile 
       Height          =   315
@@ -270,6 +331,12 @@ Begin VB.Form Form1
       Begin VB.Menu mnuHtmlView 
          Caption         =   "Html Viewer"
       End
+      Begin VB.Menu mnuFindrefs 
+         Caption         =   "Find References"
+      End
+      Begin VB.Menu mnuRemoveLike 
+         Caption         =   "Remove Like"
+      End
    End
 End
 Attribute VB_Name = "Form1"
@@ -288,6 +355,12 @@ Private Sub cmdBrowse_Click()
     If Len(x) = 0 Then Exit Sub
     txtswf = x
     cmdDecompile_Click
+End Sub
+
+Private Sub cmdClearFilter_Click()
+    lv2.Visible = False
+    cmdClearFilter.Enabled = False
+    txtSearch = Empty
 End Sub
 
 Private Sub cmdDecompile_Click()
@@ -325,7 +398,7 @@ Private Sub cmdDecompile_Click()
     
     For Each f In p.Functions
         Set li = lv.ListItems.Add(, , Hex(f.StartOffset))
-        li.SubItems(1) = f.CodeLength
+        li.SubItems(1) = pad(f.CodeLength, 8)
         li.SubItems(2) = f.Prototype
         Set li.Tag = f
     Next
@@ -364,8 +437,9 @@ End Sub
 Private Sub Form_Load()
 
     
-    
+    lv2.Move lv.Left, lv.Top, lv.Width, lv.Height
     LV_LastColumnResize lv
+    LV_LastColumnResize lv2
     LV_LastColumnResize lvFunc
     
     'lv.ColumnHeaders(lv.ColumnHeaders.Count).Width = lv.Width - lv.ColumnHeaders(lv.ColumnHeaders.Count).Left - 100
@@ -393,6 +467,12 @@ End Sub
 Private Sub List1_DblClick()
     MsgBox List1.List(List1.ListIndex)
 End Sub
+
+
+Private Sub lv2_ItemClick(ByVal Item As MSComctlLib.ListItem)
+    lv_ItemClick Item
+End Sub
+
 
 Private Sub lv_ItemClick(ByVal Item As MSComctlLib.ListItem)
     
@@ -439,9 +519,14 @@ Private Sub lv_ItemClick(ByVal Item As MSComctlLib.ListItem)
     
 End Sub
 
-Private Sub lv_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub lv2_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
     If Button = 2 Then PopupMenu mnuLv
 End Sub
+
+Private Sub lv_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
+    If Button = 2 Then PopupMenu mnuLv
+End Sub
+
 
 Private Sub lvFunc_DblClick()
     If selFuncLi Is Nothing Then Exit Sub
@@ -594,6 +679,61 @@ Private Sub mnuFindNext_Click()
         End If
         
     Next
+    
+End Sub
+
+Private Sub mnuFindrefs_Click()
+    
+    Dim f As CFunction
+    Dim obj As Object
+    Dim li As ListItem
+    Dim li2 As ListItem
+    Dim hits As Long
+    
+    Dim find As String
+    On Error Resume Next
+    
+    find = selLi.SubItems(2)
+    a = InStr(1, find, "(")
+    If a > 0 Then find = Mid(find, 1, a - 1)
+    
+    a = InStrRev(find, "$")
+    If a > 0 Then find = Mid(find, 1, a - 1)
+ 
+    a = InStrRev(find, ":")
+    If a > 0 Then find = Mid(find, a + 1)
+    
+
+
+    find = InputBox("Find:", , find)
+    If Len(find) = 0 Then Exit Sub
+    
+    txtSearch.Text = "[Find Refs: " & find & "]"
+    lv2.ListItems.Clear
+    
+    For Each li In lv.ListItems
+        Set obj = li.Tag
+        li.EnsureVisible
+        
+        If TypeName(obj) <> "CBinaryData" Then
+            Set f = obj
+            If InStr(1, f.RawBody, find, vbTextCompare) > 0 Then
+                Set li2 = lv2.ListItems.Add(, , li.Text)
+                Set li2.Tag = li.Tag
+                li2.SubItems(1) = li.SubItems(1)
+                li2.SubItems(2) = li.SubItems(2)
+                hits = hits + 1
+            End If
+        End If
+        
+    Next
+    
+    If hits > 0 Then
+        lv2.Visible = True
+        cmdClearFilter.Enabled = True
+    Else
+        MsgBox "No refs found", vbInformation
+    End If
     
 End Sub
 
@@ -753,6 +893,43 @@ Private Sub mnuOriginalBytes_Click()
     
 End Sub
 
+Private Sub lv_ColumnClick(ByVal ColumnHeader As MSComctlLib.ColumnHeader)
+    LV_ColumnSort lv, ColumnHeader
+End Sub
+
+Private Sub mnuRemoveLike_Click()
+    
+    Dim li As ListItem
+    Dim hits As Long
+    Dim find As String
+    On Error Resume Next
+    
+    find = selLi.SubItems(2)
+    a = InStr(1, find, "(")
+    If a > 0 Then find = Mid(find, 1, a - 1)
+    
+    a = InStrRev(find, "$")
+    If a > 0 Then find = Mid(find, 1, a - 1)
+ 
+    a = InStrRev(find, ":")
+    If a > 0 Then find = Mid(find, a + 1)
+    
+    find = InputBox("Remove Those like", , find)
+    If Len(find) = 0 Then Exit Sub
+         
+    For i = lv.ListItems.Count To 0 Step -1
+        Set li = lv.ListItems(i)
+        li.EnsureVisible
+        If InStr(1, li.SubItems(2), find, vbTextCompare) > 0 Then
+            lv.ListItems.Remove i
+            hits = hits + 1
+        End If
+    Next
+    
+    MsgBox hits & " entries removed", vbInformation
+    
+End Sub
+
 Private Sub mnuSearchFor_Click()
     Dim x As String
     x = InputBox("Enter disasm to search for:")
@@ -767,6 +944,32 @@ End Sub
 
 Private Sub mnuStringPool_Click()
     frmStringPool.Visible = True
+End Sub
+
+Private Sub txtSearch_Change()
+
+    If Len(txtSearch) = 0 Then
+        lv2.Visible = False
+        cmdClearFilter.Enabled = False
+        Exit Sub
+    End If
+    
+    lv2.ListItems.Clear
+    lv2.Visible = True
+    cmdClearFilter.Enabled = True
+    
+    Dim li As ListItem
+    Dim li2 As ListItem
+    
+    For Each li In lv.ListItems
+        If InStr(1, li.SubItems(2), txtSearch, vbTextCompare) > 0 Then
+            Set li2 = lv2.ListItems.Add(, , li.Text)
+            Set li2.Tag = li.Tag
+            li2.SubItems(1) = li.SubItems(1)
+            li2.SubItems(2) = li.SubItems(2)
+        End If
+    Next
+    
 End Sub
 
 Private Sub txtswf_OLEDragDrop(Data As DataObject, Effect As Long, Button As Integer, Shift As Integer, x As Single, y As Single)

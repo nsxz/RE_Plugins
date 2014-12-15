@@ -42,6 +42,7 @@ Function LoadSelf(proto, body, owner As CAbcBlock)
     On Error GoTo hell
     Dim x As String
     
+    RawBody = body
     proto = Trim(proto)
     proto = Replace(Replace(proto, vbCr, ""), vbLf, "")
     
