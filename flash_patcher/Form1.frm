@@ -829,7 +829,7 @@ Private Sub mnuHtmlView_Click()
         
         'd = d & "<font color='#009900'>                                                                                          </font>"
         
-        push ret(), tmp & pad(Hex(ci.Offset)) & pad(ci.OpCodes, 16) & d & vbCrLf
+        push ret(), tmp & pad(Hex(ci.Offset)) & pad(ci.OpCodes, 16) & "   " & d & vbCrLf
 nextone:
     Next
     

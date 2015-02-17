@@ -168,6 +168,13 @@ Function Decompile(fpath As String) As Boolean
         Decompile = True
         CurrentDecompilation = outFile
         dbg.AddItem "new decompilation successful: " & outFile
+    Else
+        Dim xx() As String
+        xx = Split(output, vbLf)
+        For Each yy In xx
+            Form1.List1.AddItem yy
+        Next
+    
     End If
         
     SaveCfg fpath, DecompressedSWF, outFile
