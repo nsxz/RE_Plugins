@@ -12,6 +12,23 @@ Begin VB.Form Form1
    ScaleHeight     =   10335
    ScaleWidth      =   23070
    StartUpPosition =   3  'Windows Default
+   Begin VB.OptionButton optDisasm 
+      Caption         =   "Disasm"
+      Height          =   285
+      Left            =   6975
+      TabIndex        =   21
+      Top             =   495
+      Width           =   915
+   End
+   Begin VB.OptionButton optNames 
+      Caption         =   "Names"
+      Height          =   240
+      Left            =   6075
+      TabIndex        =   20
+      Top             =   495
+      Value           =   -1  'True
+      Width           =   870
+   End
    Begin VB.CommandButton cmdClearFilter 
       Caption         =   "Clear Search"
       Enabled         =   0   'False
@@ -122,10 +139,10 @@ Begin VB.Form Form1
    End
    Begin VB.TextBox txtSearch 
       Height          =   330
-      Left            =   855
+      Left            =   810
       TabIndex        =   17
       Top             =   405
-      Width           =   6945
+      Width           =   5055
    End
    Begin VB.CommandButton cmdOpenSelection 
       Caption         =   "Selection To New File"
@@ -932,7 +949,7 @@ End Sub
 
 Private Sub mnuSearchFor_Click()
     Dim x As String
-    x = InputBox("Enter disasm to search for:")
+    x = InputBox("Enter disasm to search for:", , txtSearch)
     If Len(x) = 0 Then Exit Sub
     frmSearch.SearchFor x
 End Sub
@@ -961,14 +978,26 @@ Private Sub txtSearch_Change()
     Dim li As ListItem
     Dim li2 As ListItem
     
-    For Each li In lv.ListItems
-        If InStr(1, li.SubItems(2), txtSearch, vbTextCompare) > 0 Then
-            Set li2 = lv2.ListItems.Add(, , li.Text)
-            Set li2.Tag = li.Tag
-            li2.SubItems(1) = li.SubItems(1)
-            li2.SubItems(2) = li.SubItems(2)
-        End If
-    Next
+    If optNames.Value Then
+        For Each li In lv.ListItems
+            If InStr(1, li.SubItems(2), txtSearch, vbTextCompare) > 0 Then
+                Set li2 = lv2.ListItems.Add(, , li.Text)
+                Set li2.Tag = li.Tag
+                li2.SubItems(1) = li.SubItems(1)
+                li2.SubItems(2) = li.SubItems(2)
+            End If
+        Next
+    Else 'search disasm...
+        For Each li In lv.ListItems
+            If DisasmContainsText(li, txtSearch) Then
+                Set li2 = lv2.ListItems.Add(, , li.Text)
+                Set li2.Tag = li.Tag
+                li2.SubItems(1) = li.SubItems(1)
+                li2.SubItems(2) = li.SubItems(2)
+            End If
+        Next
+    End If
+    
     
 End Sub
 
@@ -976,3 +1005,34 @@ Private Sub txtswf_OLEDragDrop(Data As DataObject, Effect As Long, Button As Int
     On Error Resume Next
     txtswf = Data.Files(1)
 End Sub
+
+
+Function DisasmContainsText(Item As ListItem, find As String) As Boolean
+    
+    Dim f As CFunction
+    Dim obj As Object
+    Dim bd As CBinaryData
+    
+    Set obj = Item.Tag
+    
+    If TypeName(obj) = "CBinaryData" Then
+        'Set bd = Item.Tag
+        'todo: extract bd.Offset , bd.Size from file and scan?
+        Exit Function
+    End If
+        
+    Set f = Item.Tag
+    Dim ci As CInstruction
+   
+    Dim o As Long
+    o = f.StartOffset
+        
+    For Each ci In f.Instructions
+        'todo: keep track of offset for immediate jump in search results (of first only?)
+        If InStr(1, ci.Disasm, find, vbTextCompare) > 0 Then
+            DisasmContainsText = True
+            Exit Function
+        End If
+    Next
+    
+End Function
