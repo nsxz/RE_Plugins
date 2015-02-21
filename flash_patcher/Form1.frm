@@ -306,6 +306,9 @@ Begin VB.Form Form1
       Begin VB.Menu mnuDeleteCachedDecompressed 
          Caption         =   "Delete Cached Decompressed SWF"
       End
+      Begin VB.Menu mnuRabcd 
+         Caption         =   "RABCDasm UI"
+      End
       Begin VB.Menu mnuSpacer3 
          Caption         =   "-"
       End
@@ -912,6 +915,10 @@ End Sub
 
 Private Sub lv_ColumnClick(ByVal ColumnHeader As MSComctlLib.ColumnHeader)
     LV_ColumnSort lv, ColumnHeader
+End Sub
+
+Private Sub mnuRabcd_Click()
+    frmRabcd.LoadFile p.DecompressedSWF
 End Sub
 
 Private Sub mnuRemoveLike_Click()

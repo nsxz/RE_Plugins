@@ -52,6 +52,37 @@ Function GetBaseName(path As String) As String
     End If
 End Function
 
+
+
+Function FileNameFromPath(fullpath) As String
+    If InStr(fullpath, "\") > 0 Then
+        tmp = Split(fullpath, "\")
+        FileNameFromPath = CStr(tmp(UBound(tmp)))
+    End If
+End Function
+
+Function GetFolderFiles(folder As String, Optional filter = "*.*", Optional retFullPath As Boolean = True) As String()
+   Dim fnames() As String
+   
+   If Not FolderExists(folder) Then
+        'returns empty array if fails
+        GetFolderFiles = fnames()
+        Exit Function
+   End If
+   
+   folder = IIf(Right(folder, 1) = "\", folder, folder & "\")
+   'If Left(filter, 1) = "*" Then extension = Mid(filter, 2, Len(filter))
+   'If Left(filter, 1) <> "." Then filter = "." & filter
+   
+   fs = Dir(folder & filter, vbHidden Or vbNormal Or vbReadOnly Or vbSystem)
+   While fs <> ""
+     If fs <> "" Then push fnames(), IIf(retFullPath = True, folder & fs, fs)
+     fs = Dir()
+   Wend
+   
+   GetFolderFiles = fnames()
+End Function
+
 Sub WriteFile(path As String, it As Variant)
     Dim f As Long
     f = FreeFile
@@ -59,6 +90,33 @@ Sub WriteFile(path As String, it As Variant)
     Print #f, it
     Close f
 End Sub
+
+
+
+Function GetSubFolders(folder As String, Optional retFullPath As Boolean = True) As String()
+    Dim fnames() As String
+    
+    If Not FolderExists(folder) Then
+        'returns empty array if fails
+        GetSubFolders = fnames()
+        Exit Function
+    End If
+    
+   If Right(folder, 1) <> "\" Then folder = folder & "\"
+
+   fd = Dir(folder, vbDirectory)
+   While fd <> ""
+     If Left(fd, 1) <> "." Then
+        If (GetAttr(folder & fd) And vbDirectory) = vbDirectory Then
+           push fnames(), IIf(retFullPath = True, folder & fd, fd)
+        End If
+     End If
+     fd = Dir()
+   Wend
+   
+   GetSubFolders = fnames()
+End Function
+
 
 Function ReadFile(filename) As Variant
   Dim f As Long
