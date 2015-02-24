@@ -613,6 +613,7 @@ Private Sub mnuAbout_Click()
             "swfdump/FlexSDK copyright Adobe" & vbCrLf & _
             "hexed.ocx copyright Rang3r" & vbCrLf & _
             "zlib.dll  copyright Jean-loup Gailly and Mark Adler" & vbCrLf & _
+            "rabcdasm  copyright  Vladimir Panteleev - thecybershadow.net" & vbCrLf & _
             "cmdoutput.bas copyright Joacim Andersson, Brixoft Software" _
             , vbInformation
 End Sub

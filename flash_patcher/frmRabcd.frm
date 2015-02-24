@@ -11,14 +11,6 @@ Begin VB.Form frmRabcd
    ScaleHeight     =   9465
    ScaleWidth      =   14655
    StartUpPosition =   3  'Windows Default
-   Begin VB.CommandButton cmdIntegrate 
-      Caption         =   "integrate"
-      Height          =   375
-      Left            =   13365
-      TabIndex        =   10
-      Top             =   540
-      Width           =   1140
-   End
    Begin VB.CommandButton cmdSave 
       Caption         =   "Save"
       Height          =   375
@@ -28,12 +20,12 @@ Begin VB.Form frmRabcd
       Width           =   1320
    End
    Begin VB.CommandButton cmdReasm 
-      Caption         =   "reassemble"
+      Caption         =   "re-asm && insert"
       Height          =   375
       Left            =   12015
       TabIndex        =   8
       Top             =   540
-      Width           =   1230
+      Width           =   2400
    End
    Begin VB.TextBox txtMod 
       Height          =   330
@@ -139,6 +131,8 @@ Dim curFile As String
 Dim curNode As Node
 Dim isDirty As Boolean
 
+'todo: bug - if disasm folder already exists, rabcdasm will not overwrite files so delete directory so not stale
+
 Public Sub LoadFile(pth As String)
     txtFile = pth
     If FileExists(pth) Then cmdDissassemble_Click
@@ -201,13 +195,85 @@ Private Sub cmdIntegrate_Click()
 End Sub
 
 Private Sub cmdReasm_Click()
+    Dim pf As String, outFile As String
+    Dim c As Collection, n As Node
+    Dim blockIndex As Integer
+    'find .main.asasm for this abc block (each in seperate folder such as file-0/file-0.main.asasm
+    
     If FileExists(curFile) Then
+        
         If isDirty Then cmdSave_Click
-        MsgBox "todo: walk nodes up and find the -x.main.asasm file that contains this script for this abc block index.."
-        't = GetCommandOutput(dp & "\rabcasm.exe """ & curFile & """", True, True)
-        'MsgBox "command output: " & t
+
+        If InStr(curFile, ".main.asasm") > 0 Then
+            pf = curFile
+        Else
+            If Not curNode.parent.parent Is Nothing Then
+                blockIndex = CInt(Right(curNode.parent.parent, 1))
+                Set c = getChildren(curNode.parent.parent)
+            Else
+                blockIndex = CInt(Right(curNode.parent, 1))
+                Set c = getChildren(curNode.parent)
+            End If
+            For Each n In c
+                If InStr(CStr(n.Tag), ".main.asasm") > 0 Then
+                    pf = CStr(n.Tag)
+                    Exit For
+                End If
+            Next
+        End If
+        
+        If Len(pf) = 0 Then
+            MsgBox " could not locate the main.asam for this ABC block", vbInformation
+            Exit Sub
+        End If
+        
+        t = GetCommandOutput(dp & "\rabcasm.exe """ & pf & """", True, True)
+        If Len(t) > 0 Then
+            rtf.Text = "Error calling rabcasm: " & vbCrLf & vbCrLf & t
+        Else
+            outFile = Replace(pf, ".asasm", ".abc")
+            'abcreplace file.swf 0 file-0/file-0.main.abc
+            
+            If Not FileExists(outFile) Then
+                MsgBox "recompiled abcfile not found?" & vbCrLf & outFile, vbInformation
+                Exit Sub
+            End If
+            
+            If Not FileExists(txtMod) Then
+                FileCopy txtFile, txtMod
+                If Not FileExists(txtMod) Then
+                    MsgBox "could not create txtMod path:" & txtMod, vbInformation
+                    Exit Sub
+                End If
+            End If
+            
+            t = GetCommandOutput(dp & "\abcreplace.exe """ & txtMod & """ " & blockIndex & " """ & outFile & """", True, True)
+            If Len(t) > 0 Then
+                rtf.Text = "Error calling abcreplace: " & vbCrLf & vbCrLf & t
+                Exit Sub
+            End If
+            
+            MsgBox "success!", vbInformation
+        End If
+        
     End If
 End Sub
+
+Public Function getChildren(n As Node) As Collection
+    Dim c As New Collection
+    Dim nn As Node
+    
+    If n.Children > 0 Then
+        Set nn = n.FirstSibling
+        c.Add tv.Nodes(n.Index)
+        For i = 1 To n.Children
+            c.Add tv.Nodes(n.Index + i)
+        Next
+    End If
+    
+    Set getChildren = c
+        
+End Function
 
 Private Sub cmdSave_Click()
     If FileExists(curFile) Then
