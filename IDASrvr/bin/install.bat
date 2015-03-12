@@ -36,7 +36,7 @@ copy D:\_code\RE_Plugins\IDASrvr\bin\idasrvr.plw C:\IDA\plugins\
 
 :NO5
 
-if not exist D:\_Installs\iDef\github\IDACompare goto NO
+if not exist D:\_code\iDef\IDACompare goto NO
 echo Installing for IDAcompare
 copy D:\_code\RE_Plugins\IDASrvr\bin\idasrvr.plw D:\_code\iDef\IDACompare\
 

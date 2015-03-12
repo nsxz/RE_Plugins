@@ -630,7 +630,7 @@ int HandleMsg(char* m){
 #ifdef HAS_DECOMPILER
 		  case 39: //decompile:va:fpath
 					if( argc != 2 ){msg("decompile needs 2 args\n"); return -1;}
-					if( hasDecompiler == 0) {msg("HexRays Decompiler either not installed or version to old (this binary built against 6.5 SDK)\n"); return -1;}
+					if( hasDecompiler == 0) {msg("HexRays Decompiler either not installed or version to old (this binary built against 6.7 SDK)\n"); return -1;}
 					return DecompileFunction( atoi(args[1]), args[2]);
 #endif
 
@@ -711,11 +711,14 @@ int idaapi init(void)
   IDASRVR_BROADCAST_MESSAGE = RegisterWindowMessage(IPC_NAME);
   IDA_QUICKCALL_MESSAGE = RegisterWindowMessage("IDA_QUICKCALL");
   InitializeCriticalSection(&m_cs);
+  msg("idasrvr: initializing...\n");
 
 	#ifdef HAS_DECOMPILER
-	  if( init_hexrays_plugin() ){
+	  if( init_hexrays_plugin(0) ){
 		  hasDecompiler = 1;
 		  msg("IDASrvr: detected hexrays decompiler version %s\n", get_hexrays_version() );
+	  }else{
+		  msg("idasrvr: init_hexrays_plugin failed...\n");
 	  }
 	#endif
 
