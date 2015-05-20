@@ -11,6 +11,44 @@ Begin VB.Form frmRabcd
    ScaleHeight     =   9465
    ScaleWidth      =   14655
    StartUpPosition =   3  'Windows Default
+   Begin MSComctlLib.ListView lv 
+      Height          =   4605
+      Left            =   90
+      TabIndex        =   10
+      Top             =   4680
+      Width           =   4920
+      _ExtentX        =   8678
+      _ExtentY        =   8123
+      View            =   3
+      LabelEdit       =   1
+      LabelWrap       =   -1  'True
+      HideSelection   =   -1  'True
+      GridLines       =   -1  'True
+      _Version        =   393217
+      ForeColor       =   -2147483640
+      BackColor       =   -2147483643
+      BorderStyle     =   1
+      Appearance      =   1
+      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         Name            =   "Courier"
+         Size            =   12
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      NumItems        =   2
+      BeginProperty ColumnHeader(1) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         Text            =   "Name"
+         Object.Width           =   2540
+      EndProperty
+      BeginProperty ColumnHeader(2) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         SubItemIndex    =   1
+         Text            =   "lines"
+         Object.Width           =   2540
+      EndProperty
+   End
    Begin VB.CommandButton cmdSave 
       Caption         =   "Save"
       Height          =   375
@@ -43,13 +81,13 @@ Begin VB.Form frmRabcd
       Width           =   735
    End
    Begin MSComctlLib.TreeView tv 
-      Height          =   8295
+      Height          =   3705
       Left            =   90
       TabIndex        =   4
       Top             =   900
-      Width           =   3525
-      _ExtentX        =   6218
-      _ExtentY        =   14631
+      Width           =   4920
+      _ExtentX        =   8678
+      _ExtentY        =   6535
       _Version        =   393217
       HideSelection   =   0   'False
       Indentation     =   531
@@ -84,14 +122,13 @@ Begin VB.Form frmRabcd
    End
    Begin RichTextLib.RichTextBox rtf 
       Height          =   8250
-      Left            =   3690
+      Left            =   5130
       TabIndex        =   0
-      Top             =   945
-      Width           =   10815
-      _ExtentX        =   19076
+      Top             =   1035
+      Width           =   9465
+      _ExtentX        =   16695
       _ExtentY        =   14552
       _Version        =   393217
-      Enabled         =   -1  'True
       ScrollBars      =   3
       TextRTF         =   $"frmRabcd.frx":0000
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -165,15 +202,18 @@ Private Sub cmdDissassemble_Click()
     
     tmp() = GetFolderFiles(pf, "*.abc")
     
-    'now disassemble each abc file..
-    For i = 0 To UBound(tmp)
-        ff = tmp(i)
-        'lv.ListItems.Add , , FileNameFromPath(ff)
-        rtf.Text = rtf.Text & GetCommandOutput(dp & "\rabcdasm.exe """ & ff & """") & vbCrLf
-        newf = pf & "\" & GetBaseName(FileNameFromPath(ff))
-        If FolderExists(newf) Then addsubtree newf
-        
-    Next
+    If Not AryIsEmpty(tmp) Then
+        'now disassemble each abc file..
+        For i = 0 To UBound(tmp)
+            ff = tmp(i)
+            'lv.ListItems.Add , , FileNameFromPath(ff)
+            rtf.Text = rtf.Text & GetCommandOutput(dp & "\rabcdasm.exe """ & ff & """") & vbCrLf
+            newf = pf & "\" & GetBaseName(FileNameFromPath(ff))
+            If FolderExists(newf) Then addsubtree newf
+            
+        Next
+    End If
+    
     
     tmp() = GetFolderFiles(pf, "*.bin") 'should be [parent file name]*.bin
     Dim n As Node, n2 As Node
@@ -207,12 +247,12 @@ Private Sub cmdReasm_Click()
         If InStr(curFile, ".main.asasm") > 0 Then
             pf = curFile
         Else
-            If Not curNode.parent.parent Is Nothing Then
-                blockIndex = CInt(Right(curNode.parent.parent, 1))
-                Set c = getChildren(curNode.parent.parent)
+            If Not curNode.Parent.Parent Is Nothing Then
+                blockIndex = CInt(Right(curNode.Parent.Parent, 1))
+                Set c = getChildren(curNode.Parent.Parent)
             Else
-                blockIndex = CInt(Right(curNode.parent, 1))
-                Set c = getChildren(curNode.parent)
+                blockIndex = CInt(Right(curNode.Parent, 1))
+                Set c = getChildren(curNode.Parent)
             End If
             For Each n In c
                 If InStr(CStr(n.Tag), ".main.asasm") > 0 Then
@@ -289,6 +329,7 @@ Private Sub Form_Load()
         cmdDissassemble.Enabled = False
         MsgBox "could not find RABCDAsm_v1.17 folder", vbInformation
     End If
+    lv.ColumnHeaders(1).Width = lv.Width - lv.ColumnHeaders(2).Width - 60
 End Sub
 
 Sub addsubtree(pth As String, Optional pn As Node = Nothing)
@@ -321,7 +362,11 @@ Private Sub Form_Resize()
     On Error Resume Next
     rtf.Width = Me.Width - rtf.Left - 200
     rtf.Height = Me.Height - rtf.Top - 400
-    tv.Height = rtf.Height
+    lv.Height = Me.Height - lv.Top - 400
+End Sub
+
+Private Sub lv_ItemClick(ByVal Item As MSComctlLib.ListItem)
+    rtf.Text = Item.Tag
 End Sub
 
 Private Sub rtf_Change()
@@ -341,6 +386,75 @@ Private Sub tv_NodeClick(ByVal Node As MSComctlLib.Node)
         curFile = f
         isDirty = False
         rtf.SelStart = 1
+        loadMethods
     End If
     
 End Sub
+
+Sub loadMethods()
+    Dim li As ListItem
+    Dim tmp As String
+    Dim i As Long
+    'name, line , size, tag: body
+    
+    lv.ListItems.Clear
+'    x = Split(rtf.Text, vbLf)
+'    For i = 0 To UBound(x)
+'        If i > 0 Then
+'            If InStr(x(i - 1), "method") > 0 And InStr(1, x(i), "name """) > 0 Then
+'                tmp = Trim(x(i))
+'                tmp = Mid(tmp, 6)
+'                tmp = Replace(tmp, """", Empty)
+'                Set li = lv.ListItems.Add(, , tmp)
+'                li.Tag = i
+'            End If
+'        End If
+'        i = i + 1
+'    Next
+
+    ma = "method" & vbLf & "    name "
+    a = InStr(rtf.Text, ma)
+    Do While a > 0
+        a = a + Len(ma)
+        b = InStr(a, rtf.Text, vbLf)
+        tmp = Trim(Mid(rtf.Text, a, b - a))
+        tmp = Replace(tmp, """", Empty)
+        Set li = lv.ListItems.Add(, , tmp)
+        b = InStr(b, rtf.Text, "end ; code")
+       ' li.SubItems(2) = a
+        tmp = Mid(rtf.Text, a, b - a)
+        li.SubItems(1) = CountOccurances(tmp, vbLf)
+        li.Tag = tmp
+        a = InStr(b, rtf.Text, ma)
+    Loop
+    
+    
+    
+End Sub
+
+'  trait method QName(PrivateNamespace("class_7"), "method_34") flag FINAL
+'   method
+'    name "method_34"
+'    refid "class_7/instance/class_7/instance/method_34"
+'    returns QName(PackageNamespace("", "#1"), "Boolean")
+'    body
+'     maxstack 6
+'     localcount 6
+'     initscopedepth 0
+'     maxscopedepth 1
+'     code
+'
+'
+'        end ; code
+'    end ; body
+'   end ; method
+'  end ; trait
+  
+
+
+Function CountOccurances(it, find) As Integer
+    Dim tmp() As String
+    If InStr(1, it, find, vbTextCompare) < 1 Then CountOccurances = 0: Exit Function
+    tmp = Split(it, find, , vbTextCompare)
+    CountOccurances = UBound(tmp)
+End Function
