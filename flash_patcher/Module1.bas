@@ -5,7 +5,6 @@ Private Declare Function GetShortPathName Lib "kernel32" Alias "GetShortPathName
 Global p As New CParser
 Global dlg As New clsCmnDlg2
 
-
 Function FileExists(path As String) As Boolean
   On Error GoTo hell
   Dim tmp As String

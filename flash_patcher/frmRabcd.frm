@@ -4,25 +4,41 @@ Object = "{3B7C8863-D78F-101B-B9B5-04021C009402}#1.2#0"; "RICHTX32.OCX"
 Begin VB.Form frmRabcd 
    Caption         =   "Form2"
    ClientHeight    =   9465
-   ClientLeft      =   60
-   ClientTop       =   345
-   ClientWidth     =   14655
+   ClientLeft      =   165
+   ClientTop       =   735
+   ClientWidth     =   15135
    LinkTopic       =   "Form2"
    ScaleHeight     =   9465
-   ScaleWidth      =   14655
+   ScaleWidth      =   15135
    StartUpPosition =   3  'Windows Default
+   Begin VB.CommandButton cmdSearch 
+      Caption         =   "search"
+      Height          =   285
+      Left            =   3240
+      TabIndex        =   13
+      Top             =   4680
+      Width           =   1320
+   End
+   Begin VB.TextBox txtsearch 
+      Height          =   285
+      Left            =   945
+      TabIndex        =   12
+      Top             =   4680
+      Width           =   2085
+   End
    Begin MSComctlLib.ListView lv 
-      Height          =   4605
+      Height          =   4290
       Left            =   90
       TabIndex        =   10
-      Top             =   4680
+      Top             =   4995
       Width           =   4920
       _ExtentX        =   8678
-      _ExtentY        =   8123
+      _ExtentY        =   7567
       View            =   3
       LabelEdit       =   1
       LabelWrap       =   -1  'True
       HideSelection   =   -1  'True
+      FullRowSelect   =   -1  'True
       GridLines       =   -1  'True
       _Version        =   393217
       ForeColor       =   -2147483640
@@ -121,13 +137,13 @@ Begin VB.Form frmRabcd
       Width           =   7305
    End
    Begin RichTextLib.RichTextBox rtf 
-      Height          =   8250
+      Height          =   6450
       Left            =   5130
       TabIndex        =   0
       Top             =   1035
       Width           =   9465
       _ExtentX        =   16695
-      _ExtentY        =   14552
+      _ExtentY        =   11377
       _Version        =   393217
       ScrollBars      =   3
       TextRTF         =   $"frmRabcd.frx":0000
@@ -140,6 +156,53 @@ Begin VB.Form frmRabcd
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
+   End
+   Begin MSComctlLib.ListView lv2 
+      Height          =   1815
+      Left            =   5130
+      TabIndex        =   14
+      Top             =   7515
+      Width           =   9465
+      _ExtentX        =   16695
+      _ExtentY        =   3201
+      View            =   3
+      LabelEdit       =   1
+      LabelWrap       =   -1  'True
+      HideSelection   =   -1  'True
+      FullRowSelect   =   -1  'True
+      GridLines       =   -1  'True
+      _Version        =   393217
+      ForeColor       =   -2147483640
+      BackColor       =   -2147483643
+      BorderStyle     =   1
+      Appearance      =   1
+      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         Name            =   "Courier"
+         Size            =   12
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      NumItems        =   2
+      BeginProperty ColumnHeader(1) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         Text            =   "line"
+         Object.Width           =   2540
+      EndProperty
+      BeginProperty ColumnHeader(2) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         SubItemIndex    =   1
+         Text            =   "text"
+         Object.Width           =   2540
+      EndProperty
+   End
+   Begin VB.Label Label3 
+      Caption         =   "search"
+      Height          =   240
+      Left            =   135
+      TabIndex        =   11
+      Top             =   4725
+      Width           =   645
    End
    Begin VB.Label Label2 
       Caption         =   "OutFile"
@@ -157,6 +220,12 @@ Begin VB.Form frmRabcd
       Top             =   90
       Width           =   420
    End
+   Begin VB.Menu mnuPopup 
+      Caption         =   "mnuPopup"
+      Begin VB.Menu mnuRename 
+         Caption         =   "Rename"
+      End
+   End
 End
 Attribute VB_Name = "frmRabcd"
 Attribute VB_GlobalNameSpace = False
@@ -167,6 +236,11 @@ Dim dp As String
 Dim curFile As String
 Dim curNode As Node
 Dim isDirty As Boolean
+
+Private Declare Function SendMessage Lib "user32" Alias "SendMessageA" (ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, LParam As Any) As Long
+Private Const EM_GETFIRSTVISIBLELINE = &HCE
+Private Const EM_LINESCROLL = &HB6
+
 
 'todo: bug - if disasm folder already exists, rabcdasm will not overwrite files so delete directory so not stale
 
@@ -323,13 +397,34 @@ Private Sub cmdSave_Click()
     End If
 End Sub
 
+Private Sub cmdSearch_Click()
+    Dim li As ListItem
+    Dim d As String
+    Dim a As String
+    
+    For Each li In lv.ListItems
+        d = li.Tag
+        If InStr(1, d, txtsearch, vbTextCompare) > 0 Then
+            a = a & li.Text & vbCrLf
+        End If
+    Next
+    
+    If Len(a) = 0 Then
+        MsgBox "No results", vbInformation
+    Else
+        MsgBox a, vbInformation
+    End If
+    
+End Sub
+
 Private Sub Form_Load()
     dp = App.path & "\RABCDAsm_v1.17"
     If Not FolderExists(dp) Then
         cmdDissassemble.Enabled = False
         MsgBox "could not find RABCDAsm_v1.17 folder", vbInformation
     End If
-    lv.ColumnHeaders(1).Width = lv.Width - lv.ColumnHeaders(2).Width - 60
+    lv.ColumnHeaders(1).Width = lv.Width - lv.ColumnHeaders(2).Width - 90
+    mnuPopup.Visible = False
 End Sub
 
 Sub addsubtree(pth As String, Optional pn As Node = Nothing)
@@ -361,12 +456,56 @@ End Sub
 Private Sub Form_Resize()
     On Error Resume Next
     rtf.Width = Me.Width - rtf.Left - 200
-    rtf.Height = Me.Height - rtf.Top - 400
     lv.Height = Me.Height - lv.Top - 400
+    lv2.Top = Me.Height - lv2.Height - 400
+    rtf.Height = Me.Height - rtf.Top - 400 - lv2.Height
+    lv2.Width = rtf.Width
+    LV_LastColumnResize lv2
+End Sub
+
+Private Sub lv_ColumnClick(ByVal ColumnHeader As MSComctlLib.ColumnHeader)
+    LV_ColumnSort lv, ColumnHeader
+End Sub
+
+Private Sub lv2_ColumnClick(ByVal ColumnHeader As MSComctlLib.ColumnHeader)
+    LV_ColumnSort lv2, ColumnHeader
 End Sub
 
 Private Sub lv_ItemClick(ByVal Item As MSComctlLib.ListItem)
     rtf.Text = Item.Tag
+    ScrollToLine rtf, 0
+    
+    Dim li As ListItem
+    Dim tmp As String
+    
+    lv2.ListItems.Clear
+    
+    x = Split(rtf.Text, vbLf)
+    For i = 0 To UBound(x)
+        If InStr(x(i), "callprop") > 0 Or InStr(x(i), "setprop") > 0 Or InStr(x(i), "getprop") > 0 Then
+            Set li = lv2.ListItems.Add(, , VBA.Right("        " & i, 5))
+            tmp = Replace(x(i), "qname(", Empty, , , vbTextCompare)
+            tmp = Replace(tmp, "packagenamespace(", Empty, , , vbTextCompare)
+            tmp = Replace(tmp, "namespace(", Empty, , , vbTextCompare)
+            tmp = Replace(tmp, ")", Empty, , , vbTextCompare)
+            tmp = Replace(tmp, "staticprotectedns(", Empty, , , vbTextCompare)
+            tmp = Replace(tmp, "multinamel(", Empty, , , vbTextCompare)
+            tmp = Replace(tmp, "http://adobe.com/AS3/", Empty, , , vbTextCompare)
+            tmp = Replace(tmp, "Private""", """", , , vbTextCompare)
+            tmp = Replace(tmp, "Protected""", """", , , vbTextCompare)
+            tmp = Replace(tmp, "callproperty", "call", , , vbTextCompare)
+            tmp = Replace(tmp, "setproperty", "set", , , vbTextCompare)
+            tmp = Replace(tmp, "getproperty", "get", , , vbTextCompare)
+            
+            li.SubItems(1) = Trim(tmp)
+        End If
+    Next
+    
+End Sub
+
+Private Sub lv2_ItemClick(ByVal Item As MSComctlLib.ListItem)
+    On Error Resume Next
+    ScrollToLine rtf, CLng(Item.Text)
 End Sub
 
 Private Sub rtf_Change()
@@ -398,6 +537,8 @@ Sub loadMethods()
     'name, line , size, tag: body
     
     lv.ListItems.Clear
+    lv2.ListItems.Clear
+    
 '    x = Split(rtf.Text, vbLf)
 '    For i = 0 To UBound(x)
 '        If i > 0 Then
@@ -423,7 +564,7 @@ Sub loadMethods()
         b = InStr(b, rtf.Text, "end ; code")
        ' li.SubItems(2) = a
         tmp = Mid(rtf.Text, a, b - a)
-        li.SubItems(1) = CountOccurances(tmp, vbLf)
+        li.SubItems(1) = VBA.Right("        " & CountOccurances(tmp, vbLf), 8)
         li.Tag = tmp
         a = InStr(b, rtf.Text, ma)
     Loop
@@ -458,3 +599,12 @@ Function CountOccurances(it, find) As Integer
     tmp = Split(it, find, , vbTextCompare)
     CountOccurances = UBound(tmp)
 End Function
+
+Sub ScrollToLine(rtf As RichTextBox, Number As Long)
+    Dim CurLine As Long, Shift As Long
+    CurLine = SendMessage(rtf.hWnd, EM_GETFIRSTVISIBLELINE, 0&, ByVal 0&)
+    Shift = (Number - 1) - CurLine
+    Call SendMessage(rtf.hWnd, EM_LINESCROLL, 0&, ByVal Shift)
+End Sub
+    
+    
