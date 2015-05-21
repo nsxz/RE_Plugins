@@ -5,12 +5,20 @@ Begin VB.Form frmRabcd
    Caption         =   "Form2"
    ClientHeight    =   9465
    ClientLeft      =   165
-   ClientTop       =   735
+   ClientTop       =   450
    ClientWidth     =   15135
    LinkTopic       =   "Form2"
    ScaleHeight     =   9465
    ScaleWidth      =   15135
-   StartUpPosition =   3  'Windows Default
+   StartUpPosition =   2  'CenterScreen
+   Begin VB.CommandButton cmdRenameMap 
+      Caption         =   "copy rename map"
+      Height          =   330
+      Left            =   8280
+      TabIndex        =   15
+      Top             =   630
+      Width           =   1680
+   End
    Begin VB.CommandButton cmdSearch 
       Caption         =   "search"
       Height          =   285
@@ -37,7 +45,7 @@ Begin VB.Form frmRabcd
       View            =   3
       LabelEdit       =   1
       LabelWrap       =   -1  'True
-      HideSelection   =   -1  'True
+      HideSelection   =   0   'False
       FullRowSelect   =   -1  'True
       GridLines       =   -1  'True
       _Version        =   393217
@@ -225,6 +233,12 @@ Begin VB.Form frmRabcd
       Begin VB.Menu mnuRename 
          Caption         =   "Rename"
       End
+      Begin VB.Menu mnuRefsTo 
+         Caption         =   "References To"
+      End
+      Begin VB.Menu mnucopytable 
+         Caption         =   "copy table"
+      End
    End
 End
 Attribute VB_Name = "frmRabcd"
@@ -236,6 +250,8 @@ Dim dp As String
 Dim curFile As String
 Dim curNode As Node
 Dim isDirty As Boolean
+Dim selLi As ListItem
+Dim renames() As String
 
 Private Declare Function SendMessage Lib "user32" Alias "SendMessageA" (ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, LParam As Any) As Long
 Private Const EM_GETFIRSTVISIBLELINE = &HCE
@@ -259,6 +275,9 @@ Private Sub cmdBrowse_Click()
 End Sub
 
 Private Sub cmdDissassemble_Click()
+
+    Erase renames
+    
     a = "ExportABC: " & GetCommandOutput(dp & "\abcexport.exe """ & txtFile & """") & vbCrLf
     a = a & "swfbinexport: " & GetCommandOutput(dp & "\swfbinexport.exe """ & txtFile & """")
     rtf.Text = a
@@ -389,6 +408,20 @@ Public Function getChildren(n As Node) As Collection
         
 End Function
 
+Private Sub cmdRenameMap_Click()
+
+    Dim tmp As String
+    tmp = Join(renames, vbCrLf)
+    If Len(tmp) < 2 Then
+        MsgBox "No renames yet?"
+        Exit Sub
+    End If
+    
+    Clipboard.Clear
+    Clipboard.SetText tmp
+    
+End Sub
+
 Private Sub cmdSave_Click()
     If FileExists(curFile) Then
         WriteFile curFile, rtf.Text
@@ -425,6 +458,7 @@ Private Sub Form_Load()
     End If
     lv.ColumnHeaders(1).Width = lv.Width - lv.ColumnHeaders(2).Width - 90
     mnuPopup.Visible = False
+    txtFile = GetSetting("rabcd", "gui", "txtfile")
 End Sub
 
 Sub addsubtree(pth As String, Optional pn As Node = Nothing)
@@ -463,8 +497,16 @@ Private Sub Form_Resize()
     LV_LastColumnResize lv2
 End Sub
 
+Private Sub Form_Unload(Cancel As Integer)
+     SaveSetting "rabcd", "gui", "txtfile", txtFile.Text
+End Sub
+
 Private Sub lv_ColumnClick(ByVal ColumnHeader As MSComctlLib.ColumnHeader)
     LV_ColumnSort lv, ColumnHeader
+End Sub
+
+Private Sub lv_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+    If Button = 2 Then PopupMenu mnuPopup
 End Sub
 
 Private Sub lv2_ColumnClick(ByVal ColumnHeader As MSComctlLib.ColumnHeader)
@@ -472,6 +514,8 @@ Private Sub lv2_ColumnClick(ByVal ColumnHeader As MSComctlLib.ColumnHeader)
 End Sub
 
 Private Sub lv_ItemClick(ByVal Item As MSComctlLib.ListItem)
+    
+    Set selLi = Item
     rtf.Text = Item.Tag
     ScrollToLine rtf, 0
     
@@ -506,6 +550,54 @@ End Sub
 Private Sub lv2_ItemClick(ByVal Item As MSComctlLib.ListItem)
     On Error Resume Next
     ScrollToLine rtf, CLng(Item.Text)
+End Sub
+
+Private Sub mnucopytable_Click()
+    Dim li As ListItem
+    Dim t() As String
+    
+    For Each li In lv.ListItems
+        push t, li.Text & vbTab & li.SubItems(1)
+    Next
+    
+    Clipboard.Clear
+    Clipboard.SetText Join(t, vbCrLf)
+    
+End Sub
+
+Private Sub mnuRefsTo_Click()
+   If selLi Is Nothing Then Exit Sub
+   txtsearch = selLi.Text
+   cmdSearch_Click
+End Sub
+
+Private Sub mnuRename_Click()
+
+    If selLi Is Nothing Then Exit Sub
+    
+redo:
+    curname = selLi.Text
+    newname = InputBox("Rename " & curname & " to: ", , curname)
+    If Len(newname) = 0 Then Exit Sub
+    
+    Dim li As ListItem
+    For Each li In lv.ListItems
+        If li.Text <> curname Then
+            If InStr(1, li.Text, newname, vbTextCompare) > 0 Or InStr(1, newname, li.Text, vbTextCompare) > 0 Then
+                MsgBox "Name is not unique enough try again..", vbInformation
+                GoTo redo
+            End If
+        End If
+    Next
+    
+    push renames, curname & " -> " & newname
+    
+    f = ReadFile(curFile)
+    f = Replace(f, curname, newname)
+    WriteFile curFile, f
+    tv_NodeClick curNode
+    'todo scan all other script files from node tree...
+    
 End Sub
 
 Private Sub rtf_Change()

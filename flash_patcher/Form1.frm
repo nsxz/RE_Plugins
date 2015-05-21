@@ -380,7 +380,7 @@ End Sub
 Private Sub cmdClearFilter_Click()
     lv2.Visible = False
     cmdClearFilter.Enabled = False
-    txtSearch = Empty
+    txtsearch = Empty
 End Sub
 
 Private Sub cmdDecompile_Click()
@@ -729,7 +729,7 @@ Private Sub mnuFindrefs_Click()
     find = InputBox("Find:", , find)
     If Len(find) = 0 Then Exit Sub
     
-    txtSearch.Text = "[Find Refs: " & find & "]"
+    txtsearch.Text = "[Find Refs: " & find & "]"
     lv2.ListItems.Clear
     
     For Each li In lv.ListItems
@@ -919,7 +919,11 @@ Private Sub lv_ColumnClick(ByVal ColumnHeader As MSComctlLib.ColumnHeader)
 End Sub
 
 Private Sub mnuRabcd_Click()
-    frmRabcd.LoadFile p.DecompressedSWF
+    If Len(p.DecompressedSWF) > 0 Then
+        frmRabcd.LoadFile p.DecompressedSWF
+    Else
+        frmRabcd.Visible = True
+    End If
 End Sub
 
 Private Sub mnuRemoveLike_Click()
@@ -957,7 +961,7 @@ End Sub
 
 Private Sub mnuSearchFor_Click()
     Dim x As String
-    x = InputBox("Enter disasm to search for:", , txtSearch)
+    x = InputBox("Enter disasm to search for:", , txtsearch)
     If Len(x) = 0 Then Exit Sub
     frmSearch.SearchFor x
 End Sub
@@ -973,7 +977,7 @@ End Sub
 
 Private Sub txtSearch_Change()
 
-    If Len(txtSearch) = 0 Then
+    If Len(txtsearch) = 0 Then
         lv2.Visible = False
         cmdClearFilter.Enabled = False
         Exit Sub
@@ -988,7 +992,7 @@ Private Sub txtSearch_Change()
     
     If optNames.Value Then
         For Each li In lv.ListItems
-            If InStr(1, li.SubItems(2), txtSearch, vbTextCompare) > 0 Then
+            If InStr(1, li.SubItems(2), txtsearch, vbTextCompare) > 0 Then
                 Set li2 = lv2.ListItems.Add(, , li.Text)
                 Set li2.Tag = li.Tag
                 li2.SubItems(1) = li.SubItems(1)
@@ -997,7 +1001,7 @@ Private Sub txtSearch_Change()
         Next
     Else 'search disasm...
         For Each li In lv.ListItems
-            If DisasmContainsText(li, txtSearch) Then
+            If DisasmContainsText(li, txtsearch) Then
                 Set li2 = lv2.ListItems.Add(, , li.Text)
                 Set li2.Tag = li.Tag
                 li2.SubItems(1) = li.SubItems(1)
