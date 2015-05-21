@@ -11,21 +11,62 @@ Begin VB.Form frmRabcd
    ScaleHeight     =   9465
    ScaleWidth      =   15135
    StartUpPosition =   2  'CenterScreen
+   Visible         =   0   'False
+   Begin MSComctlLib.ListView lvFiltered 
+      Height          =   3210
+      Left            =   630
+      TabIndex        =   16
+      Top             =   5535
+      Visible         =   0   'False
+      Width           =   4020
+      _ExtentX        =   7091
+      _ExtentY        =   5662
+      View            =   3
+      LabelEdit       =   1
+      LabelWrap       =   -1  'True
+      HideSelection   =   0   'False
+      FullRowSelect   =   -1  'True
+      GridLines       =   -1  'True
+      _Version        =   393217
+      ForeColor       =   -2147483640
+      BackColor       =   -2147483643
+      BorderStyle     =   1
+      Appearance      =   1
+      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         Name            =   "Courier"
+         Size            =   12
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      NumItems        =   2
+      BeginProperty ColumnHeader(1) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         Text            =   "Name"
+         Object.Width           =   2540
+      EndProperty
+      BeginProperty ColumnHeader(2) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         SubItemIndex    =   1
+         Text            =   "lines"
+         Object.Width           =   2540
+      EndProperty
+   End
+   Begin VB.CommandButton cmdfind 
+      Caption         =   "Find"
+      Height          =   375
+      Left            =   8730
+      TabIndex        =   15
+      Top             =   540
+      Width           =   1365
+   End
    Begin VB.CommandButton cmdRenameMap 
       Caption         =   "copy rename map"
       Height          =   330
-      Left            =   8280
-      TabIndex        =   15
-      Top             =   630
+      Left            =   10710
+      TabIndex        =   14
+      Top             =   90
       Width           =   1680
-   End
-   Begin VB.CommandButton cmdSearch 
-      Caption         =   "search"
-      Height          =   285
-      Left            =   3240
-      TabIndex        =   13
-      Top             =   4680
-      Width           =   1320
    End
    Begin VB.TextBox txtsearch 
       Height          =   285
@@ -153,6 +194,7 @@ Begin VB.Form frmRabcd
       _ExtentX        =   16695
       _ExtentY        =   11377
       _Version        =   393217
+      Enabled         =   -1  'True
       ScrollBars      =   3
       TextRTF         =   $"frmRabcd.frx":0000
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -168,7 +210,7 @@ Begin VB.Form frmRabcd
    Begin MSComctlLib.ListView lv2 
       Height          =   1815
       Left            =   5130
-      TabIndex        =   14
+      TabIndex        =   13
       Top             =   7515
       Width           =   9465
       _ExtentX        =   16695
@@ -250,10 +292,10 @@ Dim dp As String
 Dim curFile As String
 Dim curNode As Node
 Dim isDirty As Boolean
-Dim selLi As ListItem
+Dim selli As ListItem
 Dim renames() As String
 
-Private Declare Function SendMessage Lib "user32" Alias "SendMessageA" (ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, LParam As Any) As Long
+Private Declare Function SendMessage Lib "user32" Alias "SendMessageA" (ByVal hwnd As Long, ByVal wMsg As Long, ByVal wParam As Long, LParam As Any) As Long
 Private Const EM_GETFIRSTVISIBLELINE = &HCE
 Private Const EM_LINESCROLL = &HB6
 
@@ -268,7 +310,7 @@ End Sub
 
 Private Sub cmdBrowse_Click()
     Dim x As String
-    x = dlg.OpenDialog(AllFiles, , , Me.hWnd)
+    x = dlg.OpenDialog(AllFiles, , , Me.hwnd)
     If Len(x) = 0 Then Exit Sub
     txtFile = x
     cmdDissassemble_Click
@@ -325,6 +367,10 @@ End Sub
 
 Private Sub cmdIntegrate_Click()
     MsgBox "todo:"
+End Sub
+
+Private Sub cmdfind_Click()
+    frmReplace.LaunchReplaceForm rtf
 End Sub
 
 Private Sub cmdReasm_Click()
@@ -423,30 +469,55 @@ Private Sub cmdRenameMap_Click()
 End Sub
 
 Private Sub cmdSave_Click()
+    
     If FileExists(curFile) Then
-        WriteFile curFile, rtf.Text
+    
+        If Not selli Is Nothing Then
+            'they are editing just this one function...
+            d = ReadFile(curFile)
+            d = Replace(d, selli.Tag, rtf.Text)
+            WriteFile curFile, d
+        Else
+            WriteFile curFile, rtf.Text
+        End If
+        
         curNode.BackColor = vbBlue
         isDirty = False
+    Else
+        MsgBox "file not found: " & curFile
     End If
+    
 End Sub
 
-Private Sub cmdSearch_Click()
+Private Sub lvFiltered_ItemClick(ByVal Item As MSComctlLib.ListItem)
     Dim li As ListItem
+    Set li = Item.Tag
+    lv_ItemClick li
+End Sub
+
+Private Sub txtsearch_Change()
+
+    Dim li As ListItem, li2 As ListItem
     Dim d As String
     Dim a As String
+    
+    If Len(txtsearch) = 0 Then
+        lvFiltered.Visible = False
+        Exit Sub
+    End If
+    
+    lvFiltered.ListItems.Clear
+    lvFiltered.Visible = True
     
     For Each li In lv.ListItems
         d = li.Tag
         If InStr(1, d, txtsearch, vbTextCompare) > 0 Then
-            a = a & li.Text & vbCrLf
+            Set li2 = lvFiltered.ListItems.Add(, , li.Text)
+            li2.SubItems(1) = li.SubItems(1)
+            Set li2.Tag = li 'note difference! so we cal forward lv_itemclick(li2.tag)
         End If
     Next
     
-    If Len(a) = 0 Then
-        MsgBox "No results", vbInformation
-    Else
-        MsgBox a, vbInformation
-    End If
     
 End Sub
 
@@ -456,6 +527,7 @@ Private Sub Form_Load()
         cmdDissassemble.Enabled = False
         MsgBox "could not find RABCDAsm_v1.17 folder", vbInformation
     End If
+    lvFiltered.Move lv.Left, lv.Top, lv.Width, lv.Height
     lv.ColumnHeaders(1).Width = lv.Width - lv.ColumnHeaders(2).Width - 90
     mnuPopup.Visible = False
     txtFile = GetSetting("rabcd", "gui", "txtfile")
@@ -491,6 +563,7 @@ Private Sub Form_Resize()
     On Error Resume Next
     rtf.Width = Me.Width - rtf.Left - 200
     lv.Height = Me.Height - lv.Top - 400
+    lvFiltered.Height = lv.Height
     lv2.Top = Me.Height - lv2.Height - 400
     rtf.Height = Me.Height - rtf.Top - 400 - lv2.Height
     lv2.Width = rtf.Width
@@ -505,7 +578,15 @@ Private Sub lv_ColumnClick(ByVal ColumnHeader As MSComctlLib.ColumnHeader)
     LV_ColumnSort lv, ColumnHeader
 End Sub
 
-Private Sub lv_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub lvfiltered_ColumnClick(ByVal ColumnHeader As MSComctlLib.ColumnHeader)
+    LV_ColumnSort lvFiltered, ColumnHeader
+End Sub
+
+Private Sub lv_MouseUp(Button As Integer, Shift As Integer, x As Single, Y As Single)
+    If Button = 2 Then PopupMenu mnuPopup
+End Sub
+
+Private Sub lvfiltered_MouseUp(Button As Integer, Shift As Integer, x As Single, Y As Single)
     If Button = 2 Then PopupMenu mnuPopup
 End Sub
 
@@ -515,7 +596,7 @@ End Sub
 
 Private Sub lv_ItemClick(ByVal Item As MSComctlLib.ListItem)
     
-    Set selLi = Item
+    Set selli = Item
     rtf.Text = Item.Tag
     ScrollToLine rtf, 0
     
@@ -566,17 +647,16 @@ Private Sub mnucopytable_Click()
 End Sub
 
 Private Sub mnuRefsTo_Click()
-   If selLi Is Nothing Then Exit Sub
-   txtsearch = selLi.Text
-   cmdSearch_Click
+   If selli Is Nothing Then Exit Sub
+   txtsearch = selli.Text
 End Sub
 
 Private Sub mnuRename_Click()
 
-    If selLi Is Nothing Then Exit Sub
+    If selli Is Nothing Then Exit Sub
     
 redo:
-    curname = selLi.Text
+    curname = selli.Text
     newname = InputBox("Rename " & curname & " to: ", , curname)
     If Len(newname) = 0 Then Exit Sub
     
@@ -608,7 +688,12 @@ Private Sub tv_NodeClick(ByVal Node As MSComctlLib.Node)
     Dim f As String
     
     Set curNode = Node
+    Set selli = Nothing
     curFile = Empty
+    lv.ListItems.Clear
+    lv2.ListItems.Clear
+    lvFiltered.ListItems.Clear
+    lvFiltered.Visible = False
     
     f = CStr(Node.Tag)
     
@@ -630,21 +715,8 @@ Sub loadMethods()
     
     lv.ListItems.Clear
     lv2.ListItems.Clear
+    lvFiltered.ListItems.Clear
     
-'    x = Split(rtf.Text, vbLf)
-'    For i = 0 To UBound(x)
-'        If i > 0 Then
-'            If InStr(x(i - 1), "method") > 0 And InStr(1, x(i), "name """) > 0 Then
-'                tmp = Trim(x(i))
-'                tmp = Mid(tmp, 6)
-'                tmp = Replace(tmp, """", Empty)
-'                Set li = lv.ListItems.Add(, , tmp)
-'                li.Tag = i
-'            End If
-'        End If
-'        i = i + 1
-'    Next
-
     ma = "method" & vbLf & "    name "
     a = InStr(rtf.Text, ma)
     Do While a > 0
@@ -654,14 +726,13 @@ Sub loadMethods()
         tmp = Replace(tmp, """", Empty)
         Set li = lv.ListItems.Add(, , tmp)
         b = InStr(b, rtf.Text, "end ; code")
-       ' li.SubItems(2) = a
         tmp = Mid(rtf.Text, a, b - a)
         li.SubItems(1) = VBA.Right("        " & CountOccurances(tmp, vbLf), 8)
         li.Tag = tmp
         a = InStr(b, rtf.Text, ma)
     Loop
     
-    
+    If Len(txtsearch) > 0 Then txtsearch_Change
     
 End Sub
 
@@ -693,10 +764,11 @@ Function CountOccurances(it, find) As Integer
 End Function
 
 Sub ScrollToLine(rtf As RichTextBox, Number As Long)
-    Dim CurLine As Long, Shift As Long
-    CurLine = SendMessage(rtf.hWnd, EM_GETFIRSTVISIBLELINE, 0&, ByVal 0&)
-    Shift = (Number - 1) - CurLine
-    Call SendMessage(rtf.hWnd, EM_LINESCROLL, 0&, ByVal Shift)
+    Dim curLine As Long, Shift As Long
+    curLine = SendMessage(rtf.hwnd, EM_GETFIRSTVISIBLELINE, 0&, ByVal 0&)
+    Shift = (Number - 1) - curLine
+    Call SendMessage(rtf.hwnd, EM_LINESCROLL, 0&, ByVal Shift)
 End Sub
     
     
+
