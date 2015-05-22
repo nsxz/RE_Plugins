@@ -1,0 +1,586 @@
+<!-- Parsing swf file:/C:/DOCUME~1/david/Desktop/FLASHD~1/bin/NEWPRO~1.SWF.decomp -->
+<!-- ?xml version="1.0" encoding="UTF-8"? -->
+<swf xmlns='http://macromedia/2003/swfx' version='10' framerate='30' size='16000x12000' compressed='false' >
+  <!-- framecount=1 length=2063 -->
+  <!-- offset=21 size=6 -->
+  <FileAttributes hasMetadata='true' actionScript3='true' suppressCrossDomainCaching='false' swfRelativeUrls='false' useNetwork='true'/>
+  <!-- offset=27 size=465 -->
+  <Metadata>
+    <rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'><rdf:Description rdf:about='' xmlns:dc='http://purl.org/dc/elements/1.1'><dc:format>application/x-shockwave-flash</dc:format><dc:title>Adobe Flex 4 Application</dc:title><dc:description>http://www.adobe.com/products/flex</dc:description><dc:publisher>unknown</dc:publisher><dc:creator>unknown</dc:creator><dc:language>EN</dc:language><dc:date>May 21, 2015</dc:date></rdf:Description></rdf:RDF>
+  </Metadata>
+  <!-- offset=492 size=6 -->
+  <ScriptLimits scriptRecursionLimit='1000' scriptTimeLimit='60'/>
+  <!-- offset=498 size=5 -->
+  <SetBackgroundColor color='#FFFFFF'/>
+  <!-- offset=503 size=28 -->
+  <ProductInfo product='Adobe Flex' edition='' version='4.1' build='16076' compileDate='5/21/15 7:46 PM'/>
+  <!-- offset=531 size=7 -->
+  <FrameLabel label='Main'/>
+  <!-- offset=538 size=1510 -->
+  <DoABC2>
+    offset 0: 16 0 minor version
+    offset 2: 46 0 major version
+    offset 5: 0 Integer Constant Pool Entries
+    offset 6: 0 Unsigned Integer Constant Pool Entries
+    offset 7: 0 Floating Point Constant Pool Entries
+    offset 8: 58 String Constant Pool Entries
+    offset 8:  
+    offset 9:  void
+    offset 14:  flash.display
+    offset 28:  Sprite
+    offset 35:  String
+    offset 42:  flash.utils
+    offset 54:  ByteArray
+    offset 64:  int
+    offset 68:  Main
+    offset 73:  Util
+    offset 78:  Object
+    offset 85:  myTextBox
+    offset 95:  flash.text
+    offset 106:  TextField
+    offset 116:  init
+    offset 121:  Boolean
+    offset 129:  doInit
+    offset 136:  DumpMessage
+    offset 148:  BA2Hex
+    offset 155:  DumpByteArray
+    offset 169:  fillUp
+    offset 176:  my test
+    offset 184:  unescape
+    offset 193:  flash.events
+    offset 206:  EventDispatcher
+    offset 222:  DisplayObject
+    offset 236:  InteractiveObject
+    offset 254:  DisplayObjectContainer
+    offset 277:  width
+    offset 283:  height
+    offset 290:  multiline
+    offset 300:  wordWrap
+    offset 309:  border
+    offset 316:  TextFormat
+    offset 327:  Courier
+    offset 335:  font
+    offset 340:  size
+    offset 345:  defaultTextFormat
+    offset 363:  addChild
+    offset 372:  
+
+    offset 374:  text
+    offset 379:  length
+    offset 386:  position
+    offset 395:  readUnsignedByte
+    offset 412:  http://adobe.com/AS3/2006/builtin
+    offset 446:  toString
+    offset 455:  toUpperCase
+    offset 467:  0
+    offset 469:  Offset
+    offset 476:   
+    offset 478:    00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F
+
+    offset 529:    
+    offset 532:  Math
+    offset 537:  min
+    offset 541:  fromCharCode
+    offset 554:  .
+    offset 556:     
+    offset 561: 10 Namespace Constant Pool Entries
+    offset 561:  
+    offset 563:  flash.display
+    offset 565:  flash.utils
+    offset 567:  Main
+    offset 569:  Util
+    offset 571:  private
+    offset 573:  flash.text
+    offset 575:  flash.events
+    offset 577:  http://adobe.com/AS3/2006/builtin
+    offset 580: 2 Namespace Set Constant Pool Entries
+    offset 583: 43 MultiName Constant Pool Entries
+    offset 583: :void
+    offset 586: flash.display:Sprite
+    offset 589: :String
+    offset 592: flash.utils:ByteArray
+    offset 595: :int
+    offset 598: :Main
+    offset 601: :Util
+    offset 604: :Object
+    offset 607: private:myTextBox
+    offset 610: flash.text:TextField
+    offset 613: private:init
+    offset 616: :Boolean
+    offset 619: :doInit
+    offset 622: :DumpMessage
+    offset 625: :BA2Hex
+    offset 628: :DumpByteArray
+    offset 631: private:fillUp
+    offset 634: :unescape
+    offset 637: flash.events:EventDispatcher
+    offset 640: flash.display:DisplayObject
+    offset 643: flash.display:InteractiveObject
+    offset 646: flash.display:DisplayObjectContainer
+    offset 649: :width
+    offset 652: :height
+    offset 655: :multiline
+    offset 658: :wordWrap
+    offset 661: :border
+    offset 664: flash.text:TextFormat
+    offset 667: :font
+    offset 670: :size
+    offset 673: :defaultTextFormat
+    offset 676: :addChild
+    offset 679: :text
+    offset 682: :length
+    offset 685: :position
+    offset 688: :readUnsignedByte
+    offset 691: http://adobe.com/AS3/2006/builtin:toString
+    offset 694: http://adobe.com/AS3/2006/builtin:toUpperCase
+    offset 697: :Math
+    offset 700: :min
+    offset 703: http://adobe.com/AS3/2006/builtin:fromCharCode
+    offset 706: :Util
+    offset 710: 11 Method Entries
+    offset 710: 00 00 00 00 no name(): 
+    offset 714: 00 01 00 00 no name()::void 
+    offset 718: 00 00 00 00 no name(): 
+    offset 722: 00 00 00 00 no name(): 
+    offset 726: 01 01 02 00 00 no name(flash.display:Sprite)::void 
+    offset 731: 01 01 03 00 00 no name(:String)::void 
+    offset 736: 01 01 04 00 00 no name(flash.utils:ByteArray)::void 
+    offset 741: 01 01 04 00 00 no name(flash.utils:ByteArray)::void 
+    offset 746: 03 03 03 05 03 00 00 no name(:String,:int,:String)::String 
+    offset 753: 00 00 00 00 no name(): 
+    offset 757: 00 00 00 00 no name(): 
+    offset 762: 0 Metadata Entries
+    offset 763: 2 Instance Entries
+    offset 763: 06 02 09 04 00 01 :Main extends flash.display:Sprite 
+    offset 770: 0 Traits Entries
+    offset 770: 07 08 09 05 00 09 :Util extends :Object 
+    offset 777: 0 Traits Entries
+    offset 777: 2 Class Entries
+    offset 777: 00 :Main extends Class 
+    offset 779: 0 Traits Entries
+    offset 779: 03 :Util extends Class 
+    offset 781: 7 Traits Entries
+    offset 781: 09 00 01 0A 00 private:myTextBox
+    offset 786: 0B 00 02 0C 0A 0A private:init
+    offset 792: 0D 11 03 04 :doInit
+    offset 796: 0E 11 04 05 :DumpMessage
+    offset 800: 0F 11 05 06 :BA2Hex
+    offset 804: 10 11 06 07 :DumpByteArray
+    offset 808: 11 11 07 08 private:fillUp
+    offset 813: 2 Script Entries
+    offset 813: 02 script0 
+    offset 815: 1 Traits Entries
+    offset 815: 06 04 01 00 :Main
+    offset 819: 0A script1 
+    offset 821: 1 Traits Entries
+    offset 821: 07 04 00 01 :Util
+    offset 826: 11 Method Bodies
+    offset 826: 00 01 01 08 09 03    function :Main:::Main$cinit():
+    offset 832: maxStack:1 localCount:1 initScopeDepth:8 maxScopeDepth:9
+    offset 832: D0                       getlocal0     	
+    offset 833: 30                       pushscope     	
+    offset 834: 47                       returnvoid    	
+    offset 836: 0 Extras
+    offset 837: 0 Traits Entries
+
+    offset 837: 01 02 02 09 0A 1D    function :Main:::Main()::void
+    offset 843: maxStack:2 localCount:2 initScopeDepth:9 maxScopeDepth:10
+    offset 843: D0                       getlocal0     	
+    offset 844: 30                       pushscope     	
+    offset 845: D0                       getlocal0     	
+    offset 846: 49 00                    constructsuper	(0)
+    offset 848: 60 07                    getlex        	:Util
+    offset 850: D0                       getlocal0     	
+    offset 851: 4F 0D 01                 callpropvoid  	:doInit (1)
+    offset 854: 2C 16                    pushstring    	"my test"
+    offset 856: D5                       setlocal1     	
+    offset 857: 5D 12                    findpropstrict	:unescape
+    offset 859: D1                       getlocal1     	
+    offset 860: 46 12 01                 callproperty  	:unescape (1)
+    offset 863: 85                       coerce_s      	
+    offset 864: D5                       setlocal1     	
+    offset 865: 60 07                    getlex        	:Util
+    offset 867: D1                       getlocal1     	
+    offset 868: 4F 0E 01                 callpropvoid  	:DumpMessage (1)
+    offset 871: 47                       returnvoid    	
+    offset 873: 0 Extras
+    offset 874: 0 Traits Entries
+
+    offset 874: 02 02 01 01 08 23    function script0::script0$init():
+    offset 880: maxStack:2 localCount:1 initScopeDepth:1 maxScopeDepth:8
+    offset 880: D0                       getlocal0     	
+    offset 881: 30                       pushscope     	
+    offset 882: 65 00                    getscopeobject	0
+    offset 884: 60 08                    getlex        	:Object
+    offset 886: 30                       pushscope     	
+    offset 887: 60 13                    getlex        	flash.events:EventDispatcher
+    offset 889: 30                       pushscope     	
+    offset 890: 60 14                    getlex        	flash.display:DisplayObject
+    offset 892: 30                       pushscope     	
+    offset 893: 60 15                    getlex        	flash.display:InteractiveObject
+    offset 895: 30                       pushscope     	
+    offset 896: 60 16                    getlex        	flash.display:DisplayObjectContainer
+    offset 898: 30                       pushscope     	
+    offset 899: 60 02                    getlex        	flash.display:Sprite
+    offset 901: 30                       pushscope     	
+    offset 902: 60 02                    getlex        	flash.display:Sprite
+    offset 904: 58 00                    newclass      	:Main
+    offset 906: 1D                       popscope      	
+    offset 907: 1D                       popscope      	
+    offset 908: 1D                       popscope      	
+    offset 909: 1D                       popscope      	
+    offset 910: 1D                       popscope      	
+    offset 911: 1D                       popscope      	
+    offset 912: 68 06                    initproperty  	:Main
+    offset 914: 47                       returnvoid    	
+    offset 916: 0 Extras
+    offset 917: 0 Traits Entries
+
+    offset 917: 03 02 01 03 04 11    function :Util:::Util$cinit():
+    offset 923: maxStack:2 localCount:1 initScopeDepth:3 maxScopeDepth:4
+    offset 923: D0                       getlocal0     	
+    offset 924: 30                       pushscope     	
+    offset 925: 5E 09                    findproperty  	private:myTextBox
+    offset 927: 5D 0A                    findpropstrict	flash.text:TextField
+    offset 929: 4A 0A 00                 constructprop 	flash.text:TextField (0)
+    offset 932: 61 09                    setproperty   	private:myTextBox
+    offset 934: 5E 0B                    findproperty  	private:init
+    offset 936: 27                       pushfalse     	
+    offset 937: 61 0B                    setproperty   	private:init
+    offset 939: 47                       returnvoid    	
+    offset 941: 0 Extras
+    offset 942: 0 Traits Entries
+
+    offset 942: 04 02 03 03 04 42    function :Util:::doInit(flash.display:Sprite)::void
+    offset 948: maxStack:2 localCount:3 initScopeDepth:3 maxScopeDepth:4
+    offset 948: D0                       getlocal0     	
+    offset 949: 30                       pushscope     	
+    offset 950: 5E 0B                    findproperty  	private:init
+    offset 952: 26                       pushtrue      	
+    offset 953: 61 0B                    setproperty   	private:init
+    offset 955: 60 09                    getlex        	private:myTextBox
+    offset 957: 25 D8 04                 pushshort     	600
+    offset 960: 61 17                    setproperty   	:width
+    offset 962: 60 09                    getlex        	private:myTextBox
+    offset 964: 25 D8 04                 pushshort     	600
+    offset 967: 61 18                    setproperty   	:height
+    offset 969: 60 09                    getlex        	private:myTextBox
+    offset 971: 26                       pushtrue      	
+    offset 972: 61 19                    setproperty   	:multiline
+    offset 974: 60 09                    getlex        	private:myTextBox
+    offset 976: 26                       pushtrue      	
+    offset 977: 61 1A                    setproperty   	:wordWrap
+    offset 979: 60 09                    getlex        	private:myTextBox
+    offset 981: 26                       pushtrue      	
+    offset 982: 61 1B                    setproperty   	:border
+    offset 984: 5D 1C                    findpropstrict	flash.text:TextFormat
+    offset 986: 4A 1C 00                 constructprop 	flash.text:TextFormat (0)
+    offset 989: 80 1C                    coerce        	flash.text:TextFormat
+    offset 991: D6                       setlocal2     	
+    offset 992: D2                       getlocal2     	
+    offset 993: 2C 23                    pushstring    	"Courier"
+    offset 995: 61 1D                    setproperty   	:font
+    offset 997: D2                       getlocal2     	
+    offset 998: 24 30                    pushbyte      	48
+    offset 1000: 61 1E                    setproperty   	:size
+    offset 1002: 60 09                    getlex        	private:myTextBox
+    offset 1004: D2                       getlocal2     	
+    offset 1005: 61 1F                    setproperty   	:defaultTextFormat
+    offset 1007: D1                       getlocal1     	
+    offset 1008: 60 09                    getlex        	private:myTextBox
+    offset 1010: 4F 20 01                 callpropvoid  	:addChild (1)
+    offset 1013: 47                       returnvoid    	
+    offset 1015: 0 Extras
+    offset 1016: 0 Traits Entries
+
+    offset 1016: 05 03 02 03 04 1B    function :Util:::DumpMessage(:String)::void
+    offset 1022: maxStack:3 localCount:2 initScopeDepth:3 maxScopeDepth:4
+    offset 1022: D0                       getlocal0     	
+    offset 1023: 30                       pushscope     	
+    offset 1024: 60 0B                    getlex        	private:init
+    offset 1026: 11 0A 00 00              iftrue        	L0
+
+    offset 1030: 5D 12                    findpropstrict	:unescape
+    offset 1032: D1                       getlocal1     	
+    offset 1033: 4F 12 01                 callpropvoid  	:unescape (1)
+    offset 1036: 10 08 00 00              jump          	L1
+    offset 1040: 60 09                L0: getlex        	private:myTextBox
+    offset 1042: D1                       getlocal1     	
+    offset 1043: 2C 28                    pushstring    	"n"
+    offset 1045: A0                       add           	
+    offset 1046: 61 21                    setproperty   	:text
+    offset 1048: 47                   L1: returnvoid    	
+    offset 1050: 0 Extras
+    offset 1051: 0 Traits Entries
+
+    offset 1051: 06 05 07 03 04 57    function :Util:::BA2Hex(flash.utils:ByteArray)::void
+    offset 1057: maxStack:5 localCount:7 initScopeDepth:3 maxScopeDepth:4
+    offset 1057: D0                       getlocal0     	
+    offset 1058: 30                       pushscope     	
+    offset 1059: 24 00                    pushbyte      	0
+    offset 1061: 63 06                    setlocal      	6
+    offset 1063: 2C 01                    pushstring    	""
+    offset 1065: D6                       setlocal2     	
+    offset 1066: D1                       getlocal1     	
+    offset 1067: 66 22                    getproperty   	:length
+    offset 1069: 73                       convert_i     	
+    offset 1070: D7                       setlocal3     	
+    offset 1071: D1                       getlocal1     	
+    offset 1072: 66 23                    getproperty   	:position
+    offset 1074: 74                       convert_u     	
+    offset 1075: 63 04                    setlocal      	4
+    offset 1077: D1                       getlocal1     	
+    offset 1078: 24 00                    pushbyte      	0
+    offset 1080: 61 23                    setproperty   	:position
+    offset 1082: 24 00                    pushbyte      	0
+    offset 1084: 63 05                    setlocal      	5
+    offset 1086: 10 21 00 00              jump          	L0
+
+    offset 1090: 09                   L1: label         	
+    offset 1091: D1                       getlocal1     	
+    offset 1092: 46 24 00                 callproperty  	:readUnsignedByte (0)
+    offset 1095: 73                       convert_i     	
+    offset 1096: 63 06                    setlocal      	6
+    offset 1098: D2                       getlocal2     	
+    offset 1099: 5D 11                    findpropstrict	private:fillUp
+    offset 1101: 62 06                    getlocal      	6
+    offset 1103: 24 10                    pushbyte      	16
+    offset 1105: 46 25 01                 callproperty  	http://adobe.com/AS3/2006/builtin:toString (1)
+    offset 1108: 46 26 00                 callproperty  	http://adobe.com/AS3/2006/builtin:toUpperCase (0)
+    offset 1111: 24 02                    pushbyte      	2
+    offset 1113: 2C 30                    pushstring    	"0"
+    offset 1115: 46 11 03                 callproperty  	private:fillUp (3)
+    offset 1118: A0                       add           	
+    offset 1119: 85                       coerce_s      	
+    offset 1120: D6                       setlocal2     	
+    offset 1121: C2 05                    inclocal_i    	5
+    offset 1123: 62 05                L0: getlocal      	5
+    offset 1125: D1                       getlocal1     	
+    offset 1126: 66 22                    getproperty   	:length
+    offset 1128: 15 D6 FF FF              iflt          	L1
+
+    offset 1132: D1                       getlocal1     	
+    offset 1133: 62 04                    getlocal      	4
+    offset 1135: 61 23                    setproperty   	:position
+    offset 1137: 5D 0E                    findpropstrict	:DumpMessage
+    offset 1139: D2                       getlocal2     	
+    offset 1140: 4F 0E 01                 callpropvoid  	:DumpMessage (1)
+    offset 1143: 47                       returnvoid    	
+    offset 1145: 0 Extras
+    offset 1146: 0 Traits Entries
+
+    offset 1146: 07 05 0B 03 04 F9 01 function :Util:::DumpByteArray(flash.utils:ByteArray)::void
+    offset 1153: maxStack:5 localCount:11 initScopeDepth:3 maxScopeDepth:4
+    offset 1153: D0                       getlocal0     	
+    offset 1154: 30                       pushscope     	
+    offset 1155: 24 00                    pushbyte      	0
+    offset 1157: 63 07                    setlocal      	7
+    offset 1159: 20                       pushnull      	
+    offset 1160: 85                       coerce_s      	
+    offset 1161: 63 08                    setlocal      	8
+    offset 1163: 24 00                    pushbyte      	0
+    offset 1165: 63 09                    setlocal      	9
+    offset 1167: 24 00                    pushbyte      	0
+    offset 1169: 63 0A                    setlocal      	10
+    offset 1171: 5D 11                    findpropstrict	private:fillUp
+    offset 1173: 2C 31                    pushstring    	"Offset"
+    offset 1175: 24 08                    pushbyte      	8
+    offset 1177: 2C 32                    pushstring    	" "
+    offset 1179: 46 11 03                 callproperty  	private:fillUp (3)
+    offset 1182: 2C 33                    pushstring    	"  00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0Fn"
+    offset 1184: A0                       add           	
+    offset 1185: D6                       setlocal2     	
+    offset 1186: 24 00                    pushbyte      	0
+    offset 1188: D7                       setlocal3     	
+    offset 1189: D1                       getlocal1     	
+    offset 1190: 66 22                    getproperty   	:length
+    offset 1192: 73                       convert_i     	
+    offset 1193: 63 04                    setlocal      	4
+    offset 1195: D1                       getlocal1     	
+    offset 1196: 66 23                    getproperty   	:position
+    offset 1198: 74                       convert_u     	
+    offset 1199: 63 05                    setlocal      	5
+    offset 1201: D1                       getlocal1     	
+    offset 1202: 24 00                    pushbyte      	0
+    offset 1204: 61 23                    setproperty   	:position
+    offset 1206: 24 00                    pushbyte      	0
+    offset 1208: 63 06                    setlocal      	6
+    offset 1210: 10 A8 00 00              jump          	L0
+
+    offset 1214: 09                   L1: label         	
+    offset 1215: D2                       getlocal2     	
+    offset 1216: 5D 11                    findpropstrict	private:fillUp
+    offset 1218: D3                       getlocal3     	
+    offset 1219: 24 10                    pushbyte      	16
+    offset 1221: 46 25 01                 callproperty  	http://adobe.com/AS3/2006/builtin:toString (1)
+    offset 1224: 46 26 00                 callproperty  	http://adobe.com/AS3/2006/builtin:toUpperCase (0)
+    offset 1227: 24 08                    pushbyte      	8
+    offset 1229: 2C 30                    pushstring    	"0"
+    offset 1231: 46 11 03                 callproperty  	private:fillUp (3)
+    offset 1234: 2C 34                    pushstring    	"  "
+    offset 1236: A0                       add           	
+    offset 1237: A0                       add           	
+    offset 1238: 85                       coerce_s      	
+    offset 1239: D6                       setlocal2     	
+    offset 1240: 60 27                    getlex        	:Math
+    offset 1242: 24 10                    pushbyte      	16
+    offset 1244: D1                       getlocal1     	
+    offset 1245: 66 22                    getproperty   	:length
+    offset 1247: D1                       getlocal1     	
+    offset 1248: 66 23                    getproperty   	:position
+    offset 1250: A1                       subtract      	
+    offset 1251: 46 28 02                 callproperty  	:min (2)
+    offset 1254: 73                       convert_i     	
+    offset 1255: 63 07                    setlocal      	7
+    offset 1257: 2C 01                    pushstring    	""
+    offset 1259: 63 08                    setlocal      	8
+    offset 1261: 24 00                    pushbyte      	0
+    offset 1263: 63 09                    setlocal      	9
+    offset 1265: 10 55 00 00              jump          	L2
+
+    offset 1269: 09                   L3: label         	
+    offset 1270: 62 09                    getlocal      	9
+    offset 1272: 62 07                    getlocal      	7
+    offset 1274: 0C 45 00 00              ifnlt         	L4
+
+    offset 1278: D1                       getlocal1     	
+    offset 1279: 46 24 00                 callproperty  	:readUnsignedByte (0)
+    offset 1282: 73                       convert_i     	
+    offset 1283: 63 0A                    setlocal      	10
+    offset 1285: 62 08                    getlocal      	8
+    offset 1287: 62 0A                    getlocal      	10
+    offset 1289: 24 20                    pushbyte      	32
+    offset 1291: B0                       greaterequals 	
+    offset 1292: 12 0C 00 00              iffalse       	L5
+
+    offset 1296: 60 03                    getlex        	:String
+    offset 1298: 62 0A                    getlocal      	10
+    offset 1300: 46 29 01                 callproperty  	http://adobe.com/AS3/2006/builtin:fromCharCode (1)
+    offset 1303: 82                       coerce_a      	
+    offset 1304: 10 03 00 00              jump          	L6
+    offset 1308: 2C 38                L5: pushstring    	"."
+    offset 1310: 82                       coerce_a      	
+    offset 1311: A0                   L6: add           	
+    offset 1312: 85                       coerce_s      	
+    offset 1313: 63 08                    setlocal      	8
+    offset 1315: D2                       getlocal2     	
+    offset 1316: 5D 11                    findpropstrict	private:fillUp
+    offset 1318: 62 0A                    getlocal      	10
+    offset 1320: 24 10                    pushbyte      	16
+    offset 1322: 46 25 01                 callproperty  	http://adobe.com/AS3/2006/builtin:toString (1)
+    offset 1325: 46 26 00                 callproperty  	http://adobe.com/AS3/2006/builtin:toUpperCase (0)
+    offset 1328: 24 02                    pushbyte      	2
+    offset 1330: 2C 30                    pushstring    	"0"
+    offset 1332: 46 11 03                 callproperty  	private:fillUp (3)
+    offset 1335: 2C 32                    pushstring    	" "
+    offset 1337: A0                       add           	
+    offset 1338: A0                       add           	
+    offset 1339: 85                       coerce_s      	
+    offset 1340: D6                       setlocal2     	
+    offset 1341: C2 03                    inclocal_i    	3
+    offset 1343: 10 05 00 00              jump          	L7
+    offset 1347: D2                   L4: getlocal2     	
+    offset 1348: 2C 39                    pushstring    	"   "
+    offset 1350: A0                       add           	
+    offset 1351: D6                       setlocal2     	
+    offset 1352: C2 09                L7: inclocal_i    	9
+    offset 1354: 62 09                L2: getlocal      	9
+    offset 1356: 24 10                    pushbyte      	16
+    offset 1358: 15 A3 FF FF              iflt          	L3
+
+    offset 1362: D2                       getlocal2     	
+    offset 1363: 2C 32                    pushstring    	" "
+    offset 1365: 62 08                    getlocal      	8
+    offset 1367: A0                       add           	
+    offset 1368: 2C 28                    pushstring    	"n"
+    offset 1370: A0                       add           	
+    offset 1371: A0                       add           	
+    offset 1372: 85                       coerce_s      	
+    offset 1373: D6                       setlocal2     	
+    offset 1374: 62 06                    getlocal      	6
+    offset 1376: 24 10                    pushbyte      	16
+    offset 1378: A0                       add           	
+    offset 1379: 73                       convert_i     	
+    offset 1380: 63 06                    setlocal      	6
+    offset 1382: 62 06                L0: getlocal      	6
+    offset 1384: 62 04                    getlocal      	4
+    offset 1386: 15 50 FF FF              iflt          	L1
+
+    offset 1390: D1                       getlocal1     	
+    offset 1391: 62 05                    getlocal      	5
+    offset 1393: 61 23                    setproperty   	:position
+    offset 1395: 5D 0E                    findpropstrict	:DumpMessage
+    offset 1397: D2                       getlocal2     	
+    offset 1398: 4F 0E 01                 callpropvoid  	:DumpMessage (1)
+    offset 1401: 47                       returnvoid    	
+    offset 1403: 0 Extras
+    offset 1404: 0 Traits Entries
+
+    offset 1404: 08 02 06 03 04 2C    function :Util::private:fillUp(:String, :int, :String)::String
+    offset 1410: maxStack:2 localCount:6 initScopeDepth:3 maxScopeDepth:4
+    offset 1410: D0                       getlocal0     	
+    offset 1411: 30                       pushscope     	
+    offset 1412: D2                       getlocal2     	
+    offset 1413: D1                       getlocal1     	
+    offset 1414: 66 22                    getproperty   	:length
+    offset 1416: A1                       subtract      	
+    offset 1417: 73                       convert_i     	
+    offset 1418: 63 04                    setlocal      	4
+    offset 1420: 2C 01                    pushstring    	""
+    offset 1422: 63 05                    setlocal      	5
+    offset 1424: 10 08 00 00              jump          	L0
+
+    offset 1428: 09                   L1: label         	
+    offset 1429: 62 05                    getlocal      	5
+    offset 1431: D3                       getlocal3     	
+    offset 1432: A0                       add           	
+    offset 1433: 85                       coerce_s      	
+    offset 1434: 63 05                    setlocal      	5
+    offset 1436: 62 04                L0: getlocal      	4
+    offset 1438: C1                       decrement_i   	
+    offset 1439: 2A                       dup           	
+    offset 1440: 73                       convert_i     	
+    offset 1441: 63 04                    setlocal      	4
+    offset 1443: 24 FF                    pushbyte      	-1
+    offset 1445: 17 EB FF FF              ifgt          	L1
+
+    offset 1449: 62 05                    getlocal      	5
+    offset 1451: D1                       getlocal1     	
+    offset 1452: A0                       add           	
+    offset 1453: 48                       returnvalue   	
+    offset 1455: 0 Extras
+    offset 1456: 0 Traits Entries
+
+    offset 1456: 09 01 01 04 05 06    function :Util:::Util():
+    offset 1462: maxStack:1 localCount:1 initScopeDepth:4 maxScopeDepth:5
+    offset 1462: D0                       getlocal0     	
+    offset 1463: 30                       pushscope     	
+    offset 1464: D0                       getlocal0     	
+    offset 1465: 49 00                    constructsuper	(0)
+    offset 1467: 47                       returnvoid    	
+    offset 1469: 0 Extras
+    offset 1470: 0 Traits Entries
+
+    offset 1470: 0A 02 01 01 03 0F    function script1::script1$init():
+    offset 1476: maxStack:2 localCount:1 initScopeDepth:1 maxScopeDepth:3
+    offset 1476: D0                       getlocal0     	
+    offset 1477: 30                       pushscope     	
+    offset 1478: 5D 2A                    findpropstrict	:Util
+    offset 1480: 60 08                    getlex        	:Object
+    offset 1482: 30                       pushscope     	
+    offset 1483: 60 08                    getlex        	:Object
+    offset 1485: 58 01                    newclass      	:Util
+    offset 1487: 1D                       popscope      	
+    offset 1488: 68 07                    initproperty  	:Util
+    offset 1490: 47                       returnvoid    	
+    offset 1492: 0 Extras
+    offset 1493: 0 Traits Entries
+
+  </DoABC2>
+  <!-- offset=2048 size=11 -->
+  <SymbolClass>
+    <Symbol idref='0' className='Main' />
+  </SymbolClass>
+  <!-- offset=2059 size=2 -->
+  <ShowFrame/>
+</swf>

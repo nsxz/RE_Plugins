@@ -1,0 +1,476 @@
+class
+ refid "Util"
+ instance QName(PackageNamespace(""), "Util")
+  extends QName(PackageNamespace(""), "Object")
+  flag SEALED
+  flag PROTECTEDNS
+  protectedns ProtectedNamespace("Util")
+  iinit
+   refid "Util/instance/init"
+   body
+    maxstack 1
+    localcount 1
+    initscopedepth 4
+    maxscopedepth 5
+    code
+     getlocal0
+     pushscope
+
+     getlocal0
+     constructsuper      0
+
+     returnvoid
+    end ; code
+   end ; body
+  end ; method
+ end ; instance
+ cinit
+  refid "Util/class/init"
+  body
+   maxstack 2
+   localcount 1
+   initscopedepth 3
+   maxscopedepth 4
+   code
+    getlocal0
+    pushscope
+
+    findproperty        QName(PrivateNamespace(null), "myTextBox")
+    findpropstrict      QName(PackageNamespace("flash.text"), "TextField")
+    constructprop       QName(PackageNamespace("flash.text"), "TextField"), 0
+    setproperty         QName(PrivateNamespace(null), "myTextBox")
+
+    findproperty        QName(PrivateNamespace(null), "init")
+    pushfalse
+    setproperty         QName(PrivateNamespace(null), "init")
+
+    returnvoid
+   end ; code
+  end ; body
+ end ; method
+ trait slot QName(PrivateNamespace(null), "myTextBox") slotid 1 type QName(PackageNamespace("flash.text"), "TextField") end
+ trait slot QName(PrivateNamespace(null), "init") slotid 2 type QName(PackageNamespace(""), "Boolean") value False() end
+ trait method QName(PackageNamespace(""), "doInit") flag FINAL dispid 3
+  method
+   refid "Util/class/doInit"
+   param QName(PackageNamespace("flash.display"), "Sprite")
+   returns QName(PackageNamespace(""), "void")
+   body
+    maxstack 2
+    localcount 3
+    initscopedepth 3
+    maxscopedepth 4
+    code
+     getlocal0
+     pushscope
+
+     findproperty        QName(PrivateNamespace(null), "init")
+     pushtrue
+     setproperty         QName(PrivateNamespace(null), "init")
+
+     getlex              QName(PrivateNamespace(null), "myTextBox")
+     pushshort           600
+     setproperty         QName(PackageNamespace(""), "width")
+
+     getlex              QName(PrivateNamespace(null), "myTextBox")
+     pushshort           600
+     setproperty         QName(PackageNamespace(""), "height")
+
+     getlex              QName(PrivateNamespace(null), "myTextBox")
+     pushtrue
+     setproperty         QName(PackageNamespace(""), "multiline")
+
+     getlex              QName(PrivateNamespace(null), "myTextBox")
+     pushtrue
+     setproperty         QName(PackageNamespace(""), "wordWrap")
+
+     getlex              QName(PrivateNamespace(null), "myTextBox")
+     pushtrue
+     setproperty         QName(PackageNamespace(""), "border")
+
+     findpropstrict      QName(PackageNamespace("flash.text"), "TextFormat")
+     constructprop       QName(PackageNamespace("flash.text"), "TextFormat"), 0
+     coerce              QName(PackageNamespace("flash.text"), "TextFormat")
+     setlocal2
+
+     getlocal2
+     pushstring          "Courier"
+     setproperty         QName(PackageNamespace(""), "font")
+
+     getlocal2
+     pushbyte            48
+     setproperty         QName(PackageNamespace(""), "size")
+
+     getlex              QName(PrivateNamespace(null), "myTextBox")
+     getlocal2
+     setproperty         QName(PackageNamespace(""), "defaultTextFormat")
+
+     getlocal1
+     getlex              QName(PrivateNamespace(null), "myTextBox")
+     callpropvoid        QName(PackageNamespace(""), "addChild"), 1
+
+     returnvoid
+    end ; code
+   end ; body
+  end ; method
+ end ; trait
+ trait method QName(PackageNamespace(""), "DumpMessage") flag FINAL dispid 4
+  method
+   refid "Util/class/DumpMessage"
+   param QName(PackageNamespace(""), "String")
+   returns QName(PackageNamespace(""), "void")
+   body
+    maxstack 3
+    localcount 2
+    initscopedepth 3
+    maxscopedepth 4
+    code
+     getlocal0
+     pushscope
+
+     getlex              QName(PrivateNamespace(null), "init")
+     iftrue              L8
+
+     findpropstrict      QName(PackageNamespace(""), "unescape")
+     getlocal1
+     callpropvoid        QName(PackageNamespace(""), "unescape"), 1
+
+     jump                L13
+
+L8:
+     getlex              QName(PrivateNamespace(null), "myTextBox")
+     getlocal1
+     pushstring          "\n"
+     add
+     setproperty         QName(PackageNamespace(""), "text")
+
+L13:
+     returnvoid
+    end ; code
+   end ; body
+  end ; method
+ end ; trait
+ trait method QName(PackageNamespace(""), "BA2Hex") flag FINAL dispid 5
+  method
+   refid "Util/class/BA2Hex"
+   param QName(PackageNamespace("flash.utils"), "ByteArray")
+   returns QName(PackageNamespace(""), "void")
+   body
+    maxstack 5
+    localcount 7
+    initscopedepth 3
+    maxscopedepth 4
+    code
+     getlocal0
+     pushscope
+
+     pushbyte            0
+     setlocal            6
+
+     pushstring          ""
+     setlocal2
+
+     getlocal1
+     getproperty         QName(PackageNamespace(""), "length")
+     convert_i
+     setlocal3
+
+     getlocal1
+     getproperty         QName(PackageNamespace(""), "position")
+     convert_u
+     setlocal            4
+
+     getlocal1
+     pushbyte            0
+     setproperty         QName(PackageNamespace(""), "position")
+
+     pushbyte            0
+     setlocal            5
+
+     jump                L38
+
+L20:
+     label
+     getlocal1
+     callproperty        QName(PackageNamespace(""), "readUnsignedByte"), 0
+     convert_i
+     setlocal            6
+
+     getlocal2
+     findpropstrict      QName(PrivateNamespace(null), "fillUp")
+     getlocal            6
+     pushbyte            16
+     callproperty        QName(Namespace("http://adobe.com/AS3/2006/builtin"), "toString"), 1
+     callproperty        QName(Namespace("http://adobe.com/AS3/2006/builtin"), "toUpperCase"), 0
+     pushbyte            2
+     pushstring          "0"
+     callproperty        QName(PrivateNamespace(null), "fillUp"), 3
+     add
+     coerce_s
+     setlocal2
+
+     inclocal_i          5
+L38:
+     getlocal            5
+     getlocal1
+     getproperty         QName(PackageNamespace(""), "length")
+     iflt                L20
+
+     getlocal1
+     getlocal            4
+     setproperty         QName(PackageNamespace(""), "position")
+
+     findpropstrict      QName(PackageNamespace(""), "DumpMessage")
+     getlocal2
+     callpropvoid        QName(PackageNamespace(""), "DumpMessage"), 1
+
+     returnvoid
+    end ; code
+   end ; body
+  end ; method
+ end ; trait
+ trait method QName(PackageNamespace(""), "DumpByteArray") flag FINAL dispid 6
+  method
+   refid "Util/class/DumpByteArray"
+   param QName(PackageNamespace("flash.utils"), "ByteArray")
+   returns QName(PackageNamespace(""), "void")
+   body
+    maxstack 5
+    localcount 11
+    initscopedepth 3
+    maxscopedepth 4
+    code
+     getlocal0
+     pushscope
+
+     pushbyte            0
+     setlocal            7
+
+     pushnull
+     coerce_s
+     setlocal            8
+
+     pushbyte            0
+     setlocal            9
+
+     pushbyte            0
+     setlocal            10
+
+     findpropstrict      QName(PrivateNamespace(null), "fillUp")
+     pushstring          "Offset"
+     pushbyte            8
+     pushstring          " "
+     callproperty        QName(PrivateNamespace(null), "fillUp"), 3
+     pushstring          "  00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F\n"
+     add
+     setlocal2
+
+     pushbyte            0
+     setlocal3
+
+     getlocal1
+     getproperty         QName(PackageNamespace(""), "length")
+     convert_i
+     setlocal            4
+
+     getlocal1
+     getproperty         QName(PackageNamespace(""), "position")
+     convert_u
+     setlocal            5
+
+     getlocal1
+     pushbyte            0
+     setproperty         QName(PackageNamespace(""), "position")
+
+     pushbyte            0
+     setlocal            6
+
+     jump                L126
+
+L35:
+     label
+     getlocal2
+     findpropstrict      QName(PrivateNamespace(null), "fillUp")
+     getlocal3
+     pushbyte            16
+     callproperty        QName(Namespace("http://adobe.com/AS3/2006/builtin"), "toString"), 1
+     callproperty        QName(Namespace("http://adobe.com/AS3/2006/builtin"), "toUpperCase"), 0
+     pushbyte            8
+     pushstring          "0"
+     callproperty        QName(PrivateNamespace(null), "fillUp"), 3
+     pushstring          "  "
+     add
+     add
+     coerce_s
+     setlocal2
+
+     getlex              QName(PackageNamespace(""), "Math")
+     pushbyte            16
+     getlocal1
+     getproperty         QName(PackageNamespace(""), "length")
+     getlocal1
+     getproperty         QName(PackageNamespace(""), "position")
+     subtract
+     callproperty        QName(PackageNamespace(""), "min"), 2
+     convert_i
+     setlocal            7
+
+     pushstring          ""
+     setlocal            8
+
+     pushbyte            0
+     setlocal            9
+
+     jump                L109
+
+L65:
+     label
+     getlocal            9
+     getlocal            7
+     ifnlt               L104
+
+     getlocal1
+     callproperty        QName(PackageNamespace(""), "readUnsignedByte"), 0
+     convert_i
+     setlocal            10
+
+     getlocal            8
+     getlocal            10
+     pushbyte            32
+     greaterequals
+     iffalse             L83
+
+     getlex              QName(PackageNamespace(""), "String")
+     getlocal            10
+     callproperty        QName(Namespace("http://adobe.com/AS3/2006/builtin"), "fromCharCode"), 1
+     coerce_a
+     jump                L85
+
+L83:
+     pushstring          "."
+     coerce_a
+L85:
+     add
+     coerce_s
+     setlocal            8
+
+     getlocal2
+     findpropstrict      QName(PrivateNamespace(null), "fillUp")
+     getlocal            10
+     pushbyte            16
+     callproperty        QName(Namespace("http://adobe.com/AS3/2006/builtin"), "toString"), 1
+     callproperty        QName(Namespace("http://adobe.com/AS3/2006/builtin"), "toUpperCase"), 0
+     pushbyte            2
+     pushstring          "0"
+     callproperty        QName(PrivateNamespace(null), "fillUp"), 3
+     pushstring          " "
+     add
+     add
+     coerce_s
+     setlocal2
+
+     inclocal_i          3
+     jump                L108
+
+L104:
+     getlocal2
+     pushstring          "   "
+     add
+     setlocal2
+
+L108:
+     inclocal_i          9
+L109:
+     getlocal            9
+     pushbyte            16
+     iflt                L65
+
+     getlocal2
+     pushstring          " "
+     getlocal            8
+     add
+     pushstring          "\n"
+     add
+     add
+     coerce_s
+     setlocal2
+
+     getlocal            6
+     pushbyte            16
+     add
+     convert_i
+     setlocal            6
+
+L126:
+     getlocal            6
+     getlocal            4
+     iflt                L35
+
+     getlocal1
+     getlocal            5
+     setproperty         QName(PackageNamespace(""), "position")
+
+     findpropstrict      QName(PackageNamespace(""), "DumpMessage")
+     getlocal2
+     callpropvoid        QName(PackageNamespace(""), "DumpMessage"), 1
+
+     returnvoid
+    end ; code
+   end ; body
+  end ; method
+ end ; trait
+ trait method QName(PrivateNamespace(null), "fillUp") flag FINAL dispid 7
+  method
+   refid "Util/class/Util/class/fillUp"
+   param QName(PackageNamespace(""), "String")
+   param QName(PackageNamespace(""), "int")
+   param QName(PackageNamespace(""), "String")
+   returns QName(PackageNamespace(""), "String")
+   body
+    maxstack 2
+    localcount 6
+    initscopedepth 3
+    maxscopedepth 4
+    code
+     getlocal0
+     pushscope
+
+     getlocal2
+     getlocal1
+     getproperty         QName(PackageNamespace(""), "length")
+     subtract
+     convert_i
+     setlocal            4
+
+     pushstring          ""
+     setlocal            5
+
+     jump                L17
+
+L11:
+     label
+     getlocal            5
+     getlocal3
+     add
+     coerce_s
+     setlocal            5
+
+L17:
+     getlocal            4
+     decrement_i
+     dup
+     convert_i
+     setlocal            4
+
+     pushbyte            255
+     ifgt                L11
+
+     getlocal            5
+     getlocal1
+     add
+     returnvalue
+    end ; code
+   end ; body
+  end ; method
+ end ; trait
+end ; class

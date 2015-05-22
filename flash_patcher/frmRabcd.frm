@@ -194,7 +194,6 @@ Begin VB.Form frmRabcd
       _ExtentX        =   16695
       _ExtentY        =   11377
       _Version        =   393217
-      Enabled         =   -1  'True
       ScrollBars      =   3
       TextRTF         =   $"frmRabcd.frx":0000
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -477,6 +476,7 @@ Private Sub cmdSave_Click()
             d = ReadFile(curFile)
             d = Replace(d, selli.Tag, rtf.Text)
             WriteFile curFile, d
+            selli.Tag = rtf.Text
         Else
             WriteFile curFile, rtf.Text
         End If
@@ -711,6 +711,8 @@ Sub loadMethods()
     Dim li As ListItem
     Dim tmp As String
     Dim i As Long
+    Dim pass As Long
+    
     'name, line , size, tag: body
     
     lv.ListItems.Clear
@@ -718,6 +720,8 @@ Sub loadMethods()
     lvFiltered.ListItems.Clear
     
     ma = "method" & vbLf & "    name "
+    
+scanAgain:
     a = InStr(rtf.Text, ma)
     Do While a > 0
         a = a + Len(ma)
@@ -731,11 +735,28 @@ Sub loadMethods()
         li.Tag = tmp
         a = InStr(b, rtf.Text, ma)
     Loop
+    pass = pass + 1
+    
+    If pass = 1 Then
+        ma = "method" & vbLf & "   refid"
+        GoTo scanAgain
+    End If
+    
+    If pass = 2 Then
+        ma = "iinit" & vbLf & "   refid"
+        GoTo scanAgain
+    End If
+    
+    If pass = 3 Then
+        ma = "cinit" & vbLf & "  refid"
+        GoTo scanAgain
+    End If
     
     If Len(txtsearch) > 0 Then txtsearch_Change
     
 End Sub
 
+'regular methods..
 '  trait method QName(PrivateNamespace("class_7"), "method_34") flag FINAL
 '   method
 '    name "method_34"
@@ -754,6 +775,10 @@ End Sub
 '   end ; method
 '  end ; trait
   
+'static methods..
+'  method
+'   refid "Util/class/doInit"
+
 
 
 Function CountOccurances(it, find) As Integer
