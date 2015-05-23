@@ -366,12 +366,12 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Dim li As ListItem
 Dim selFuncLi As ListItem
-Dim selLi As ListItem
+Dim selli As ListItem
 Dim ActiveFunction As CFunction
 
 Private Sub cmdBrowse_Click()
     Dim x As String
-    x = dlg.OpenDialog(AllFiles, , , Me.hWnd)
+    x = dlg.OpenDialog(AllFiles, , , Me.hwnd)
     If Len(x) = 0 Then Exit Sub
     txtswf = x
     cmdDecompile_Click
@@ -471,6 +471,10 @@ Private Sub Form_Load()
     'txtFlexBin = GetSetting("flashPatcher", "settings", "FlexBin", "D:\_Lilguys\flash tools\flex_sdk_4.1.0.16076\bin")
     'txtFlexBin = GetSetting("flashPatcher", "settings", "FlexBin", App.Path & "\swfdump4.1\bin")
     txtFlexBin = App.path & "\swfdump4.1\bin" 'now included...
+    'If FolderExists(App.path & "\swfdump4.6\bin") Then
+    '    txtFlexBin = App.path & "\swfdump4.6\bin" 'now included...
+    'End If
+    
     txtswf = GetSetting("flashPatcher", "settings", "lastSwf", "c:\bad.swf")
     
 End Sub
@@ -500,7 +504,7 @@ Private Sub lv_ItemClick(ByVal Item As MSComctlLib.ListItem)
     Dim obj As Object
     Dim bd As CBinaryData
     
-    Set selLi = Item
+    Set selli = Item
     Set obj = Item.Tag
     
     If TypeName(obj) = "CBinaryData" Then
@@ -539,11 +543,11 @@ Private Sub lv_ItemClick(ByVal Item As MSComctlLib.ListItem)
     
 End Sub
 
-Private Sub lv2_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub lv2_MouseDown(Button As Integer, Shift As Integer, x As Single, Y As Single)
     If Button = 2 Then PopupMenu mnuLv
 End Sub
 
-Private Sub lv_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub lv_MouseDown(Button As Integer, Shift As Integer, x As Single, Y As Single)
     If Button = 2 Then PopupMenu mnuLv
 End Sub
 
@@ -598,13 +602,13 @@ Public Sub lvFunc_ItemClick(ByVal Item As MSComctlLib.ListItem)
     
 End Sub
 
-Private Sub lvFunc_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub lvFunc_MouseUp(Button As Integer, Shift As Integer, x As Single, Y As Single)
     If Button = 2 Then PopupMenu mnuFunc
 End Sub
 
-Private Sub txtOut_OLEDragDrop(Data As DataObject, Effect As Long, Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub txtOut_OLEDragDrop(Data As DataObject, Effect As Long, Button As Integer, Shift As Integer, x As Single, Y As Single)
     On Error Resume Next
-    txtOut = Data.Files(1)
+    txtOut = Data.files(1)
 End Sub
 
 Private Sub mnuAbout_Click()
@@ -714,7 +718,7 @@ Private Sub mnuFindrefs_Click()
     Dim find As String
     On Error Resume Next
     
-    find = selLi.SubItems(2)
+    find = selli.SubItems(2)
     a = InStr(1, find, "(")
     If a > 0 Then find = Mid(find, 1, a - 1)
     
@@ -933,7 +937,7 @@ Private Sub mnuRemoveLike_Click()
     Dim find As String
     On Error Resume Next
     
-    find = selLi.SubItems(2)
+    find = selli.SubItems(2)
     a = InStr(1, find, "(")
     If a > 0 Then find = Mid(find, 1, a - 1)
     
@@ -975,7 +979,7 @@ Private Sub mnuStringPool_Click()
     frmStringPool.Visible = True
 End Sub
 
-Private Sub txtSearch_Change()
+Private Sub txtsearch_Change()
 
     If Len(txtsearch) = 0 Then
         lv2.Visible = False
@@ -1013,9 +1017,9 @@ Private Sub txtSearch_Change()
     
 End Sub
 
-Private Sub txtswf_OLEDragDrop(Data As DataObject, Effect As Long, Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub txtswf_OLEDragDrop(Data As DataObject, Effect As Long, Button As Integer, Shift As Integer, x As Single, Y As Single)
     On Error Resume Next
-    txtswf = Data.Files(1)
+    txtswf = Data.files(1)
 End Sub
 
 

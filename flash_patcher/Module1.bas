@@ -1,5 +1,5 @@
 Attribute VB_Name = "Module1"
-
+Public Declare Function LockWindowUpdate Lib "user32" (ByVal hwndLock As Long) As Long
 Private Declare Function GetShortPathName Lib "kernel32" Alias "GetShortPathNameA" (ByVal lpszLongPath As String, ByVal lpszShortPath As String, ByVal cchBuffer As Long) As Long
  
 Global p As New CParser
@@ -60,26 +60,132 @@ Function FileNameFromPath(fullpath) As String
     End If
 End Function
 
-Function GetFolderFiles(folder As String, Optional filter = "*.*", Optional retFullPath As Boolean = True) As String()
+'Function GetFolderFiles(folder As String, Optional filter = "*.*", Optional retFullPath As Boolean = True) As String()
+'   Dim fnames() As String
+'
+'   If Not FolderExists(folder) Then
+'        'returns empty array if fails
+'        GetFolderFiles = fnames()
+'        Exit Function
+'   End If
+'
+'   folder = IIf(Right(folder, 1) = "\", folder, folder & "\")
+'   'If Left(filter, 1) = "*" Then extension = Mid(filter, 2, Len(filter))
+'   'If Left(filter, 1) <> "." Then filter = "." & filter
+'
+'   fs = Dir(folder & filter, vbHidden Or vbNormal Or vbReadOnly Or vbSystem)
+'   While fs <> ""
+'     If fs <> "" Then push fnames(), IIf(retFullPath = True, folder & fs, fs)
+'     fs = Dir()
+'   Wend
+'
+'   GetFolderFiles = fnames()
+'End Function
+
+Function GetFolderFiles(folderPath As String, Optional filter As String = "*", Optional retFullPath As Boolean = True, Optional recursive As Boolean = False) As String()
    Dim fnames() As String
+   Dim fs As String
+   Dim folders() As String
+   Dim i As Integer
    
-   If Not FolderExists(folder) Then
+   If Not FolderExists(folderPath) Then
         'returns empty array if fails
         GetFolderFiles = fnames()
         Exit Function
    End If
    
-   folder = IIf(Right(folder, 1) = "\", folder, folder & "\")
-   'If Left(filter, 1) = "*" Then extension = Mid(filter, 2, Len(filter))
-   'If Left(filter, 1) <> "." Then filter = "." & filter
+   folderPath = IIf(Right(folderPath, 1) = "\", folderPath, folderPath & "\")
    
-   fs = Dir(folder & filter, vbHidden Or vbNormal Or vbReadOnly Or vbSystem)
+   fs = Dir(folderPath & filter, vbHidden Or vbNormal Or vbReadOnly Or vbSystem)
    While fs <> ""
-     If fs <> "" Then push fnames(), IIf(retFullPath = True, folder & fs, fs)
+     If fs <> "" Then push fnames(), IIf(retFullPath = True, folderPath & fs, fs)
      fs = Dir()
    Wend
    
+   If recursive Then
+        folders() = GetSubFolders(folderPath)
+        If Not AryIsEmpty(folders) Then
+            For i = 0 To UBound(folders)
+                FolderEngine folders(i), fnames(), filter
+            Next
+        End If
+        If Not retFullPath Then
+            For i = 0 To UBound(fnames)
+                fnames(i) = Replace(fnames(i), folderPath, Empty) 'make relative path from base
+            Next
+        End If
+    End If
+   
    GetFolderFiles = fnames()
+End Function
+
+Private Sub FolderEngine(fldrpath As String, ary() As String, Optional filter As String = "*")
+
+    Dim files() As String
+    Dim folders() As String
+    Dim i As Long
+     
+    files = GetFolderFiles(fldrpath, filter)
+    folders = GetSubFolders(fldrpath)
+        
+    If Not AryIsEmpty(files) Then
+        For i = 0 To UBound(files)
+            push ary, files(i)
+        Next
+    End If
+    
+    If Not AryIsEmpty(folders) Then
+        For i = 0 To UBound(folders)
+             FolderEngine folders(i), ary, filter
+        Next
+    End If
+    
+End Sub
+
+Function DeleteFolder(folderPath As String, Optional force As Boolean = True) As Boolean
+ On Error GoTo failed
+   Call delTree(folderPath, force)
+   RmDir folderPath
+   DeleteFolder = True
+ Exit Function
+failed:  DeleteFolder = False
+End Function
+
+Private Sub delTree(folderPath As String, Optional force As Boolean = True)
+   Dim sfi() As String, sfo() As String, i As Integer
+   sfi() = GetFolderFiles(folderPath)
+   sfo() = GetSubFolders(folderPath)
+   If Not AryIsEmpty(sfi) And force = True Then
+        For i = 0 To UBound(sfi)
+            DeleteFile sfi(i)
+        Next
+   End If
+   
+   If Not AryIsEmpty(sfo) And force = True Then
+        For i = 0 To UBound(sfo)
+            Call DeleteFolder(sfo(i), True)
+        Next
+   End If
+End Sub
+
+Function DeleteFile(fpath As String) As Boolean
+ On Error GoTo hadErr
+    
+    Dim attributes As VbFileAttribute
+
+    attributes = GetAttr(fpath)
+    If (attributes And vbReadOnly) Then
+        attributes = attributes - vbReadOnly
+        SetAttr fpath, attributes
+    End If
+
+    Kill fpath
+    DeleteFile = True
+    
+ Exit Function
+hadErr:
+'MsgBox "DeleteFile Failed" & vbCrLf & vbCrLf & fpath
+DeleteFile = False
 End Function
 
 Sub WriteFile(path As String, it As Variant)
@@ -212,8 +318,8 @@ End Sub
 Public Sub LV_ColumnSort(ListViewControl As ListView, Column As ColumnHeader)
      On Error Resume Next
     With ListViewControl
-       If .SortKey <> Column.Index - 1 Then
-             .SortKey = Column.Index - 1
+       If .SortKey <> Column.index - 1 Then
+             .SortKey = Column.index - 1
              .SortOrder = lvwAscending
        Else
              If .SortOrder = lvwAscending Then

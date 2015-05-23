@@ -1,36 +1,63 @@
 VERSION 5.00
 Begin VB.Form frmReplace 
+   BorderStyle     =   1  'Fixed Single
    Caption         =   "Find/Replace"
-   ClientHeight    =   2250
-   ClientLeft      =   60
-   ClientTop       =   345
-   ClientWidth     =   5370
+   ClientHeight    =   1980
+   ClientLeft      =   45
+   ClientTop       =   330
+   ClientWidth     =   5325
    LinkTopic       =   "Form3"
-   ScaleHeight     =   2250
-   ScaleWidth      =   5370
+   MaxButton       =   0   'False
+   MinButton       =   0   'False
+   ScaleHeight     =   1980
+   ScaleWidth      =   5325
    StartUpPosition =   2  'CenterScreen
+   Begin VB.CommandButton cmdFindAll 
+      Caption         =   "Find All"
+      Height          =   375
+      Left            =   3825
+      TabIndex        =   8
+      Top             =   945
+      Width           =   1335
+   End
+   Begin VB.ListBox List1 
+      BeginProperty Font 
+         Name            =   "Courier"
+         Size            =   9.75
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Height          =   2205
+      Left            =   5355
+      TabIndex        =   7
+      Top             =   0
+      Width           =   3975
+   End
    Begin VB.CommandButton cmdFindNext 
       Caption         =   "Find Next"
       Height          =   375
-      Left            =   3960
+      Left            =   2430
       TabIndex        =   6
-      Top             =   1350
+      Top             =   945
       Width           =   1335
    End
    Begin VB.CommandButton cmdFind 
       Caption         =   "Find First"
       Height          =   375
-      Left            =   3960
+      Left            =   990
       TabIndex        =   5
-      Top             =   900
+      Top             =   945
       Width           =   1335
    End
    Begin VB.CommandButton Command1 
       Caption         =   "Replace"
       Height          =   375
-      Left            =   3960
+      Left            =   3825
       TabIndex        =   4
-      Top             =   1800
+      Top             =   1485
       Width           =   1335
    End
    Begin VB.TextBox Text2 
@@ -109,6 +136,10 @@ Private Const HWND_TOPMOST = -1
 Private Const HWND_NOTOPMOST = -2
 Private Const SWP_SHOWWINDOW = &H40
 
+Private Declare Function SendMessage Lib "user32" Alias "SendMessageA" (ByVal hwnd As Long, ByVal wMsg As Long, ByVal wParam As Long, LParam As Any) As Long
+Private Const EM_GETFIRSTVISIBLELINE = &HCE
+Private Const EM_LINESCROLL = &HB6
+
 Dim selli As ListItem
 
 
@@ -117,17 +148,11 @@ Private Sub cmdfind_Click()
     
     On Error Resume Next
     
-     
-        f = Text1
-     
-    
+    f = Text1
     lastsearch = f
-    
+
     Dim compare As VbCompareMethod
-    
-     
-        compare = vbTextCompare
-    
+    compare = vbTextCompare
     
     x = InStr(1, active_object.Text, lastsearch, compare)
     If x > 0 Then
@@ -141,14 +166,74 @@ Private Sub cmdfind_Click()
 End Sub
 
 
+ 
+Public Sub cmdFindAll_Click()
+    
+    On Error Resume Next
+    Dim txt As String
+    Dim line As Long
+    Dim editorText As String
+    
+    If Me.Width < 10440 Then Me.Width = 10440
+    List1.Clear
+    f = Text1
+    
+    
+    Dim compare As VbCompareMethod
+    compare = vbTextCompare
+
+    lastIndex = 1
+    lastsearch = f
+    x = 1
+    
+    If Len(f) = 0 Then Exit Sub
+    
+    LockWindowUpdate active_object.hwnd
+    editorText = active_object.Text
+    Do While x > 0
+    
+        x = InStr(lastIndex, editorText, lastsearch, compare)
+    
+        If x + 2 = lastIndex Or x < 1 Or x >= Len(editorText) Then
+            Exit Do
+        Else
+            lastIndex = x + 2
+            active_object.SelStart = x - 1
+            active_object.SelLength = Len(lastsearch)
+            line = GetCurrentLine(active_object)
+            txt = Replace(Trim(GetLineText(active_object, line)), vbTab, Empty)
+            txt = Replace(txt, vbCrLf, Empty)
+            txt = Replace(txt, vbLf, Empty)
+            While InStr(txt, "  ") > 0
+                txt = Replace(txt, "  ", " ")
+            Wend
+            
+            List1.AddItem (line + 1) & ": " & txt
+            ScrollToLine active_object, line + 1
+             
+            
+        End If
+        
+    Loop
+    
+    LockWindowUpdate 0
+    
+    If List1.ListCount >= 0 Then
+        List1.Selected(0) = True
+        List1_Click
+    End If
+    
+    Me.Caption = List1.ListCount & " items found!"
+    
+End Sub
+ 
+
 Private Sub cmdFindNext_Click()
     
     On Error Resume Next
-    
-    
-        f = Text1
-    
-    
+
+    f = Text1
+
     If lastsearch <> f Then
         cmdfind_Click
         Exit Sub
@@ -160,11 +245,8 @@ Private Sub cmdFindNext_Click()
     End If
     
     Dim compare As VbCompareMethod
-    
+    compare = vbTextCompare
      
-        compare = vbTextCompare
-     
-    
     x = InStr(lastIndex, active_object.Text, lastsearch, compare)
     
     If x + 2 = lastIndex Or x < 1 Then
@@ -182,37 +264,19 @@ End Sub
 Private Sub Command1_Click()
     
     On Error Resume Next
-    
-    
-        f = Text1
-     
-    
-     
-        r = Text2
-     
+    f = Text1
+    r = Text2
     
     Dim compare As VbCompareMethod
-    
-     
-        compare = vbTextCompare
-     
-    
-    Dim curLine As Long
-    
-     
-        active_object.Text = Replace(active_object.Text, f, r, , , compare)
-     
-    
-     
-    
+    compare = vbTextCompare
+
+    active_object.Text = Replace(active_object.Text, f, r, , , compare)
+
 End Sub
 
 Public Sub LaunchReplaceForm(txtObj As RichTextBox)
     
     Set active_object = txtObj
-    
-     
-    
     Me.Show
     
 End Sub
@@ -244,3 +308,72 @@ Private Sub Form_Unload(Cancel As Integer)
 End Sub
 
  
+ Sub ScrollToLine(rtf As RichTextBox, Number As Long)
+    Dim curLine As Long, Shift As Long
+    curLine = SendMessage(rtf.hwnd, EM_GETFIRSTVISIBLELINE, 0&, ByVal 0&)
+    Shift = (Number - 1) - curLine
+    Call SendMessage(rtf.hwnd, EM_LINESCROLL, 0&, ByVal Shift)
+End Sub
+
+ Function GetCurrentLine(RichTextBox As RichTextBox) As Long
+    Dim CurrentLine As Long
+    Const EM_LINEFROMCHAR = &HC9
+    CurrentLine = SendMessage(RichTextBox.hwnd, EM_LINEFROMCHAR, -1, 0&)
+    GetCurrentLine = CurrentLine
+End Function
+
+Public Function GetTotalLines(RichTextBox As RichTextBox) As Long
+    Const EM_GETLINECOUNT = &HBA
+    GetTotalLines = SendMessage(RichTextBox.hwnd, EM_GETLINECOUNT, 0, 0&)
+End Function
+
+Public Function GetLineText(rtf As RichTextBox, line_index As Long) As String
+    Dim lnglength As Long, linestart As Long
+    Dim strbuffer As String
+    Const EM_GETLINE = &HC4
+    Const EM_LINELENGTH = &HC1
+    Const EM_LINEINDEX = &HBB
+    
+    linestart = SendMessage(rtf.hwnd, EM_LINEINDEX, line_index, 0&)
+    lnglength = SendMessage(rtf.hwnd, EM_LINELENGTH, linestart, 0)
+    strbuffer = Space(lnglength)
+    Call SendMessage(rtf.hwnd, EM_GETLINE, line_index, ByVal strbuffer)
+    
+    GetLineText = strbuffer
+    
+End Function
+
+Private Sub List1_Click()
+    On Error Resume Next
+    
+    Dim tmp As String
+    Dim line As Long
+    Dim index As Long
+    
+    index = ListSelIndex(List1)
+    
+    If index >= 0 Then
+        tmp = List1.List(index)
+        If InStr(1, tmp, ":") > 0 Then
+            line = CLng(Split(tmp, ":")(0))
+            ScrollToLine active_object, line
+        End If
+    End If
+End Sub
+
+Private Function ListSelIndex(lst As ListBox) As Long
+    
+    On Error GoTo hell
+    
+    For i = 0 To List1.ListCount
+        If List1.Selected(i) Then
+            ListSelIndex = i
+            Exit Function
+        End If
+    Next
+
+hell:
+    ListSelIndex = -1
+    
+End Function
+

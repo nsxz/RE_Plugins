@@ -12,6 +12,15 @@ Begin VB.Form frmRabcd
    ScaleWidth      =   15135
    StartUpPosition =   2  'CenterScreen
    Visible         =   0   'False
+   Begin VB.CommandButton cmdDelOrphans 
+      Caption         =   "del orphans"
+      Enabled         =   0   'False
+      Height          =   375
+      Left            =   12645
+      TabIndex        =   17
+      Top             =   45
+      Width           =   1680
+   End
    Begin MSComctlLib.ListView lvFiltered 
       Height          =   3210
       Left            =   630
@@ -194,6 +203,7 @@ Begin VB.Form frmRabcd
       _ExtentX        =   16695
       _ExtentY        =   11377
       _Version        =   393217
+      Enabled         =   -1  'True
       ScrollBars      =   3
       TextRTF         =   $"frmRabcd.frx":0000
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -315,6 +325,41 @@ Private Sub cmdBrowse_Click()
     cmdDissassemble_Click
 End Sub
 
+Private Sub cmdDelOrphans_Click()
+    
+    Dim pd As String
+    Dim f() As String
+    Dim ff() As String
+    
+    MsgBox "not yet..", vbInformation
+    Exit Sub
+    
+    a = InStr(rtf.Text, "= Orphan methods =")
+    If a < 1 Then Exit Sub
+    
+    tmp = Mid(rtf.Text, a)
+    tmp = Split(tmp, "#include")
+    pd = GetParentFolder(curFile)
+    For Each t In tmp
+        t = Replace(t, """", Empty)
+        t = Replace(t, vbLf, Empty)
+        t = Trim(t)
+        If FileExists(pd & "\" & t) Then Kill pd & "\" & t
+    Next
+    
+    rtf.Text = Mid(rtf.Text, 1, a) & vbLf & "end ; program"
+    
+    f() = GetSubFolders(pd)
+    For Each fd In f
+        ff() = GetFolderFiles(CStr(fd), , , True)
+        If AryIsEmpty(ff) Then DeleteFolder CStr(fd), True
+    Next
+    
+    cmdSave_Click
+    cmdDissassemble_Click
+        
+End Sub
+
 Private Sub cmdDissassemble_Click()
 
     Erase renames
@@ -333,6 +378,7 @@ Private Sub cmdDissassemble_Click()
     bn = FileNameFromPath(txtFile)
     pf = GetParentFolder(txtFile)
     txtMod = pf & "\mod_" & bn
+    Me.Caption = bn
     
     tmp() = GetFolderFiles(pf, "*.abc")
     
@@ -443,9 +489,9 @@ Public Function getChildren(n As Node) As Collection
     
     If n.Children > 0 Then
         Set nn = n.FirstSibling
-        c.Add tv.Nodes(n.Index)
+        c.Add tv.Nodes(n.index)
         For i = 1 To n.Children
-            c.Add tv.Nodes(n.Index + i)
+            c.Add tv.Nodes(n.index + i)
         Next
     End If
     
@@ -705,6 +751,13 @@ Private Sub tv_NodeClick(ByVal Node As MSComctlLib.Node)
         loadMethods
     End If
     
+    cmdDelOrphans.Enabled = CBool(InStr(Node.Text, ".main.asasm") > 0)
+    If cmdDelOrphans.Enabled Then
+        cmdDelOrphans.Enabled = CBool(InStr(rtf.Text, "= Orphan methods =") > 0)
+    End If
+    
+    
+    
 End Sub
 
 Sub loadMethods()
@@ -751,6 +804,12 @@ scanAgain:
         ma = "cinit" & vbLf & "  refid"
         GoTo scanAgain
     End If
+    
+    If pass = 4 Then
+        ma = "method" & vbLf & "    refid"
+        GoTo scanAgain
+    End If
+    
     
     If Len(txtsearch) > 0 Then txtsearch_Change
     
