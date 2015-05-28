@@ -422,6 +422,13 @@ BOOL CALLBACK MyDlgProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 							Entries[ret].enabled = true;
 							Setbreakpoint( Entries[ret].va ,  TY_ACTIVE, 0);
 						}
+						//breakpoint is a raw mem address, not a module rva
+						else if(!Entries[ret].enabled && strcmp(Entries[ret].dllName, "rawva")==0){
+							if(debug) Addtolist(0,0,"Bp in Main");
+							Entries[ret].va = Entries[ret].rvaBpx;
+							Entries[ret].enabled = true;
+							Setbreakpoint( Entries[ret].va ,  TY_ACTIVE, 0);
+						}
 						//we have not calculated the va
 						else if(!Entries[ret].enabled && Entries[ret].va == 0){
 							if(debug) Addtolist(0,0,"Not enabled va 0");

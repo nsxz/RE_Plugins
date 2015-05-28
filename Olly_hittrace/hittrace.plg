@@ -1,0 +1,38 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: hittrace - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "d:\temp\RSP1318.tmp" with contents
+[
+/nologo /Zp1 /ML /W3 /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FR /Fp"hittrace.pch" /YX /J /FD /c 
+"D:\_code\RE_Plugins\Olly_hittrace\hittrace.cpp"
+]
+Creating command line "cl.exe @d:\temp\RSP1318.tmp" 
+Creating temporary file "d:\temp\RSP1319.tmp" with contents
+[
+kernel32.lib user32.lib gdi32.lib ./OLLYDBG.LIB Comdlg32.lib /nologo /subsystem:windows /dll /incremental:no /pdb:"hittrace.pdb" /debug /machine:I386 /def:".\hittrace.def" /out:"./hittrace.dll" /implib:"hittrace.lib" /pdbtype:sept 
+.\hittrace.obj
+.\BpxList.res
+.\ollydbg.lib
+]
+Creating command line "link.exe @d:\temp\RSP1319.tmp"
+<h3>Output Window</h3>
+Compiling...
+hittrace.cpp
+D:\_code\RE_Plugins\Olly_hittrace\hittrace.cpp(374) : warning C4018: '<' : signed/unsigned mismatch
+D:\_code\RE_Plugins\Olly_hittrace\hittrace.cpp(514) : warning C4018: '<=' : signed/unsigned mismatch
+D:\_code\RE_Plugins\Olly_hittrace\hittrace.cpp(822) : warning C4018: '==' : signed/unsigned mismatch
+Linking...
+   Creating library hittrace.lib and object hittrace.exp
+
+
+
+<h3>Results</h3>
+hittrace.dll - 0 error(s), 3 warning(s)
+</pre>
+</body>
+</html>

@@ -75,6 +75,9 @@ so you could use
    main  10f9  a eax    to get an ascii dump of the decoded string
    main  10f9  h8 eax   to get an 8 char hexdump of the decoded data
 
-
+5-30-15:
+if you need to set a hit trace point for an address not in a module,
+or dont want to bother with figuring out its rva, you can use "rawva"
+as the module name and just enter the va in the rva field..
 
 
