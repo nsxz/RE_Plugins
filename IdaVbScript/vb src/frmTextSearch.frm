@@ -197,6 +197,10 @@ Function DoSearch(Optional parameter = "") As Long
         
 End Function
 
+Function DoUndefine(offset As Long)
+    Undefine offset
+End Function
+
 Function AddComments(Optional comment = "")
 
     If Len(comment) > 0 Then
@@ -233,6 +237,7 @@ Sub Command1_Click()
         li.SubItems(1) = GetAsmCode(addr)
         li.SubItems(2) = Get_Comment(addr)
         addr = addr + InstructionLength(addr)
+        If addr = laddr Then Exit Do
         'MsgBox "2: new addr " & Hex(addr) & " last addr: " & Hex(laddr)
         'If laddr = addr Then Exit Do
         DoEvents

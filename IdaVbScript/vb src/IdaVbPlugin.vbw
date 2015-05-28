@@ -26,4 +26,4 @@ CPEOffsets = 0, 0, 483, 445,
 frmTextSearch = 154, 154, 826, 568, , 58, 15, 774, 567, C
 CFunction = 110, 110, 803, 590, C
 frmExtractComments = 176, 176, 869, 656, , 132, 132, 825, 612, C
-frmSourceCommenter = 66, 66, 675, 480, C, 44, 44, 799, 594, C
+frmSourceCommenter = 66, 66, 675, 480, , 44, 44, 799, 594, C
