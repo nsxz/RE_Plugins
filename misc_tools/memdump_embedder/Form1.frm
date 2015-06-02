@@ -71,48 +71,113 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+Dim dummy As String
+
 Private Sub Command1_Click()
-    Dim dummy As String
+
+    Dim files() As String
+    Dim f
+    Dim success As Long
     
     On Error GoTo hell
     
-    If Not FileExists(Text1) Then Exit Sub
-    
-    dummy = App.path & "\dummy.dll"
-    If Not FileExists(dummy) Then
-        MsgBox "Dummy dll not found?", vbCritical
-        Exit Sub
-    End If
-    
-    If Not isHex(Text2) Then
-        MsgBox "Base address not valid hex string", vbCritical
-        Exit Sub
-    End If
-    
     List1.Clear
+    
+    If Not FileExists(Text1) And Not FolderExists(Text1) Then
+        MsgBox "You must specify a file or folder to process...", vbCritical
+        Exit Sub
+    End If
+    
+    If FileExists(Text1) Then
+
+        If Len(Text2) = 0 Then
+            Text2 = BaseFromFileName(Text1)
+            If Len(Text2) = 0 Then
+                List1.AddItem "Could not extract base address from file name. "
+                List1.AddItem "  Skipping " & FileNameFromPath(f)
+                Exit Sub
+            End If
+        End If
+            
+        If Not isHex(Text2) Then
+            MsgBox "Base address not valid hex string", vbCritical
+            Exit Sub
+        End If
+    
+        WrapFile Text1, True
+    
+    Else
+        
+        files() = GetFolderFiles(Text1, ".mem")
+        
+        For Each f In files
+            Text2 = BaseFromFileName(f)
+            If Len(Text2) = 0 Then
+                List1.AddItem "Could not extract base address from file name. "
+                List1.AddItem "  Skipping " & FileNameFromPath(f)
+            Else
+                If Not WrapFile(f, False) Then
+                    List1.AddItem "Failed to wrap file " & FileNameFromPath(f)
+                Else
+                   List1.AddItem "Success: " & FileNameFromPath(f)
+                   inc success
+                End If
+            End If
+         Next
+         
+         List1.AddItem success & "/" & (UBound(files) + 1) & " files processed successfully."
+    
+    End If
+    
+    Exit Sub
+hell:
+    
+    List1.AddItem "Error:: " & Err.Description
+    
+End Sub
+    
+Sub inc(ByRef v As Long)
+    v = v + 1
+End Sub
+
+Function WrapFile(pth, Optional displayInfo As Boolean = True) As Boolean
+    
+    On Error GoTo hell
+    
+    If displayInfo Then List1.Clear
     
     Dim b() As Byte
     Dim f As Long
     
+    If Not FileExists(pth) Then Exit Function
+    If FileLen(pth) < 2 Then Exit Function
+    
     f = FreeFile
-    Open Text1 For Binary As f
+    Open pth For Binary As f
     ReDim b(LOF(f) + 1)
     Get f, , b()
     Close f
     
     Dim outFile As String
-    outFile = GetParentFolder(Text1) & "\" & Text2 & "_dmp.dll"
-    List1.AddItem "Generating " & outFile
+    outFile = GetParentFolder(pth) & "\" & Text2 & "_dmp.dll"
+    If displayInfo Then List1.AddItem "Generating " & outFile
     
     If FileExists(outFile) Then
-        List1.AddItem "Deleting old file.."
+        If displayInfo Then List1.AddItem "Deleting old file.."
         Kill outFile
     End If
     
-    List1.AddItem "Copying dummy.dll to new file.."
+    If b(0) = Asc("M") And b(1) = Asc("Z") Then
+        If displayInfo Then List1.AddItem "Memory dump already has a MZ header, just copying"
+        FileCopy pth, outFile
+        WrapFile = True
+        Exit Function
+    End If
+        
+    If displayInfo Then List1.AddItem "Copying dummy.dll to new file.."
     FileCopy dummy, outFile
     
-    List1.AddItem "Appending memory dump.."
+    If displayInfo Then List1.AddItem "Appending memory dump.."
     f = FreeFile
     Open outFile For Binary As f
     Put f, LOF(f) + 1, b() 'append the memory dump to dummy header..
@@ -126,7 +191,7 @@ Private Sub Command1_Click()
     'imgbase = C..124
     'vsz/rsz = B..1f0/1f8
     
-    List1.AddItem "Fixing up PE attributes for easy disassembly.."
+    If displayInfo Then List1.AddItem "Fixing up PE attributes for easy disassembly.."
     Put f, &H140 + 1, CLng(LOF(f)) + 1 'image size
     Put f, &H124 + 1, CLng("&h" & Text2)  'image base
     Put f, &H1F0 + 1, CLng(UBound(b)) + 1 'virtual size
@@ -134,37 +199,101 @@ Private Sub Command1_Click()
     
     Close f
     
-    List1.AddItem "Complete!"
-    List1.AddItem ""
-    List1.AddItem "You can manually set entry point it is 0 for now.."
+    If displayInfo Then List1.AddItem "Complete!"
+    If displayInfo Then List1.AddItem ""
+    If displayInfo Then List1.AddItem "You can manually set entry point it is 0 for now.."
     
-    Exit Sub
+    WrapFile = True
+    
+    Exit Function
     
 hell:
-    List1.AddItem "Error! " & Err.Description
+    List1.AddItem "Error processing " & pth
+    List1.AddItem "   Description:" & Err.Description
     
+End Function
+
+
+
+Private Sub Form_Load()
+
+
+    dummy = App.path & "\dummy.dll"
+    
+    If Not FileExists(dummy) Then
+        List1.AddItem "Dummy dll not found? must be in app.path"
+        Command1.Enabled = False
+    End If
+    
+End Sub
+
+Private Sub Form_Resize()
+    On Error Resume Next
+    With List1
+        .Width = Me.Width - .Left - 200
+        .Height = Me.Height - .Top - 200
+    End With
 End Sub
 
 Private Sub Text1_OLEDragDrop(Data As DataObject, Effect As Long, Button As Integer, Shift As Integer, x As Single, Y As Single)
-    Text1 = Data.Files(1)
-    a = InStrRev(Text1, "_")
-    If a > 0 Then
-        Text2 = Mid(Text1, a + 1)
-        Text2 = Replace(Text2, ".mem", "")
-        If Not isHex(Text2) Then Text2 = Empty
-    End If
+    Text1 = Data.files(1)
+    If FileExists(Text1) Then Text2 = BaseFromFileName(Text1) Else Text2 = Empty
 End Sub
+
+Function BaseFromFileName(x) As String
+    a = InStrRev(x, "_")
+    If a > 0 Then
+        BaseFromFileName = Mid(x, a + 1)
+        BaseFromFileName = Replace(BaseFromFileName, ".mem", "")
+        If Not isHex(BaseFromFileName) Then BaseFromFileName = Empty
+    End If
+End Function
 
 Function isHex(x) As Boolean
     On Error GoTo hell
-    Dim l As Long
-    l = Hex(CLng("&h" & x))
+    Hex CLng("&h" & x)
     isHex = True
     Exit Function
 hell:
 End Function
 
 
+
+Function FileNameFromPath(fullpath) As String
+    If InStr(fullpath, "\") > 0 Then
+        tmp = Split(fullpath, "\")
+        FileNameFromPath = CStr(tmp(UBound(tmp)))
+    End If
+End Function
+
+
+Function GetFolderFiles(folder, Optional filter = ".*", Optional retFullPath As Boolean = True) As String()
+   Dim fnames() As String
+   
+   If Not FolderExists(folder) Then
+        'returns empty array if fails
+        GetFolderFiles = fnames()
+        Exit Function
+   End If
+   
+   folder = IIf(Right(folder, 1) = "\", folder, folder & "\")
+   If Left(filter, 1) = "*" Then extension = Mid(filter, 2, Len(filter))
+   If Left(filter, 1) <> "." Then filter = "." & filter
+   
+   fs = Dir(folder & "*" & filter, vbHidden Or vbNormal Or vbReadOnly Or vbSystem)
+   While fs <> ""
+     If fs <> "" Then push fnames(), IIf(retFullPath = True, folder & fs, fs)
+     fs = Dir()
+   Wend
+   
+   GetFolderFiles = fnames()
+End Function
+
+Function FolderExists(path) As Boolean
+  If Len(path) = 0 Then Exit Function
+  If Dir(path, vbDirectory) <> "" Then FolderExists = True _
+  Else FolderExists = False
+End Function
 
 Function FileExists(path) As Boolean
   If Len(path) = 0 Then Exit Function
@@ -173,6 +302,15 @@ Function FileExists(path) As Boolean
 End Function
 
 
+
+Sub push(ary, value) 'this modifies parent ary object
+    On Error GoTo init
+    x = UBound(ary) '<-throws Error If Not initalized
+    ReDim Preserve ary(UBound(ary) + 1)
+    ary(UBound(ary)) = value
+    Exit Sub
+init:     ReDim ary(0): ary(0) = value
+End Sub
 
 Function GetParentFolder(path) As String
     tmp = Split(path, "\")
