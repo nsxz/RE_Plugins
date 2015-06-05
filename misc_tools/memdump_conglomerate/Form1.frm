@@ -58,7 +58,29 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Dim dummy As String
 Dim sects As Collection 'of CSection
+Dim lowestBase As Double
 
+'https://support.microsoft.com/en-us/kb/189323
+Private Const OFFSET_4 = 4294967296#
+Private Const MAXINT_4 = 2147483647
+
+Function UnsignedToLong(Value As Double) As Long
+  If Value < 0 Or Value >= OFFSET_4 Then Error 6 ' Overflow
+  If Value <= MAXINT_4 Then
+    UnsignedToLong = Value
+  Else
+    UnsignedToLong = Value - OFFSET_4
+  End If
+End Function
+
+Function LongToUnsigned(Value As Long) As Double
+  If Value < 0 Then
+    LongToUnsigned = Value + OFFSET_4
+  Else
+    LongToUnsigned = Value
+  End If
+End Function
+      
 Private Sub Command1_Click()
 
     Dim files() As String
@@ -96,6 +118,20 @@ Private Sub Command1_Click()
      
     files() = GetFolderFiles(Text1, ".mem")
     
+    Dim tmp As Double
+    lowestBase = OFFSET_4 'max unsigned long..
+    
+    For Each f In files
+        sBase = BaseFromFileName(f)
+        If Len(sBase) > 0 Then
+            tmp = LongToUnsigned(CLng("&h" & sBase))
+            If tmp < lowestBase Then lowestBase = tmp
+        End If
+    Next
+     
+    lowestBase = lowestBase - &H1000 'for MZ and headers
+    Put fOut, &H124 + 1, UnsignedToLong(lowestBase)  'image base
+     
     For Each f In files
         sBase = BaseFromFileName(f)
         If Len(sBase) = 0 Then
@@ -150,10 +186,13 @@ Function AppendFile(pth, hOutFile As Long, baseAddr As Long)
     
     List1.AddItem "Appending: " & FileNameFromPath(pth)
     
+    Dim adjustedBase As Double
+    adjustedBase = LongToUnsigned(baseAddr) - lowestBase
+    
     c.nameSec = "s" & sects.Count + 1
     c.index = sects.Count + 1
     c.PointerToRawData = LOF(hOutFile)
-    c.VirtualAddress = baseAddr
+    c.VirtualAddress = UnsignedToLong(adjustedBase)
  
     Put hOutFile, LOF(hOutFile) + 1, b() 'append the memory dump to dummy header..
     
@@ -180,8 +219,7 @@ End Function
 
 
 Private Sub Form_Load()
-
-
+    
     dummy = App.path & "\dummy.dll"
     
     If Not FileExists(dummy) Then
@@ -267,13 +305,13 @@ End Function
 
 
 
-Sub push(ary, value) 'this modifies parent ary object
+Sub push(ary, Value) 'this modifies parent ary object
     On Error GoTo init
     x = UBound(ary) '<-throws Error If Not initalized
     ReDim Preserve ary(UBound(ary) + 1)
-    ary(UBound(ary)) = value
+    ary(UBound(ary)) = Value
     Exit Sub
-init:     ReDim ary(0): ary(0) = value
+init:     ReDim ary(0): ary(0) = Value
 End Sub
 
 Function GetParentFolder(path) As String

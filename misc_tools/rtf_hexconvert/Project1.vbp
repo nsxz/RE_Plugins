@@ -1,11 +1,14 @@
 Type=Exe
-Form=Form1.frm
 Reference=*\G{00020430-0000-0000-C000-000000000046}#2.0#0#C:\WINDOWS\system32\stdole2.tlb#OLE Automation
-Class=CSection; CSection.cls
-Module=Module1; Module1.bas
+Reference=*\G{3F4DACA7-160D-11D2-A8E9-00104B365C9F}#5.5#0#C:\WINDOWS\system32\vbscript.dll\3#Microsoft VBScript Regular Expressions 5.5
+Object={9A143468-B450-48DD-930D-925078198E4D}#1.1#0; hexed.ocx
+Object={831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0; MSCOMCTL.OCX
+Form=Form1.frm
 IconForm="Form1"
 Startup="Form1"
-ExeName32="embedder.exe"
+HelpFile=""
+Title="Project1"
+ExeName32="rtf_hexconvert.exe"
 Command32=""
 Name="Project1"
 HelpContextID="0"
@@ -31,9 +34,10 @@ Unattended=0
 Retained=0
 ThreadPerObject=0
 MaxNumberOfThreads=1
+DebugStartupOption=0
 
 [MS Transaction Server]
 AutoRefresh=1
 
 [fastBuild]
-fullPath=D:\_code\RE_Plugins\misc_tools\memdump_conglomerate\embedder.exe
+fullPath=D:\_code\RE_Plugins\misc_tools\rtf_hexconvert\rtf_hexconvert.exe
