@@ -1,0 +1,8 @@
+
+rabcdasm gui: snapshot button to backup script at current state
+              comment/uncomment block 
+              find must select word instance.
+              find form resizable..
+              right click remove function
+             
+swfdump ui: only loads first abc block?

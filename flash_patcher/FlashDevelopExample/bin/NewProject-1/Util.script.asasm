@@ -1,0 +1,44 @@
+script ; 0
+ sinit
+  name ""
+  refid "Util/init"
+  body
+   maxstack 2
+   localcount 1
+   initscopedepth 1
+   maxscopedepth 3
+   code
+    getlocal0
+    pushscope
+
+    debugfile           "D:\\_code\\RE_Plugins\\flash_patcher\\FlashDevelopExample\\src;;Util.as"
+    debugline           8
+    findpropstrict      Multiname("Util", [PackageNamespace("")])
+    findpropstrict      QName(PackageNamespace(""), "Object")
+    getproperty         QName(PackageNamespace(""), "Object")
+    pushscope
+
+    findpropstrict      QName(PackageNamespace(""), "Object")
+    getproperty         QName(PackageNamespace(""), "Object")
+    newclass            "Util"
+    popscope
+    initproperty        QName(PackageNamespace(""), "Util")
+
+    debugfile           "D:\\_code\\RE_Plugins\\flash_patcher\\FlashDevelopExample\\src;;Util.as"
+    debugline           6
+    returnvoid
+   end ; code
+  end ; body
+ end ; method
+ trait class QName(PackageNamespace(""), "Util") flag METADATA
+  #include "Util.class.asasm"
+  metadata "__go_to_ctor_definition_help"
+   item "file" "D:\\_code\\RE_Plugins\\flash_patcher\\FlashDevelopExample\\src\\Util.as"
+   item "pos" "322"
+  end ; metadata
+  metadata "__go_to_definition_help"
+   item "file" "D:\\_code\\RE_Plugins\\flash_patcher\\FlashDevelopExample\\src\\Util.as"
+   item "pos" "118"
+  end ; metadata
+ end ; trait
+end ; script

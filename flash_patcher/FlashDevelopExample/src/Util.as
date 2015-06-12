@@ -9,6 +9,8 @@ package
 	{
 		private static var myTextBox:TextField = new TextField(); 
 		private static var init:Boolean = false;
+		private static var cnt:int = 0;
+		public static var ignoreX:int = 0;
 		
 		public function Util() {
 			
@@ -32,12 +34,17 @@ package
 		
 		public static function DumpMessage(message:String):void
 		{
+			cnt++;
+			if (ignoreX != 0) {
+					if (cnt <= ignoreX) return;
+			}
+			
 			if (!init)
 			{
 				unescape(message);  //assume flash monitor is hooking this...
 			} 
 			else{
-				myTextBox.text = message+"\n"; //for visual display
+				myTextBox.text += cnt.toString() + ":\n-------------------------------------\n" + message + "\n\n"; //for visual display
 			}
 		}
 

@@ -1,0 +1,715 @@
+class
+ refid "Util"
+ instance QName(PackageNamespace(""), "Util")
+  extends QName(PackageNamespace(""), "Object")
+  flag SEALED
+  flag PROTECTEDNS
+  protectedns ProtectedNamespace("Util")
+  iinit
+   name "Util/Util"
+   refid "Util/instance/init"
+   body
+    maxstack 1
+    localcount 1
+    initscopedepth 4
+    maxscopedepth 5
+    code
+     debugfile           "D:\\_code\\RE_Plugins\\flash_patcher\\FlashDevelopExample\\src;;Util.as"
+     debugline           15
+     getlocal0
+     pushscope
+
+     debugline           15
+     getlocal0
+     constructsuper      0
+
+     debugline           17
+     returnvoid
+    end ; code
+   end ; body
+  end ; method
+ end ; instance
+ cinit
+  name ""
+  refid "Util/class/init"
+  body
+   maxstack 2
+   localcount 1
+   initscopedepth 3
+   maxscopedepth 4
+   code
+    getlocal0
+    pushscope
+
+    debug               1, "myTextBox", 0, 10
+    findproperty        QName(PrivateNamespace("Util"), "myTextBox")
+    findpropstrict      QName(PackageNamespace("flash.text"), "TextField")
+    constructprop       QName(PackageNamespace("flash.text"), "TextField"), 0
+    setproperty         QName(PrivateNamespace("Util"), "myTextBox")
+
+    debug               1, "init", 1, 11
+    findproperty        QName(PrivateNamespace("Util"), "init")
+    pushfalse
+    setproperty         QName(PrivateNamespace("Util"), "init")
+
+    debug               1, "cnt", 2, 12
+    findproperty        QName(PrivateNamespace("Util"), "cnt")
+    pushbyte            0
+    setproperty         QName(PrivateNamespace("Util"), "cnt")
+
+    debug               1, "ignoreX", 3, 13
+    findproperty        QName(PackageNamespace(""), "ignoreX")
+    pushbyte            0
+    setproperty         QName(PackageNamespace(""), "ignoreX")
+
+    returnvoid
+   end ; code
+  end ; body
+ end ; method
+ trait slot QName(PrivateNamespace("Util"), "myTextBox") flag METADATA slotid 1 type QName(PackageNamespace("flash.text"), "TextField")
+  metadata "__go_to_definition_help"
+   item "file" "D:\\_code\\RE_Plugins\\flash_patcher\\FlashDevelopExample\\src\\Util.as"
+   item "pos" "147"
+  end ; metadata
+ end ; trait
+ trait slot QName(PrivateNamespace("Util"), "init") flag METADATA slotid 2 type QName(PackageNamespace(""), "Boolean") value False()
+  metadata "__go_to_definition_help"
+   item "file" "D:\\_code\\RE_Plugins\\flash_patcher\\FlashDevelopExample\\src\\Util.as"
+   item "pos" "208"
+  end ; metadata
+ end ; trait
+ trait slot QName(PrivateNamespace("Util"), "cnt") flag METADATA slotid 3 type QName(PackageNamespace(""), "int") value Integer(0)
+  metadata "__go_to_definition_help"
+   item "file" "D:\\_code\\RE_Plugins\\flash_patcher\\FlashDevelopExample\\src\\Util.as"
+   item "pos" "251"
+  end ; metadata
+ end ; trait
+ trait slot QName(PackageNamespace(""), "ignoreX") flag METADATA slotid 4 type QName(PackageNamespace(""), "int") value Integer(0)
+  metadata "__go_to_definition_help"
+   item "file" "D:\\_code\\RE_Plugins\\flash_patcher\\FlashDevelopExample\\src\\Util.as"
+   item "pos" "284"
+  end ; metadata
+ end ; trait
+ trait method QName(PackageNamespace(""), "doInit") flag FINAL flag METADATA dispid 3
+  method
+   name "Util/doInit"
+   refid "Util/class/doInit"
+   param QName(PackageNamespace("flash.display"), "Sprite")
+   returns QName(PackageNamespace(""), "void")
+   flag HAS_PARAM_NAMES
+   paramname "s"
+   body
+    maxstack 2
+    localcount 3
+    initscopedepth 3
+    maxscopedepth 4
+    code
+     debugfile           "D:\\_code\\RE_Plugins\\flash_patcher\\FlashDevelopExample\\src;;Util.as"
+     debugline           19
+     getlocal0
+     pushscope
+
+     debug               1, "s", 0, 19
+     debug               1, "f", 1, 27
+     debugline           20
+     findproperty        QName(PrivateNamespace("Util"), "init")
+     pushtrue
+     setproperty         QName(PrivateNamespace("Util"), "init")
+
+     debugline           21
+     findpropstrict      QName(PrivateNamespace("Util"), "myTextBox")
+     getproperty         QName(PrivateNamespace("Util"), "myTextBox")
+     pushshort           600
+     setproperty         QName(PackageNamespace(""), "width")
+
+     debugline           22
+     findpropstrict      QName(PrivateNamespace("Util"), "myTextBox")
+     getproperty         QName(PrivateNamespace("Util"), "myTextBox")
+     pushshort           600
+     setproperty         QName(PackageNamespace(""), "height")
+
+     debugline           23
+     findpropstrict      QName(PrivateNamespace("Util"), "myTextBox")
+     getproperty         QName(PrivateNamespace("Util"), "myTextBox")
+     pushtrue
+     setproperty         QName(PackageNamespace(""), "multiline")
+
+     debugline           24
+     findpropstrict      QName(PrivateNamespace("Util"), "myTextBox")
+     getproperty         QName(PrivateNamespace("Util"), "myTextBox")
+     pushtrue
+     setproperty         QName(PackageNamespace(""), "wordWrap")
+
+     debugline           25
+     findpropstrict      QName(PrivateNamespace("Util"), "myTextBox")
+     getproperty         QName(PrivateNamespace("Util"), "myTextBox")
+     pushtrue
+     setproperty         QName(PackageNamespace(""), "border")
+
+     debugline           27
+     findpropstrict      QName(PackageNamespace("flash.text"), "TextFormat")
+     constructprop       QName(PackageNamespace("flash.text"), "TextFormat"), 0
+     coerce              QName(PackageNamespace("flash.text"), "TextFormat")
+     setlocal2
+
+     debugline           28
+     getlocal2
+     pushstring          "Courier"
+     setproperty         QName(PackageNamespace(""), "font")
+
+     debugline           29
+     getlocal2
+     pushbyte            48
+     setproperty         QName(PackageNamespace(""), "size")
+
+     debugline           30
+     findpropstrict      QName(PrivateNamespace("Util"), "myTextBox")
+     getproperty         QName(PrivateNamespace("Util"), "myTextBox")
+     getlocal2
+     setproperty         QName(PackageNamespace(""), "defaultTextFormat")
+
+     debugline           32
+     getlocal1
+     findpropstrict      QName(PrivateNamespace("Util"), "myTextBox")
+     getproperty         QName(PrivateNamespace("Util"), "myTextBox")
+     callproperty        QName(PackageNamespace(""), "addChild"), 1
+     pop
+     debugline           33
+     returnvoid
+    end ; code
+   end ; body
+  end ; method
+  metadata "__go_to_definition_help"
+   item "file" "D:\\_code\\RE_Plugins\\flash_patcher\\FlashDevelopExample\\src\\Util.as"
+   item "pos" "367"
+  end ; metadata
+ end ; trait
+ trait method QName(PackageNamespace(""), "DumpMessage") flag FINAL flag METADATA dispid 4
+  method
+   name "Util/DumpMessage"
+   refid "Util/class/DumpMessage"
+   param QName(PackageNamespace(""), "String")
+   returns QName(PackageNamespace(""), "void")
+   flag HAS_PARAM_NAMES
+   paramname "message"
+   body
+    maxstack 4
+    localcount 4
+    initscopedepth 3
+    maxscopedepth 4
+    code
+     debugfile           "D:\\_code\\RE_Plugins\\flash_patcher\\FlashDevelopExample\\src;;Util.as"
+     debugline           35
+     getlocal0
+     pushscope
+
+     debug               1, "message", 0, 35
+     debugline           37
+     findpropstrict      QName(PrivateNamespace("Util"), "cnt")
+     dup
+     setlocal2
+
+     getproperty         QName(PrivateNamespace("Util"), "cnt")
+     increment_i
+     setlocal3
+
+     getlocal2
+     getlocal3
+     setproperty         QName(PrivateNamespace("Util"), "cnt")
+
+     kill                3
+     kill                2
+     debugline           38
+     findpropstrict      QName(PackageNamespace(""), "ignoreX")
+     getproperty         QName(PackageNamespace(""), "ignoreX")
+     pushbyte            0
+     ifeq                L29
+
+     debugline           39
+     findpropstrict      QName(PrivateNamespace("Util"), "cnt")
+     getproperty         QName(PrivateNamespace("Util"), "cnt")
+     findpropstrict      QName(PackageNamespace(""), "ignoreX")
+     getproperty         QName(PackageNamespace(""), "ignoreX")
+     ifnle               L29
+
+     returnvoid
+
+L29:
+     debugline           42
+     findpropstrict      QName(PrivateNamespace("Util"), "init")
+     getproperty         QName(PrivateNamespace("Util"), "init")
+     not
+     iffalse             L40
+
+     debugline           44
+     findpropstrict      QName(PackageNamespace(""), "unescape")
+     getlocal1
+     callproperty        QName(PackageNamespace(""), "unescape"), 1
+     pop
+     jump                L57
+
+L40:
+     debugline           47
+     findpropstrict      QName(PrivateNamespace("Util"), "myTextBox")
+     getproperty         QName(PrivateNamespace("Util"), "myTextBox")
+     findpropstrict      QName(PrivateNamespace("Util"), "myTextBox")
+     getproperty         QName(PrivateNamespace("Util"), "myTextBox")
+     getproperty         QName(PackageNamespace(""), "text")
+     findpropstrict      QName(PrivateNamespace("Util"), "cnt")
+     getproperty         QName(PrivateNamespace("Util"), "cnt")
+     callproperty        QName(Namespace("http://adobe.com/AS3/2006/builtin"), "toString"), 0
+     pushstring          ":\n-------------------------------------\n"
+     add
+     getlocal1
+     add
+     pushstring          "\n\n"
+     add
+     add
+     setproperty         QName(PackageNamespace(""), "text")
+
+L57:
+     debugline           49
+     returnvoid
+    end ; code
+   end ; body
+  end ; method
+  metadata "__go_to_definition_help"
+   item "file" "D:\\_code\\RE_Plugins\\flash_patcher\\FlashDevelopExample\\src\\Util.as"
+   item "pos" "776"
+  end ; metadata
+ end ; trait
+ trait method QName(PackageNamespace(""), "BA2Hex") flag FINAL flag METADATA dispid 5
+  method
+   name "Util/BA2Hex"
+   refid "Util/class/BA2Hex"
+   param QName(PackageNamespace("flash.utils"), "ByteArray")
+   returns QName(PackageNamespace(""), "void")
+   flag HAS_PARAM_NAMES
+   paramname "buffer"
+   body
+    maxstack 5
+    localcount 7
+    initscopedepth 3
+    maxscopedepth 4
+    code
+     debugfile           "D:\\_code\\RE_Plugins\\flash_patcher\\FlashDevelopExample\\src;;Util.as"
+     debugline           51
+     getlocal0
+     pushscope
+
+     pushbyte            0
+     setlocal            6
+
+     debug               1, "buffer", 0, 51
+     debug               1, "lines", 1, 53
+     debug               1, "l", 2, 54
+     debug               1, "origPosition", 3, 55
+     debug               1, "j", 4, 58
+     pushstring          ""
+     debugline           53
+     coerce_s
+     setlocal2
+
+     debugline           54
+     getlocal1
+     getproperty         QName(PackageNamespace(""), "length")
+     convert_i
+     setlocal3
+
+     debugline           55
+     getlocal1
+     getproperty         QName(PackageNamespace(""), "position")
+     convert_u
+     setlocal            4
+
+     debugline           56
+     getlocal1
+     pushbyte            0
+     setproperty         QName(PackageNamespace(""), "position")
+
+     debugline           58
+     pushbyte            0
+     convert_i
+     setlocal            5
+
+     jump                L59
+
+L34:
+     label
+     debug               1, "value", 5, 60
+     debugline           60
+     getlocal1
+     callproperty        QName(PackageNamespace(""), "readUnsignedByte"), 0
+     convert_i
+     setlocal            6
+
+     debugline           61
+     getlocal2
+     findpropstrict      QName(PrivateNamespace("Util"), "fillUp")
+     getlocal            6
+     pushbyte            16
+     callproperty        QName(Namespace("http://adobe.com/AS3/2006/builtin"), "toString"), 1
+     callproperty        QName(Namespace("http://adobe.com/AS3/2006/builtin"), "toUpperCase"), 0
+     pushbyte            2
+     pushstring          "0"
+     callproperty        QName(PrivateNamespace("Util"), "fillUp"), 3
+     add
+     coerce_s
+     setlocal2
+
+     debugline           58
+     getlocal            5
+     increment_i
+     convert_i
+     setlocal            5
+
+L59:
+     getlocal            5
+     getlocal1
+     getproperty         QName(PackageNamespace(""), "length")
+     iflt                L34
+
+     debugline           64
+     getlocal1
+     getlocal            4
+     setproperty         QName(PackageNamespace(""), "position")
+
+     debugline           65
+     findpropstrict      QName(PackageNamespace(""), "DumpMessage")
+     getlocal2
+     callproperty        QName(PackageNamespace(""), "DumpMessage"), 1
+     pop
+     debugline           66
+     returnvoid
+    end ; code
+   end ; body
+  end ; method
+  metadata "__go_to_definition_help"
+   item "file" "D:\\_code\\RE_Plugins\\flash_patcher\\FlashDevelopExample\\src\\Util.as"
+   item "pos" "1148"
+  end ; metadata
+ end ; trait
+ trait method QName(PackageNamespace(""), "DumpByteArray") flag FINAL flag METADATA dispid 6
+  method
+   name "Util/DumpByteArray"
+   refid "Util/class/DumpByteArray"
+   param QName(PackageNamespace("flash.utils"), "ByteArray")
+   returns QName(PackageNamespace(""), "void")
+   flag HAS_PARAM_NAMES
+   paramname "buffer"
+   body
+    maxstack 5
+    localcount 11
+    initscopedepth 3
+    maxscopedepth 4
+    code
+     debugfile           "D:\\_code\\RE_Plugins\\flash_patcher\\FlashDevelopExample\\src;;Util.as"
+     debugline           67
+     getlocal0
+     pushscope
+
+     pushbyte            0
+     setlocal            7
+
+     pushnull
+     coerce_s
+     setlocal            8
+
+     pushbyte            0
+     setlocal            9
+
+     pushbyte            0
+     setlocal            10
+
+     debug               1, "buffer", 0, 67
+     debug               1, "lines", 1, 69
+     debug               1, "offset", 2, 70
+     debug               1, "l", 3, 71
+     debug               1, "origPosition", 4, 72
+     debug               1, "i", 5, 75
+     debugline           69
+     findpropstrict      QName(PrivateNamespace("Util"), "fillUp")
+     pushstring          "Offset"
+     pushbyte            8
+     pushstring          " "
+     callproperty        QName(PrivateNamespace("Util"), "fillUp"), 3
+     pushstring          "  00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F\n"
+     add
+     coerce_s
+     setlocal2
+
+     debugline           70
+     pushbyte            0
+     convert_i
+     setlocal3
+
+     debugline           71
+     getlocal1
+     getproperty         QName(PackageNamespace(""), "length")
+     convert_i
+     setlocal            4
+
+     debugline           72
+     getlocal1
+     getproperty         QName(PackageNamespace(""), "position")
+     convert_u
+     setlocal            5
+
+     debugline           73
+     getlocal1
+     pushbyte            0
+     setproperty         QName(PackageNamespace(""), "position")
+
+     debugline           75
+     pushbyte            0
+     convert_i
+     setlocal            6
+
+     jump                L171
+
+L52:
+     label
+     debug               1, "line_max", 6, 78
+     debug               1, "ascii_line", 7, 79
+     debug               1, "j", 8, 81
+     debugline           77
+     getlocal2
+     findpropstrict      QName(PrivateNamespace("Util"), "fillUp")
+     getlocal3
+     pushbyte            16
+     callproperty        QName(Namespace("http://adobe.com/AS3/2006/builtin"), "toString"), 1
+     callproperty        QName(Namespace("http://adobe.com/AS3/2006/builtin"), "toUpperCase"), 0
+     pushbyte            8
+     pushstring          "0"
+     callproperty        QName(PrivateNamespace("Util"), "fillUp"), 3
+     pushstring          "  "
+     add
+     add
+     coerce_s
+     setlocal2
+
+     debugline           78
+     findpropstrict      QName(PackageNamespace(""), "Math")
+     getproperty         QName(PackageNamespace(""), "Math")
+     pushbyte            16
+     getlocal1
+     getproperty         QName(PackageNamespace(""), "length")
+     getlocal1
+     getproperty         QName(PackageNamespace(""), "position")
+     subtract
+     callproperty        QName(PackageNamespace(""), "min"), 2
+     convert_i
+     setlocal            7
+
+     pushstring          ""
+     debugline           79
+     coerce_s
+     setlocal            8
+
+     debugline           81
+     pushbyte            0
+     convert_i
+     setlocal            9
+
+     jump                L152
+
+L92:
+     label
+     debugline           83
+     getlocal            9
+     getlocal            7
+     ifnlt               L141
+
+     debug               1, "value", 9, 85
+     debugline           85
+     getlocal1
+     callproperty        QName(PackageNamespace(""), "readUnsignedByte"), 0
+     convert_i
+     setlocal            10
+
+     debugline           86
+     getlocal            8
+     getlocal            10
+     pushbyte            32
+     greaterequals
+     iffalse             L115
+
+     findpropstrict      QName(PackageNamespace(""), "String")
+     getproperty         QName(PackageNamespace(""), "String")
+     getlocal            10
+     callproperty        QName(Namespace("http://adobe.com/AS3/2006/builtin"), "fromCharCode"), 1
+     coerce_a
+     jump                L117
+
+L115:
+     pushstring          "."
+     coerce_a
+L117:
+     add
+     coerce_s
+     setlocal            8
+
+     debugline           87
+     getlocal2
+     findpropstrict      QName(PrivateNamespace("Util"), "fillUp")
+     getlocal            10
+     pushbyte            16
+     callproperty        QName(Namespace("http://adobe.com/AS3/2006/builtin"), "toString"), 1
+     callproperty        QName(Namespace("http://adobe.com/AS3/2006/builtin"), "toUpperCase"), 0
+     pushbyte            2
+     pushstring          "0"
+     callproperty        QName(PrivateNamespace("Util"), "fillUp"), 3
+     pushstring          " "
+     add
+     add
+     coerce_s
+     setlocal2
+
+     debugline           88
+     getlocal3
+     increment_i
+     convert_i
+     setlocal3
+
+     jump                L147
+
+L141:
+     debugline           92
+     getlocal2
+     pushstring          "   "
+     add
+     coerce_s
+     setlocal2
+
+L147:
+     debugline           81
+     getlocal            9
+     increment_i
+     convert_i
+     setlocal            9
+
+L152:
+     getlocal            9
+     pushbyte            16
+     iflt                L92
+
+     debugline           95
+     getlocal2
+     pushstring          " "
+     getlocal            8
+     add
+     pushstring          "\n"
+     add
+     add
+     coerce_s
+     setlocal2
+
+     debugline           75
+     getlocal            6
+     pushbyte            16
+     add
+     convert_i
+     setlocal            6
+
+L171:
+     getlocal            6
+     getlocal            4
+     iflt                L52
+
+     debugline           98
+     getlocal1
+     getlocal            5
+     setproperty         QName(PackageNamespace(""), "position")
+
+     debugline           99
+     findpropstrict      QName(PackageNamespace(""), "DumpMessage")
+     getlocal2
+     callproperty        QName(PackageNamespace(""), "DumpMessage"), 1
+     pop
+     debugline           100
+     returnvoid
+    end ; code
+   end ; body
+  end ; method
+  metadata "__go_to_definition_help"
+   item "file" "D:\\_code\\RE_Plugins\\flash_patcher\\FlashDevelopExample\\src\\Util.as"
+   item "pos" "1568"
+  end ; metadata
+ end ; trait
+ trait method QName(PrivateNamespace("Util"), "fillUp") flag FINAL flag METADATA dispid 7
+  method
+   name "Util/private:fillUp"
+   refid "Util/class/Util/class/fillUp"
+   param QName(PackageNamespace(""), "String")
+   param QName(PackageNamespace(""), "int")
+   param QName(PackageNamespace(""), "String")
+   returns QName(PackageNamespace(""), "String")
+   flag HAS_PARAM_NAMES
+   paramname "value"
+   paramname "count"
+   paramname "fillWith"
+   body
+    maxstack 2
+    localcount 6
+    initscopedepth 3
+    maxscopedepth 4
+    code
+     debugfile           "D:\\_code\\RE_Plugins\\flash_patcher\\FlashDevelopExample\\src;;Util.as"
+     debugline           102
+     getlocal0
+     pushscope
+
+     debug               1, "value", 0, 102
+     debug               1, "count", 1, 102
+     debug               1, "fillWith", 2, 102
+     debug               1, "l", 3, 104
+     debug               1, "ret", 4, 105
+     debugline           104
+     getlocal2
+     getlocal1
+     getproperty         QName(PackageNamespace(""), "length")
+     subtract
+     convert_i
+     setlocal            4
+
+     pushstring          ""
+     debugline           105
+     coerce_s
+     setlocal            5
+
+     jump                L28
+
+L21:
+     label
+     debugline           107
+     getlocal            5
+     getlocal3
+     add
+     coerce_s
+     setlocal            5
+
+L28:
+     debugline           106
+     getlocal            4
+     decrement_i
+     dup
+     convert_i
+     setlocal            4
+
+     pushbyte            255
+     ifgt                L21
+
+     debugline           108
+     getlocal            5
+     getlocal1
+     add
+     returnvalue
+    end ; code
+   end ; body
+  end ; method
+  metadata "__go_to_definition_help"
+   item "file" "D:\\_code\\RE_Plugins\\flash_patcher\\FlashDevelopExample\\src\\Util.as"
+   item "pos" "2536"
+  end ; metadata
+ end ; trait
+end ; class

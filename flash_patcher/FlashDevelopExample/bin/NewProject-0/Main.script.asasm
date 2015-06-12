@@ -1,5 +1,6 @@
 script ; 0
  sinit
+  name ""
   refid "Main/init"
   body
    maxstack 2
@@ -10,26 +11,35 @@ script ; 0
     getlocal0
     pushscope
 
+    debugfile           "D:\\_code\\RE_Plugins\\flash_patcher\\FlashDevelopExample\\src;;Main.as"
+    debugline           10
     getscopeobject      0
-    getlex              QName(PackageNamespace(""), "Object")
+    findpropstrict      QName(PackageNamespace(""), "Object")
+    getproperty         QName(PackageNamespace(""), "Object")
     pushscope
 
-    getlex              QName(PackageNamespace("flash.events"), "EventDispatcher")
+    findpropstrict      QName(PackageNamespace("flash.events"), "EventDispatcher")
+    getproperty         QName(PackageNamespace("flash.events"), "EventDispatcher")
     pushscope
 
-    getlex              QName(PackageNamespace("flash.display"), "DisplayObject")
+    findpropstrict      QName(PackageNamespace("flash.display"), "DisplayObject")
+    getproperty         QName(PackageNamespace("flash.display"), "DisplayObject")
     pushscope
 
-    getlex              QName(PackageNamespace("flash.display"), "InteractiveObject")
+    findpropstrict      QName(PackageNamespace("flash.display"), "InteractiveObject")
+    getproperty         QName(PackageNamespace("flash.display"), "InteractiveObject")
     pushscope
 
-    getlex              QName(PackageNamespace("flash.display"), "DisplayObjectContainer")
+    findpropstrict      QName(PackageNamespace("flash.display"), "DisplayObjectContainer")
+    getproperty         QName(PackageNamespace("flash.display"), "DisplayObjectContainer")
     pushscope
 
-    getlex              QName(PackageNamespace("flash.display"), "Sprite")
+    findpropstrict      QName(PackageNamespace("flash.display"), "Sprite")
+    getproperty         QName(PackageNamespace("flash.display"), "Sprite")
     pushscope
 
-    getlex              QName(PackageNamespace("flash.display"), "Sprite")
+    findpropstrict      QName(PackageNamespace("flash.display"), "Sprite")
+    getproperty         QName(PackageNamespace("flash.display"), "Sprite")
     newclass            "Main"
     popscope
     popscope
@@ -39,11 +49,21 @@ script ; 0
     popscope
     initproperty        QName(PackageNamespace(""), "Main")
 
+    debugfile           "D:\\_code\\RE_Plugins\\flash_patcher\\FlashDevelopExample\\src;;Main.as"
+    debugline           6
     returnvoid
    end ; code
   end ; body
  end ; method
- trait class QName(PackageNamespace(""), "Main") slotid 1
+ trait class QName(PackageNamespace(""), "Main") flag METADATA slotid 1
   #include "Main.class.asasm"
+  metadata "__go_to_ctor_definition_help"
+   item "file" "D:\\_code\\RE_Plugins\\flash_patcher\\FlashDevelopExample\\src\\Main.as"
+   item "pos" "198"
+  end ; metadata
+  metadata "__go_to_definition_help"
+   item "file" "D:\\_code\\RE_Plugins\\flash_patcher\\FlashDevelopExample\\src\\Main.as"
+   item "pos" "152"
+  end ; metadata
  end ; trait
 end ; script

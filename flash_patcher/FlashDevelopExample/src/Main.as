@@ -16,7 +16,9 @@ package
 			Util.doInit(this);
 			var s:String = "my test";
 			s = unescape(s);
+			Util.ignoreX = 1;
             Util.DumpMessage(s);
+			Util.DumpMessage("message 2!");
 			
 			
 		}
