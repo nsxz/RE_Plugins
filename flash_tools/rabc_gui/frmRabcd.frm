@@ -11,7 +11,6 @@ Begin VB.Form frmRabcd
    ScaleHeight     =   9465
    ScaleWidth      =   15135
    StartUpPosition =   2  'CenterScreen
-   Visible         =   0   'False
    Begin VB.CommandButton cmdDelOrphans 
       Caption         =   "del orphans"
       Enabled         =   0   'False
@@ -203,7 +202,6 @@ Begin VB.Form frmRabcd
       _ExtentX        =   16695
       _ExtentY        =   11377
       _Version        =   393217
-      Enabled         =   -1  'True
       ScrollBars      =   3
       TextRTF         =   $"frmRabcd.frx":0000
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
