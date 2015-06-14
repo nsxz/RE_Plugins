@@ -2,8 +2,7 @@ Attribute VB_Name = "Module1"
 Public Declare Function LockWindowUpdate Lib "user32" (ByVal hwndLock As Long) As Long
 Private Declare Function GetShortPathName Lib "kernel32" Alias "GetShortPathNameA" (ByVal lpszLongPath As String, ByVal lpszShortPath As String, ByVal cchBuffer As Long) As Long
  
-'Global p As New CParser
-Global dlg As New clsCmnDlg2
+Global dlg As New clsCmnDlg
 
 Function FileExists(path As String) As Boolean
   On Error GoTo hell

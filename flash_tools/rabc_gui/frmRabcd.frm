@@ -2,7 +2,7 @@ VERSION 5.00
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Object = "{3B7C8863-D78F-101B-B9B5-04021C009402}#1.2#0"; "RICHTX32.OCX"
 Begin VB.Form frmRabcd 
-   Caption         =   "Form2"
+   Caption         =   "RABC Tools UI"
    ClientHeight    =   9465
    ClientLeft      =   165
    ClientTop       =   450
@@ -11,19 +11,10 @@ Begin VB.Form frmRabcd
    ScaleHeight     =   9465
    ScaleWidth      =   15135
    StartUpPosition =   2  'CenterScreen
-   Begin VB.CommandButton cmdDelOrphans 
-      Caption         =   "del orphans"
-      Enabled         =   0   'False
-      Height          =   375
-      Left            =   12645
-      TabIndex        =   17
-      Top             =   45
-      Width           =   1680
-   End
    Begin MSComctlLib.ListView lvFiltered 
       Height          =   3210
       Left            =   630
-      TabIndex        =   16
+      TabIndex        =   15
       Top             =   5535
       Visible         =   0   'False
       Width           =   4020
@@ -64,17 +55,9 @@ Begin VB.Form frmRabcd
       Caption         =   "Find"
       Height          =   375
       Left            =   8730
-      TabIndex        =   15
+      TabIndex        =   14
       Top             =   540
       Width           =   1365
-   End
-   Begin VB.CommandButton cmdRenameMap 
-      Caption         =   "copy rename map"
-      Height          =   330
-      Left            =   10710
-      TabIndex        =   14
-      Top             =   90
-      Width           =   1680
    End
    Begin VB.TextBox txtsearch 
       Height          =   285
@@ -202,6 +185,7 @@ Begin VB.Form frmRabcd
       _ExtentX        =   16695
       _ExtentY        =   11377
       _Version        =   393217
+      HideSelection   =   0   'False
       ScrollBars      =   3
       TextRTF         =   $"frmRabcd.frx":0000
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -277,6 +261,27 @@ Begin VB.Form frmRabcd
       Top             =   90
       Width           =   420
    End
+   Begin VB.Menu mnuTools 
+      Caption         =   "Tools"
+      Begin VB.Menu mnuCommentBlock 
+         Caption         =   "Comment Block"
+      End
+      Begin VB.Menu mnuUncommentBlock 
+         Caption         =   "UnComment Block"
+      End
+      Begin VB.Menu mnuDeleteComments 
+         Caption         =   "Strip Commented Blocks"
+      End
+      Begin VB.Menu cmdRenameMap 
+         Caption         =   "Copy Rename Map"
+      End
+      Begin VB.Menu mnuBackUpCur 
+         Caption         =   "Backup Cur File"
+      End
+      Begin VB.Menu cmdDelOrphans 
+         Caption         =   "Delete Orphans"
+      End
+   End
    Begin VB.Menu mnuPopup 
       Caption         =   "mnuPopup"
       Begin VB.Menu mnuRename 
@@ -302,12 +307,39 @@ Dim isDirty As Boolean
 Dim selli As ListItem
 Dim renames() As String
 
-Private Declare Function SendMessage Lib "user32" Alias "SendMessageA" (ByVal hwnd As Long, ByVal wMsg As Long, ByVal wParam As Long, LParam As Any) As Long
+Private Declare Function SendMessage Lib "user32" Alias "SendMessageA" (ByVal hwnd As Long, ByVal wMsg As Long, ByVal wParam As Long, lParam As Any) As Long
 Private Const EM_GETFIRSTVISIBLELINE = &HCE
 Private Const EM_LINESCROLL = &HB6
 
 
 'todo: bug - if disasm folder already exists, rabcdasm will not overwrite files so delete directory so not stale
+
+Private Sub mnuBackUpCur_Click()
+    
+    On Error GoTo hell
+    Dim i As Long, n As String, pf As String
+    
+    If Not FileExists(curFile) Then Exit Sub
+    
+    pf = GetParentFolder(curFile)
+    pf = GetParentFolder(pf) & "rabc_bak"
+    If Not FolderExists(pf) Then MkDir pf
+    pf = pf & "\"
+    
+    fn = FileNameFromPath(curFile)
+    
+    Do
+        i = i + 1
+        n = pf & "\" & fn & ".bak" & i
+    Loop While FileExists(n)
+        
+    FileCopy curFile, n
+    Me.Caption = "Backup saved as: " & n
+    
+    Exit Sub
+hell:
+    MsgBox Err.Description, vbExclamation
+End Sub
 
 Public Sub LoadFile(pth As String)
     txtFile = pth
@@ -537,6 +569,60 @@ Private Sub lvFiltered_ItemClick(ByVal Item As MSComctlLib.ListItem)
     Dim li As ListItem
     Set li = Item.Tag
     lv_ItemClick li
+End Sub
+
+
+
+Private Sub mnuCommentBlock_Click()
+    x = rtf.SelText
+    If Len(x) = 0 Then Exit Sub
+    tmp = Split(x, vbLf)
+    For i = 0 To UBound(tmp)
+        tmp(i) = ";" & tmp(i)
+    Next
+    rtf.SelText = Join(tmp, vbLf)
+End Sub
+
+Private Sub mnuDeleteComments_Click()
+    
+    If rtf.SelLength = 0 Then
+        x = rtf.Text
+    Else
+        x = rtf.SelText
+    End If
+    
+    If Len(x) = 0 Then Exit Sub
+    
+    Dim ret()
+    tmp = Split(x, vbLf)
+    For i = 0 To UBound(tmp)
+        If VBA.Left(Trim(tmp(i)), 1) = ";" Then
+            DoEvents
+        Else
+            push ret, tmp(i)
+        End If
+    Next
+    
+    If rtf.SelLength = 0 Then
+        rtf.Text = Join(ret, vbLf)
+    Else
+        rtf.SelText = Join(ret, vbLf)
+    End If
+    
+ 
+    
+End Sub
+
+Private Sub mnuUncommentBlock_Click()
+    x = rtf.SelText
+    If Len(x) = 0 Then Exit Sub
+    tmp = Split(x, vbLf)
+    For i = 0 To UBound(tmp)
+        If VBA.Left(tmp(i), 1) = ";" Then
+            If Len(tmp(i)) = 0 Then tmp(i) = Empty Else tmp(i) = Mid(tmp(i), 2)
+        End If
+    Next
+    rtf.SelText = Join(tmp, vbLf)
 End Sub
 
 Private Sub txtsearch_Change()

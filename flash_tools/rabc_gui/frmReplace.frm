@@ -1,14 +1,11 @@
 VERSION 5.00
 Begin VB.Form frmReplace 
-   BorderStyle     =   1  'Fixed Single
    Caption         =   "Find/Replace"
    ClientHeight    =   2265
-   ClientLeft      =   45
-   ClientTop       =   330
+   ClientLeft      =   60
+   ClientTop       =   345
    ClientWidth     =   11550
    LinkTopic       =   "Form3"
-   MaxButton       =   0   'False
-   MinButton       =   0   'False
    ScaleHeight     =   2265
    ScaleWidth      =   11550
    StartUpPosition =   2  'CenterScreen
@@ -136,7 +133,7 @@ Private Const HWND_TOPMOST = -1
 Private Const HWND_NOTOPMOST = -2
 Private Const SWP_SHOWWINDOW = &H40
 
-Private Declare Function SendMessage Lib "user32" Alias "SendMessageA" (ByVal hwnd As Long, ByVal wMsg As Long, ByVal wParam As Long, LParam As Any) As Long
+Private Declare Function SendMessage Lib "user32" Alias "SendMessageA" (ByVal hwnd As Long, ByVal wMsg As Long, ByVal wParam As Long, lParam As Any) As Long
 Private Const EM_GETFIRSTVISIBLELINE = &HCE
 Private Const EM_LINESCROLL = &HB6
 
@@ -150,7 +147,8 @@ Private Sub cmdfind_Click()
     
     f = Text1
     lastsearch = f
-
+    Me.Caption = "Find / Replace"
+    
     Dim compare As VbCompareMethod
     compare = vbTextCompare
     
@@ -177,7 +175,6 @@ Public Sub cmdFindAll_Click()
     If Me.Width < 10440 Then Me.Width = 10440
     List1.Clear
     f = Text1
-    
     
     Dim compare As VbCompareMethod
     compare = vbTextCompare
@@ -233,14 +230,15 @@ Private Sub cmdFindNext_Click()
     On Error Resume Next
 
     f = Text1
-
+    Me.Caption = "Find / Replace"
+     
     If lastsearch <> f Then
         cmdfind_Click
         Exit Sub
     End If
     
     If lastIndex >= Len(active_object.Text) Then
-        MsgBox "Reached End of text no more matches", vbInformation
+        Me.Caption = "Reached End of text no more matches"
         Exit Sub
     End If
     
@@ -250,7 +248,7 @@ Private Sub cmdFindNext_Click()
     x = InStr(lastIndex, active_object.Text, lastsearch, compare)
     
     If x + 2 = lastIndex Or x < 1 Then
-        MsgBox "No more matches found", vbInformation
+        Me.Caption = "No more matches found"
         Exit Sub
     Else
         lastIndex = x + 2
@@ -285,12 +283,17 @@ End Sub
 
 
 Private Sub Form_Load()
-    Me.Icon = Form1.Icon
     'FormPos Me, False
     SetWindowPos Me.hwnd, HWND_TOPMOST, Me.Left / 15, Me.Top / 15, Me.Width / 15, Me.Height / 15, SWP_SHOWWINDOW
     'Text1 = GetMySetting("lastFind")
     'Text2 = GetMySetting("lastReplace")
     'If GetMySetting("wholeText", "1") = "1" Then Option1.Value = True Else Option2.Value = True
+End Sub
+
+Private Sub Form_Resize()
+    On Error Resume Next
+    List1.Width = Me.Width - List1.Left - 200
+    List1.Height = Me.Height - List1.Top - 400
 End Sub
 
 'Private Sub Form_Resize()
@@ -359,6 +362,7 @@ Private Sub List1_Click()
             ScrollToLine active_object, line
         End If
     End If
+    
 End Sub
 
 Private Function ListSelIndex(lst As ListBox) As Long
