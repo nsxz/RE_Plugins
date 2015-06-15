@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
-Object = "{3B7C8863-D78F-101B-B9B5-04021C009402}#1.2#0"; "RICHTX32.OCX"
+Object = "{FBE17B58-A1F0-4B91-BDBD-C9AB263AC8B0}#78.0#0"; "scivb_lite.ocx"
 Begin VB.Form frmRabcd 
    Caption         =   "RABC Tools UI"
    ClientHeight    =   9465
@@ -11,10 +11,19 @@ Begin VB.Form frmRabcd
    ScaleHeight     =   9465
    ScaleWidth      =   15135
    StartUpPosition =   2  'CenterScreen
+   Begin SCIVB_LITE.SciSimple rtf 
+      Height          =   6540
+      Left            =   5130
+      TabIndex        =   15
+      Top             =   900
+      Width           =   9465
+      _ExtentX        =   16695
+      _ExtentY        =   11536
+   End
    Begin MSComctlLib.ListView lvFiltered 
       Height          =   3210
       Left            =   630
-      TabIndex        =   15
+      TabIndex        =   14
       Top             =   5535
       Visible         =   0   'False
       Width           =   4020
@@ -55,21 +64,21 @@ Begin VB.Form frmRabcd
       Caption         =   "Find"
       Height          =   375
       Left            =   8730
-      TabIndex        =   14
+      TabIndex        =   13
       Top             =   540
       Width           =   1365
    End
    Begin VB.TextBox txtsearch 
       Height          =   285
       Left            =   945
-      TabIndex        =   12
+      TabIndex        =   11
       Top             =   4680
       Width           =   2085
    End
    Begin MSComctlLib.ListView lv 
       Height          =   4290
       Left            =   90
-      TabIndex        =   10
+      TabIndex        =   9
       Top             =   4995
       Width           =   4920
       _ExtentX        =   8678
@@ -109,7 +118,7 @@ Begin VB.Form frmRabcd
       Caption         =   "Save"
       Height          =   375
       Left            =   10575
-      TabIndex        =   9
+      TabIndex        =   8
       Top             =   540
       Width           =   1320
    End
@@ -117,14 +126,14 @@ Begin VB.Form frmRabcd
       Caption         =   "re-asm && insert"
       Height          =   375
       Left            =   12015
-      TabIndex        =   8
+      TabIndex        =   7
       Top             =   540
       Width           =   2400
    End
    Begin VB.TextBox txtMod 
       Height          =   330
       Left            =   720
-      TabIndex        =   7
+      TabIndex        =   6
       Top             =   450
       Width           =   7305
    End
@@ -132,14 +141,14 @@ Begin VB.Form frmRabcd
       Caption         =   "..."
       Height          =   330
       Left            =   8190
-      TabIndex        =   5
+      TabIndex        =   4
       Top             =   45
       Width           =   735
    End
    Begin MSComctlLib.TreeView tv 
       Height          =   3705
       Left            =   90
-      TabIndex        =   4
+      TabIndex        =   3
       Top             =   900
       Width           =   4920
       _ExtentX        =   8678
@@ -165,43 +174,21 @@ Begin VB.Form frmRabcd
       Caption         =   "Disasm"
       Height          =   330
       Left            =   9045
-      TabIndex        =   3
+      TabIndex        =   2
       Top             =   45
       Width           =   1095
    End
    Begin VB.TextBox txtFile 
       Height          =   285
       Left            =   720
-      TabIndex        =   2
+      TabIndex        =   1
       Top             =   90
       Width           =   7305
-   End
-   Begin RichTextLib.RichTextBox rtf 
-      Height          =   6450
-      Left            =   5130
-      TabIndex        =   0
-      Top             =   1035
-      Width           =   9465
-      _ExtentX        =   16695
-      _ExtentY        =   11377
-      _Version        =   393217
-      HideSelection   =   0   'False
-      ScrollBars      =   3
-      TextRTF         =   $"frmRabcd.frx":0000
-      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-         Name            =   "Courier New"
-         Size            =   11.25
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
    End
    Begin MSComctlLib.ListView lv2 
       Height          =   1815
       Left            =   5130
-      TabIndex        =   13
+      TabIndex        =   12
       Top             =   7515
       Width           =   9465
       _ExtentX        =   16695
@@ -241,7 +228,7 @@ Begin VB.Form frmRabcd
       Caption         =   "search"
       Height          =   240
       Left            =   135
-      TabIndex        =   11
+      TabIndex        =   10
       Top             =   4725
       Width           =   645
    End
@@ -249,7 +236,7 @@ Begin VB.Form frmRabcd
       Caption         =   "OutFile"
       Height          =   330
       Left            =   90
-      TabIndex        =   6
+      TabIndex        =   5
       Top             =   495
       Width           =   600
    End
@@ -257,7 +244,7 @@ Begin VB.Form frmRabcd
       Caption         =   "File"
       Height          =   285
       Left            =   270
-      TabIndex        =   1
+      TabIndex        =   0
       Top             =   90
       Width           =   420
    End
@@ -445,7 +432,8 @@ Private Sub cmdIntegrate_Click()
 End Sub
 
 Private Sub cmdfind_Click()
-    frmReplace.LaunchReplaceForm rtf
+    'frmReplace.LaunchReplaceForm rtf
+    rtf.ShowFindReplace
 End Sub
 
 Private Sub cmdReasm_Click()
@@ -657,6 +645,17 @@ Private Sub Form_Load()
         cmdDissassemble.Enabled = False
         MsgBox "could not find RABCDAsm_v1.17 folder", vbInformation
     End If
+    
+    With rtf
+        .LineNumbers = False
+        .LoadHighlighter App.path & "\asasm.hilighter"
+        .SetHighlighter "asasm"
+        .WordWrap = False
+        .Folding = False
+        .MaintainIndentation = True
+        .ShowFlags = False
+    End With
+    
     lvFiltered.Move lv.Left, lv.Top, lv.Width, lv.Height
     lv.ColumnHeaders(1).Width = lv.Width - lv.ColumnHeaders(2).Width - 90
     mnuPopup.Visible = False
@@ -728,7 +727,8 @@ Private Sub lv_ItemClick(ByVal Item As MSComctlLib.ListItem)
     
     Set selli = Item
     rtf.Text = Item.Tag
-    ScrollToLine rtf, 0
+    'ScrollToLine rtf, 0
+    rtf.GotoLine 0
     
     Dim li As ListItem
     Dim tmp As String
@@ -760,7 +760,9 @@ End Sub
 
 Private Sub lv2_ItemClick(ByVal Item As MSComctlLib.ListItem)
     On Error Resume Next
-    ScrollToLine rtf, CLng(Item.Text)
+    'ScrollToLine rtf, CLng(Item.Text)
+    rtf.GotoLineCentered CLng(Item.Text)
+    rtf.SelectLine
 End Sub
 
 Private Sub mnucopytable_Click()
@@ -931,12 +933,12 @@ Function CountOccurances(it, find) As Integer
     CountOccurances = UBound(tmp)
 End Function
 
-Sub ScrollToLine(rtf As RichTextBox, Number As Long)
-    Dim curLine As Long, Shift As Long
-    curLine = SendMessage(rtf.hwnd, EM_GETFIRSTVISIBLELINE, 0&, ByVal 0&)
-    Shift = (Number - 1) - curLine
-    Call SendMessage(rtf.hwnd, EM_LINESCROLL, 0&, ByVal Shift)
-End Sub
+'Sub ScrollToLine(rtf As RichTextBox, Number As Long)
+'    Dim curLine As Long, Shift As Long
+'    curLine = SendMessage(rtf.hwnd, EM_GETFIRSTVISIBLELINE, 0&, ByVal 0&)
+'    Shift = (Number - 1) - curLine
+'    Call SendMessage(rtf.hwnd, EM_LINESCROLL, 0&, ByVal Shift)
+'End Sub
     
     
 
