@@ -13,6 +13,40 @@ Sub Main()
     frmRabcd.Show
 End Sub
 
+'this is a quick and dirty scan as a cheap shot..just to check basics..
+Function cveScan(fPath As String) As String
+
+    Dim cves() As String
+    Dim matched As Boolean
+    Dim ret() As String
+    
+    push cves, "CVE-2015-0310:new RegExp"
+    push cves, "CVE-2015-0311:domainMemory,uncompress"
+    push cves, "CVE-2015-0556:copyPixelsToByteArray"
+    push cves, "CVE-2015-0313:createMessageChannel,createWorker"
+    push cves, "CVE-2014-9163:parseFloat"
+    push cves, "CVE-2014-0515:byteCode,Shader"
+    push cves, "CVE-2014-0502:setSharedProperty,createWorker,.start,SharedObject"
+    push cves, "CVE-2014-0497:writeUTFBytes,domainMemory"
+    
+    If Not FileExists(fPath) Then Exit Function
+    
+    dat = ReadFile(fPath)
+    For Each cve In cves
+        c = Split(cve, ":")
+        checks = Split(c(1), ",")
+        matched = False
+        For Each k In checks
+            If InStr(1, dat, k, vbTextCompare) > 0 Then matched = True Else matched = False
+        Next
+        If matched Then push ret, """" & cve & """    FILE: """ & FileNameFromPath(fPath) & """"
+    Next
+    
+    cveScan = Join(ret, vbCrLf)
+    
+End Function
+
+
 Function FileExists(path As String) As Boolean
   On Error GoTo hell
   Dim tmp As String
@@ -177,18 +211,18 @@ Private Sub delTree(folderPath As String, Optional force As Boolean = True)
    End If
 End Sub
 
-Function DeleteFile(fpath As String) As Boolean
+Function DeleteFile(fPath As String) As Boolean
  On Error GoTo hadErr
     
     Dim attributes As VbFileAttribute
 
-    attributes = GetAttr(fpath)
+    attributes = GetAttr(fPath)
     If (attributes And vbReadOnly) Then
         attributes = attributes - vbReadOnly
-        SetAttr fpath, attributes
+        SetAttr fPath, attributes
     End If
 
-    Kill fpath
+    Kill fPath
     DeleteFile = True
     
  Exit Function

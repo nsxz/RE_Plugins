@@ -298,6 +298,9 @@ Begin VB.Form frmRabcd
       Begin VB.Menu mnuDeleteCached 
          Caption         =   "Delete Cached Disasm"
       End
+      Begin VB.Menu mnuBasicCVEScan 
+         Caption         =   "Basic CVE Scan"
+      End
    End
    Begin VB.Menu mnuCopy 
       Caption         =   "Copy"
@@ -686,6 +689,33 @@ Private Sub lvFiltered_ItemClick(ByVal Item As MSComctlLib.ListItem)
 End Sub
 
 
+
+Private Sub mnuBasicCVEScan_Click()
+    Dim n As Node
+    Dim f As String, r As String
+    Dim ret() As String
+    
+    On Error Resume Next
+    
+    For Each n In tv.Nodes
+        If FileExists(CStr(n.Tag)) Then
+            r = cveScan(CStr(n.Tag))
+            If Len(r) > 0 Then
+                If Not AryIsEmpty(ret) Then push ret, String(50, "-")
+                push ret, r
+            End If
+        End If
+    Next
+            
+    If AryIsEmpty(ret) Then
+        MsgBox "No results found. This was a very basic scan", vbInformation
+    Else
+        rtf.Text = ";Note this was a very basic scan looking for a couple keywords.." & vbCrLf & _
+                   ";Some matches are very generic, you must validate the results.." & vbCrLf & vbCrLf & _
+                   Join(ret, vbCrLf)
+    End If
+        
+End Sub
 
 Private Sub mnuCommentBlock_Click()
     x = rtf.SelText
