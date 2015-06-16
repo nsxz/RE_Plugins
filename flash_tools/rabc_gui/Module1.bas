@@ -3,6 +3,15 @@ Public Declare Function LockWindowUpdate Lib "user32" (ByVal hwndLock As Long) A
 Private Declare Function GetShortPathName Lib "kernel32" Alias "GetShortPathNameA" (ByVal lpszLongPath As String, ByVal lpszShortPath As String, ByVal cchBuffer As Long) As Long
  
 Global dlg As New clsCmnDlg
+Private Declare Function LoadLibrary Lib "kernel32" Alias "LoadLibraryA" (ByVal lpLibFileName As String) As Long
+
+
+
+Sub Main()
+    Dim h As Long
+    h = LoadLibrary(App.path & "\SciLexer.dll") 'override the default one with ours which has the asasm lexer
+    frmRabcd.Show
+End Sub
 
 Function FileExists(path As String) As Boolean
   On Error GoTo hell
@@ -31,6 +40,7 @@ Function FolderExists(path As String) As Boolean
 End Function
 
 Function GetParentFolder(path) As String
+    If Len(path) = 0 Then Exit Function
     Dim tmp() As String
     Dim ub As String
     tmp = Split(path, "\")
@@ -317,8 +327,8 @@ End Sub
 Public Sub LV_ColumnSort(ListViewControl As ListView, Column As ColumnHeader)
      On Error Resume Next
     With ListViewControl
-       If .SortKey <> Column.index - 1 Then
-             .SortKey = Column.index - 1
+       If .SortKey <> Column.Index - 1 Then
+             .SortKey = Column.Index - 1
              .SortOrder = lvwAscending
        Else
              If .SortOrder = lvwAscending Then

@@ -11,6 +11,36 @@ Begin VB.Form frmRabcd
    ScaleHeight     =   9465
    ScaleWidth      =   15135
    StartUpPosition =   2  'CenterScreen
+   Begin VB.CommandButton mnuDeleteComments 
+      Height          =   375
+      Left            =   8100
+      Picture         =   "frmRabcd.frx":0000
+      Style           =   1  'Graphical
+      TabIndex        =   18
+      ToolTipText     =   "Delete Comments"
+      Top             =   540
+      Width           =   510
+   End
+   Begin VB.CommandButton mnuUncommentBlock 
+      Height          =   375
+      Left            =   8640
+      Picture         =   "frmRabcd.frx":07FC
+      Style           =   1  'Graphical
+      TabIndex        =   17
+      ToolTipText     =   "Uncommen tBlock"
+      Top             =   540
+      Width           =   510
+   End
+   Begin VB.CommandButton mnuCommentBlock 
+      Height          =   375
+      Left            =   9180
+      Picture         =   "frmRabcd.frx":0FF8
+      Style           =   1  'Graphical
+      TabIndex        =   16
+      ToolTipText     =   "Comment Block"
+      Top             =   540
+      Width           =   465
+   End
    Begin SCIVB_LITE.SciSimple rtf 
       Height          =   6540
       Left            =   5130
@@ -61,12 +91,14 @@ Begin VB.Form frmRabcd
       EndProperty
    End
    Begin VB.CommandButton cmdfind 
-      Caption         =   "Find"
       Height          =   375
-      Left            =   8730
+      Left            =   9855
+      Picture         =   "frmRabcd.frx":1824
+      Style           =   1  'Graphical
       TabIndex        =   13
+      ToolTipText     =   "Find"
       Top             =   540
-      Width           =   1365
+      Width           =   420
    End
    Begin VB.TextBox txtsearch 
       Height          =   285
@@ -115,15 +147,17 @@ Begin VB.Form frmRabcd
       EndProperty
    End
    Begin VB.CommandButton cmdSave 
-      Caption         =   "Save"
       Height          =   375
-      Left            =   10575
+      Left            =   11115
+      Picture         =   "frmRabcd.frx":1FE8
+      Style           =   1  'Graphical
       TabIndex        =   8
+      ToolTipText     =   "Save Changes"
       Top             =   540
-      Width           =   1320
+      Width           =   600
    End
    Begin VB.CommandButton cmdReasm 
-      Caption         =   "re-asm && insert"
+      Caption         =   "RE-ASM && INSERT"
       Height          =   375
       Left            =   12015
       TabIndex        =   7
@@ -138,10 +172,12 @@ Begin VB.Form frmRabcd
       Width           =   7305
    End
    Begin VB.CommandButton cmdbrowse 
-      Caption         =   "..."
       Height          =   330
       Left            =   8190
+      Picture         =   "frmRabcd.frx":2798
+      Style           =   1  'Graphical
       TabIndex        =   4
+      ToolTipText     =   "Browse File"
       Top             =   45
       Width           =   735
    End
@@ -171,7 +207,7 @@ Begin VB.Form frmRabcd
       EndProperty
    End
    Begin VB.CommandButton cmdDissassemble 
-      Caption         =   "Disasm"
+      Caption         =   "DISASM"
       Height          =   330
       Left            =   9045
       TabIndex        =   2
@@ -250,15 +286,6 @@ Begin VB.Form frmRabcd
    End
    Begin VB.Menu mnuTools 
       Caption         =   "Tools"
-      Begin VB.Menu mnuCommentBlock 
-         Caption         =   "Comment Block"
-      End
-      Begin VB.Menu mnuUncommentBlock 
-         Caption         =   "UnComment Block"
-      End
-      Begin VB.Menu mnuDeleteComments 
-         Caption         =   "Strip Commented Blocks"
-      End
       Begin VB.Menu cmdRenameMap 
          Caption         =   "Copy Rename Map"
       End
@@ -267,6 +294,32 @@ Begin VB.Form frmRabcd
       End
       Begin VB.Menu cmdDelOrphans 
          Caption         =   "Delete Orphans"
+      End
+      Begin VB.Menu mnuDeleteCached 
+         Caption         =   "Delete Cached Disasm"
+      End
+   End
+   Begin VB.Menu mnuCopy 
+      Caption         =   "Copy"
+      Begin VB.Menu mnuCopyItem 
+         Caption         =   "doInit Call"
+         Index           =   0
+      End
+      Begin VB.Menu mnuCopyItem 
+         Caption         =   "set ignoreX"
+         Index           =   1
+      End
+      Begin VB.Menu mnuCopyItem 
+         Caption         =   "BA2Hex"
+         Index           =   2
+      End
+      Begin VB.Menu mnuCopyItem 
+         Caption         =   "DumpMessage"
+         Index           =   3
+      End
+      Begin VB.Menu mnuCopyItem 
+         Caption         =   "DumpByteArray"
+         Index           =   4
       End
    End
    Begin VB.Menu mnuPopup 
@@ -279,6 +332,12 @@ Begin VB.Form frmRabcd
       End
       Begin VB.Menu mnucopytable 
          Caption         =   "copy table"
+      End
+   End
+   Begin VB.Menu mnuTreePopup 
+      Caption         =   "mnuTreePopup"
+      Begin VB.Menu mnuAddUtil 
+         Caption         =   "Add Util.as files"
       End
    End
 End
@@ -298,8 +357,75 @@ Private Declare Function SendMessage Lib "user32" Alias "SendMessageA" (ByVal hw
 Private Const EM_GETFIRSTVISIBLELINE = &HCE
 Private Const EM_LINESCROLL = &HB6
 
+'note you have to clear cached disasm if you want a fresh one..rabcdasm wont overwrite files
+'which is nice dso you dont lose saved work..
 
-'todo: bug - if disasm folder already exists, rabcdasm will not overwrite files so delete directory so not stale
+
+Private Sub mnuAddUtil_Click()
+  Dim pf As String
+  Dim n As Node
+  Dim r2 As String
+  Dim d2 As String
+  Dim i As Long
+  
+  On Error GoTo hell
+  
+    r2 = "Util.class.asasm"
+    d2 = "Util.script.asasm"
+  
+    If Not FileExists(txtFile) Then Exit Sub
+    pf = GetParentFolder(txtFile)
+      
+    Set n = curNode.Child
+    
+    Do 'was an old version of util already in this dir?
+      If n.Text = r2 Or n.Text = d2 Then
+          DeleteFile pf & "\" & n.Text
+          n.Tag = "delete_me"
+      End If
+      If n.Next Is Nothing Then Exit Do
+      Set n = n.Next
+    Loop While 1
+    
+    For i = tv.Nodes.Count To 1 Step -1
+        If tv.Nodes(i).Tag = "delete_me" Then tv.Nodes.Remove i
+    Next
+    
+    r2 = App.path & "\FlashDevelopExample\bin\NewProject-1\" & r2
+    d2 = App.path & "\FlashDevelopExample\bin\NewProject-1\" & d2
+    
+    If Not FileExists(r2) Then
+        MsgBox "master copy of Util.class.asasm not found?", vbInformation
+        Exit Sub
+    End If
+    
+    If Not FileExists(d2) Then
+        MsgBox "master copy of Util.script.asasm not found?", vbInformation
+        Exit Sub
+    End If
+   
+    FileCopy r2, pf & "\" & curNode.Text & "\Util.class.asasm"
+    FileCopy d2, pf & "\" & curNode.Text & "\Util.script.asasm"
+      
+    r2 = pf & "\" & curNode.Text & "\Util.class.asasm"
+    d2 = pf & "\" & curNode.Text & "\Util.script.asasm"
+    
+    If FileExists(r2) Then
+        Set n = tv.Nodes.Add(curNode, tvwChild, , FileNameFromPath(r2))
+        n.Tag = r2
+    End If
+    
+    If FileExists(d2) Then
+         Set n = tv.Nodes.Add(curNode, tvwChild, , FileNameFromPath(d2))
+         n.Tag = d2
+    End If
+    
+    Exit Sub
+hell:
+    MsgBox Err.Description, vbExclamation
+    
+End Sub
+
 
 Private Sub mnuBackUpCur_Click()
     
@@ -507,9 +633,9 @@ Public Function getChildren(n As Node) As Collection
     
     If n.Children > 0 Then
         Set nn = n.FirstSibling
-        c.Add tv.Nodes(n.index)
+        c.Add tv.Nodes(n.Index)
         For i = 1 To n.Children
-            c.Add tv.Nodes(n.index + i)
+            c.Add tv.Nodes(n.Index + i)
         Next
     End If
     
@@ -571,6 +697,83 @@ Private Sub mnuCommentBlock_Click()
     rtf.SelText = Join(tmp, vbLf)
 End Sub
 
+Private Sub mnuCopyItem_Click(Index As Integer)
+
+    a = "     findpropstrict      QName(PackageNamespace(""""), ""Util"")" & vbCrLf & _
+        "     getproperty         QName(PackageNamespace(""""), ""Util"")" & vbCrLf & _
+        "     getlocal0            ;this" & vbCrLf & _
+        "     callproperty        QName(PackageNamespace(""""), ""doInit""), 1" & vbCrLf & _
+        "     pop" & vbCrLf & _
+        "" & vbCrLf
+        
+    b = "     findpropstrict      QName(PackageNamespace(""""), ""Util"")" & vbCrLf & _
+        "     getproperty         QName(PackageNamespace(""""), ""Util"")" & vbCrLf & _
+        "     pushbyte            1" & vbCrLf & _
+        "     setproperty         QName(PackageNamespace(""""), ""ignoreX"")" & vbCrLf & _
+        "" & vbCrLf
+        
+    c = "     findpropstrict      QName(PackageNamespace(""""), ""Util"")" & vbCrLf & _
+        "     getproperty         QName(PackageNamespace(""""), ""Util"")" & vbCrLf & _
+        "     getlocal1" & vbCrLf & _
+        "     callproperty        QName(PackageNamespace(""""), ""DumpMessage""), 1" & vbCrLf & _
+        "     pop" & vbCrLf & _
+        " " & vbCrLf
+        
+        
+    Select Case Index
+        Case 0: tmp = a
+        Case 1: tmp = b
+        Case 2: tmp = Replace(c, "DumpMessage", "BA2Hex")
+        Case 3: tmp = c
+        Case 4: tmp = Replace(c, "DumpMessage", "DumpByteArray")
+    End Select
+    
+    Clipboard.Clear
+    Clipboard.SetText tmp
+
+End Sub
+
+Private Sub mnuDeleteCached_Click()
+    Dim n As Node
+    Dim f As String
+    Dim pf As String
+    Dim tmp() As String
+    
+    If Len(txtFile) = 0 Then Exit Sub
+    pf = GetParentFolder(txtFile)
+    
+    For Each n In tv.Nodes
+        If n.Children > 0 Then
+            f = pf & "\" & n.Text
+            If FolderExists(f) Then DeleteFolder f, True
+        End If
+    Next
+    
+    tmp() = GetFolderFiles(pf, "*.abc")
+    
+    If Not AryIsEmpty(tmp) Then
+        For i = 0 To UBound(tmp)
+            f = tmp(i)
+            DeleteFile f
+        Next
+    End If
+    
+    tmp() = GetFolderFiles(pf, "*.bin") 'should be [parent file name]*.bin
+    
+    If Not AryIsEmpty(tmp) Then
+        For i = 0 To UBound(tmp)
+            f = tmp(i)
+            DeleteFile f
+        Next
+    End If
+    
+    rtf.Text = Empty
+    lv2.ListItems.Clear
+    lv.ListItems.Clear
+    tv.Nodes.Clear
+    
+End Sub
+
 Private Sub mnuDeleteComments_Click()
     
     If rtf.SelLength = 0 Then
@@ -613,6 +816,13 @@ Private Sub mnuUncommentBlock_Click()
     rtf.SelText = Join(tmp, vbLf)
 End Sub
 
+Private Sub tv_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+    If curNode Is Nothing Then Exit Sub
+    If Button = 2 Then
+        If curNode.Text <> "BinaryData" And curNode.Children > 0 Then PopupMenu mnuTreePopup
+    End If
+End Sub
+
 Private Sub txtsearch_Change()
 
     Dim li As ListItem, li2 As ListItem
@@ -640,6 +850,7 @@ Private Sub txtsearch_Change()
 End Sub
 
 Private Sub Form_Load()
+
     dp = App.path & "\RABCDAsm_v1.17"
     If Not FolderExists(dp) Then
         cmdDissassemble.Enabled = False
@@ -660,6 +871,9 @@ Private Sub Form_Load()
     lv.ColumnHeaders(1).Width = lv.Width - lv.ColumnHeaders(2).Width - 90
     mnuPopup.Visible = False
     txtFile = GetSetting("rabcd", "gui", "txtfile")
+    cmdDelOrphans.Visible = False
+    mnuTreePopup.Visible = False
+    
 End Sub
 
 Sub addsubtree(pth As String, Optional pn As Node = Nothing)
@@ -711,11 +925,11 @@ Private Sub lvfiltered_ColumnClick(ByVal ColumnHeader As MSComctlLib.ColumnHeade
     LV_ColumnSort lvFiltered, ColumnHeader
 End Sub
 
-Private Sub lv_MouseUp(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub lv_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
     If Button = 2 Then PopupMenu mnuPopup
 End Sub
 
-Private Sub lvfiltered_MouseUp(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub lvfiltered_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
     If Button = 2 Then PopupMenu mnuPopup
 End Sub
 
@@ -851,6 +1065,9 @@ Sub loadMethods()
     Dim tmp As String
     Dim i As Long
     Dim pass As Long
+    Dim r As New RegExp
+    Dim m As Match
+    Dim mc As MatchCollection
     
     'name, line , size, tag: body
     
@@ -858,48 +1075,111 @@ Sub loadMethods()
     lv2.ListItems.Clear
     lvFiltered.ListItems.Clear
     
-    ma = "method" & vbLf & "    name "
+    r.Global = True
+    r.MultiLine = True
+    r.IgnoreCase = True
+    r.Pattern = "method([\r\n\t ]+)name"
     
 scanAgain:
-    a = InStr(rtf.Text, ma)
-    Do While a > 0
-        a = a + Len(ma)
+    Set mc = r.Execute(rtf.Text)
+    For Each m In mc
+        a = m.FirstIndex + m.Length + 1
         b = InStr(a, rtf.Text, vbLf)
         tmp = Trim(Mid(rtf.Text, a, b - a))
         tmp = Replace(tmp, """", Empty)
+        If Len(tmp) = 0 Then 'can we grab the refid?
+            b = InStr(a, rtf.Text, "refid")
+            If b > 0 Then
+                tmp = Trim(Mid(rtf.Text, a, b - a))
+                If CountOccurances(tmp, vbLf) = 1 Then 'its on next line good..
+                    c = InStr(b, rtf.Text, vbLf)
+                    tmp = Mid(rtf.Text, b + 5, c - b - 5)
+                    tmp = Trim(Replace(tmp, """", Empty))
+                End If
+            End If
+        End If
         Set li = lv.ListItems.Add(, , tmp)
         b = InStr(b, rtf.Text, "end ; code")
         tmp = Mid(rtf.Text, a, b - a)
         li.SubItems(1) = VBA.Right("        " & CountOccurances(tmp, vbLf), 8)
         li.Tag = tmp
         a = InStr(b, rtf.Text, ma)
-    Loop
+    Next
     pass = pass + 1
     
     If pass = 1 Then
-        ma = "method" & vbLf & "   refid"
+        r.Pattern = "method([\r\n\t ]+)refid"
         GoTo scanAgain
     End If
     
     If pass = 2 Then
-        ma = "iinit" & vbLf & "   refid"
+        r.Pattern = "init([\r\n\t ]+)refid"
         GoTo scanAgain
     End If
     
     If pass = 3 Then
-        ma = "cinit" & vbLf & "  refid"
+        r.Pattern = "init([\r\n\t ]+)name"
         GoTo scanAgain
     End If
-    
-    If pass = 4 Then
-        ma = "method" & vbLf & "    refid"
-        GoTo scanAgain
-    End If
-    
-    
+        
     If Len(txtsearch) > 0 Then txtsearch_Change
     
 End Sub
+
+'Sub loadMethods()
+'    Dim li As ListItem
+'    Dim tmp As String
+'    Dim i As Long
+'    Dim pass As Long
+'
+'    'name, line , size, tag: body
+'
+'    lv.ListItems.Clear
+'    lv2.ListItems.Clear
+'    lvFiltered.ListItems.Clear
+'
+'    ma = "method" & vbLf & "    name "
+'
+'scanAgain:
+'    a = InStr(rtf.Text, ma)
+'    Do While a > 0
+'        a = a + Len(ma)
+'        b = InStr(a, rtf.Text, vbLf)
+'        tmp = Trim(Mid(rtf.Text, a, b - a))
+'        tmp = Replace(tmp, """", Empty)
+'        Set li = lv.ListItems.Add(, , tmp)
+'        b = InStr(b, rtf.Text, "end ; code")
+'        tmp = Mid(rtf.Text, a, b - a)
+'        li.SubItems(1) = VBA.Right("        " & CountOccurances(tmp, vbLf), 8)
+'        li.Tag = tmp
+'        a = InStr(b, rtf.Text, ma)
+'    Loop
+'    pass = pass + 1
+'
+'    If pass = 1 Then
+'        ma = "method" & vbLf & "   refid"
+'        GoTo scanAgain
+'    End If
+'
+'    If pass = 2 Then
+'        ma = "iinit" & vbLf & "   refid"
+'        GoTo scanAgain
+'    End If
+'
+'    If pass = 3 Then
+'        ma = "cinit" & vbLf & "  refid"
+'        GoTo scanAgain
+'    End If
+'
+'    If pass = 4 Then
+'        ma = "method" & vbLf & "    refid"
+'        GoTo scanAgain
+'    End If
+'
+'
+'    If Len(txtsearch) > 0 Then txtsearch_Change
+'
+'End Sub
 
 'regular methods..
 '  trait method QName(PrivateNamespace("class_7"), "method_34") flag FINAL
