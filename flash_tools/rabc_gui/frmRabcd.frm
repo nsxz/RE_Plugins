@@ -1,6 +1,7 @@
 VERSION 5.00
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Object = "{FBE17B58-A1F0-4B91-BDBD-C9AB263AC8B0}#78.0#0"; "scivb_lite.ocx"
+Object = "{9A143468-B450-48DD-930D-925078198E4D}#1.1#0"; "hexed.ocx"
 Begin VB.Form frmRabcd 
    Caption         =   "RABC Tools UI"
    ClientHeight    =   9465
@@ -11,6 +12,56 @@ Begin VB.Form frmRabcd
    ScaleHeight     =   9465
    ScaleWidth      =   15135
    StartUpPosition =   2  'CenterScreen
+   Begin MSComctlLib.ListView lvDetails 
+      Height          =   2220
+      Left            =   1980
+      TabIndex        =   21
+      Top             =   1890
+      Visible         =   0   'False
+      Width           =   2895
+      _ExtentX        =   5106
+      _ExtentY        =   3916
+      View            =   3
+      LabelEdit       =   1
+      LabelWrap       =   -1  'True
+      HideSelection   =   0   'False
+      FullRowSelect   =   -1  'True
+      GridLines       =   -1  'True
+      _Version        =   393217
+      ForeColor       =   -2147483640
+      BackColor       =   -2147483643
+      BorderStyle     =   1
+      Appearance      =   1
+      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         Name            =   "Courier"
+         Size            =   12
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      NumItems        =   2
+      BeginProperty ColumnHeader(1) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         Text            =   "Name"
+         Object.Width           =   2540
+      EndProperty
+      BeginProperty ColumnHeader(2) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         SubItemIndex    =   1
+         Text            =   "lines"
+         Object.Width           =   2540
+      EndProperty
+   End
+   Begin rhexed.HexEd hexed 
+      Height          =   4920
+      Left            =   6525
+      TabIndex        =   19
+      Top             =   1485
+      Visible         =   0   'False
+      Width           =   7485
+      _ExtentX        =   13203
+      _ExtentY        =   8678
+   End
    Begin VB.CommandButton mnuDeleteComments 
       Height          =   375
       Left            =   8100
@@ -182,13 +233,13 @@ Begin VB.Form frmRabcd
       Width           =   735
    End
    Begin MSComctlLib.TreeView tv 
-      Height          =   3705
-      Left            =   90
+      Height          =   3210
+      Left            =   135
       TabIndex        =   3
-      Top             =   900
-      Width           =   4920
-      _ExtentX        =   8678
-      _ExtentY        =   6535
+      Top             =   990
+      Width           =   4785
+      _ExtentX        =   8440
+      _ExtentY        =   5662
       _Version        =   393217
       HideSelection   =   0   'False
       Indentation     =   531
@@ -260,6 +311,28 @@ Begin VB.Form frmRabcd
          Object.Width           =   2540
       EndProperty
    End
+   Begin MSComctlLib.TabStrip TabStrip1 
+      Height          =   3750
+      Left            =   45
+      TabIndex        =   20
+      Top             =   900
+      Width           =   4965
+      _ExtentX        =   8758
+      _ExtentY        =   6615
+      Placement       =   1
+      _Version        =   393216
+      BeginProperty Tabs {1EFB6598-857C-11D1-B16A-00C0F0283628} 
+         NumTabs         =   2
+         BeginProperty Tab1 {1EFB659A-857C-11D1-B16A-00C0F0283628} 
+            Caption         =   "Tree"
+            ImageVarType    =   2
+         EndProperty
+         BeginProperty Tab2 {1EFB659A-857C-11D1-B16A-00C0F0283628} 
+            Caption         =   "Details"
+            ImageVarType    =   2
+         EndProperty
+      EndProperty
+   End
    Begin VB.Label Label3 
       Caption         =   "search"
       Height          =   240
@@ -300,6 +373,9 @@ Begin VB.Form frmRabcd
       End
       Begin VB.Menu mnuBasicCVEScan 
          Caption         =   "Basic CVE Scan"
+      End
+      Begin VB.Menu mnuCveList 
+         Caption         =   "CVE List"
       End
    End
    Begin VB.Menu mnuCopy 
@@ -360,9 +436,22 @@ Private Declare Function SendMessage Lib "user32" Alias "SendMessageA" (ByVal hw
 Private Const EM_GETFIRSTVISIBLELINE = &HCE
 Private Const EM_LINESCROLL = &HB6
 
+Private Sub lvDetails_ColumnClick(ByVal ColumnHeader As MSComctlLib.ColumnHeader)
+    LV_ColumnSort lvDetails, ColumnHeader
+End Sub
+
+Private Sub lvDetails_ItemClick(ByVal Item As MSComctlLib.ListItem)
+    On Error Resume Next
+    Dim n As Node
+    Set n = Item.Tag
+    If n Is Nothing Then Exit Sub
+    n.EnsureVisible
+    n.Selected = True
+    tv_NodeClick n
+End Sub
+
 'note you have to clear cached disasm if you want a fresh one..rabcdasm wont overwrite files
 'which is nice dso you dont lose saved work..
-
 
 Private Sub mnuAddUtil_Click()
   Dim pf As String
@@ -516,10 +605,14 @@ Private Sub cmdDissassemble_Click()
     
     Set curNode = Nothing
     tv.Nodes.Clear
+    lvDetails.ListItems.Clear
+    lvFiltered.ListItems.Clear
+    lv.ListItems.Clear
+    lv2.ListItems.Clear
     curFile = Empty
     
     Dim tmp() As String, pf As String, i As Long, ff As String, newf As String
-    Dim bn As String
+    Dim bn As String, li As ListItem
     
     bn = FileNameFromPath(txtFile)
     pf = GetParentFolder(txtFile)
@@ -536,7 +629,6 @@ Private Sub cmdDissassemble_Click()
             rtf.Text = rtf.Text & GetCommandOutput(dp & "\rabcdasm.exe """ & ff & """") & vbCrLf
             newf = pf & "\" & GetBaseName(FileNameFromPath(ff))
             If FolderExists(newf) Then addsubtree newf
-            
         Next
     End If
     
@@ -549,6 +641,7 @@ Private Sub cmdDissassemble_Click()
         For i = 0 To UBound(tmp)
             ff = tmp(i)
             Set n2 = tv.Nodes.Add(n, tvwChild, , FileNameFromPath(ff))
+            n2.Tag = ff
         Next
     End If
     
@@ -710,6 +803,7 @@ Private Sub mnuBasicCVEScan_Click()
     If AryIsEmpty(ret) Then
         MsgBox "No results found. This was a very basic scan", vbInformation
     Else
+        If hexed.Visible Then hexed.Visible = False
         rtf.Text = ";Note this was a very basic scan looking for a couple keywords.." & vbCrLf & _
                    ";Some matches are very generic, you must validate the results.." & vbCrLf & vbCrLf & _
                    Join(ret, vbCrLf)
@@ -761,6 +855,11 @@ Private Sub mnuCopyItem_Click(Index As Integer)
     Clipboard.Clear
     Clipboard.SetText tmp
 
+End Sub
+
+Private Sub mnuCveList_Click()
+    If hexed.Visible Then hexed.Visible = False
+    rtf.Text = cveScan("cvelist")
 End Sub
 
 Private Sub mnuDeleteCached_Click()
@@ -846,6 +945,14 @@ Private Sub mnuUncommentBlock_Click()
     rtf.SelText = Join(tmp, vbLf)
 End Sub
 
+Private Sub TabStrip1_Click()
+    If TabStrip1.Tabs(1).Selected Then
+        lvDetails.Visible = False
+    Else
+        lvDetails.Visible = True
+    End If
+End Sub
+
 Private Sub tv_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
     If curNode Is Nothing Then Exit Sub
     If Button = 2 Then
@@ -897,8 +1004,15 @@ Private Sub Form_Load()
         .ShowFlags = False
     End With
     
+    With tv
+        lvDetails.Move .Left, .Top, .Width, .Height
+    End With
+        
     lvFiltered.Move lv.Left, lv.Top, lv.Width, lv.Height
     lv.ColumnHeaders(1).Width = lv.Width - lv.ColumnHeaders(2).Width - 90
+    lvDetails.ColumnHeaders(1).Width = lvDetails.Width - lv.ColumnHeaders(2).Width - 90
+    lvFiltered.ColumnHeaders(1).Width = lvFiltered.Width - lv.ColumnHeaders(2).Width - 90
+    
     mnuPopup.Visible = False
     txtFile = GetSetting("rabcd", "gui", "txtfile")
     cmdDelOrphans.Visible = False
@@ -907,7 +1021,11 @@ Private Sub Form_Load()
 End Sub
 
 Sub addsubtree(pth As String, Optional pn As Node = Nothing)
-    Dim n As Node, n2 As Node, ff() As String
+    Dim n As Node, n2 As Node, ff() As String, li As ListItem
+    Dim loc As Long, tmp As String
+    
+    
+    On Error Resume Next
     
     If pn Is Nothing Then
         Set n = tv.Nodes.Add(, , , FileNameFromPath(pth))
@@ -920,6 +1038,11 @@ Sub addsubtree(pth As String, Optional pn As Node = Nothing)
         For Each f In ff
             Set n2 = tv.Nodes.Add(n, tvwChild, , FileNameFromPath(f))
             n2.Tag = f
+            Set li = lvDetails.ListItems.Add(, , FileNameFromPath(f))
+            tmp = ReadFile(f)
+            loc = CountOccurances(tmp, vbLf)
+            li.SubItems(1) = VBA.Right("      " & loc, 6)
+            Set li.Tag = n2
         Next
     End If
     
@@ -941,6 +1064,9 @@ Private Sub Form_Resize()
     rtf.Height = Me.Height - rtf.Top - 400 - lv2.Height
     lv2.Width = rtf.Width
     LV_LastColumnResize lv2
+    With rtf
+        hexed.Move .Left, .Top, .Width, .Height
+    End With
 End Sub
 
 Private Sub Form_Unload(Cancel As Integer)
@@ -1063,6 +1189,12 @@ End Sub
 Private Sub tv_NodeClick(ByVal Node As MSComctlLib.Node)
     Dim f As String
     
+    If Not Node.Parent Is Nothing Then
+        If Node.Parent.Text = "BinaryData" Then hexed.Visible = True Else hexed.Visible = False
+    Else
+        hexed.Visible = False
+    End If
+    
     Set curNode = Node
     Set selli = Nothing
     curFile = Empty
@@ -1074,7 +1206,11 @@ Private Sub tv_NodeClick(ByVal Node As MSComctlLib.Node)
     f = CStr(Node.Tag)
     
     If FileExists(f) Then
-        rtf.Text = ReadFile(f)
+        If hexed.Visible Then
+            hexed.LoadFile f
+        Else
+            rtf.Text = ReadFile(f)
+        End If
         curFile = f
         isDirty = False
         rtf.SelStart = 1

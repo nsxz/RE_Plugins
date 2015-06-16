@@ -2,10 +2,8 @@ Attribute VB_Name = "Module1"
 Public Declare Function LockWindowUpdate Lib "user32" (ByVal hwndLock As Long) As Long
 Private Declare Function GetShortPathName Lib "kernel32" Alias "GetShortPathNameA" (ByVal lpszLongPath As String, ByVal lpszShortPath As String, ByVal cchBuffer As Long) As Long
  
-Global dlg As New clsCmnDlg
+Global dlg As New clsCmnDlg2
 Private Declare Function LoadLibrary Lib "kernel32" Alias "LoadLibraryA" (ByVal lpLibFileName As String) As Long
-
-
 
 Sub Main()
     Dim h As Long
@@ -20,26 +18,40 @@ Function cveScan(fPath As String) As String
     Dim matched As Boolean
     Dim ret() As String
     
-    push cves, "CVE-2015-0310:new RegExp"
-    push cves, "CVE-2015-0311:domainMemory,uncompress"
     push cves, "CVE-2015-0556:copyPixelsToByteArray"
     push cves, "CVE-2015-0313:createMessageChannel,createWorker"
+    push cves, "CVE-2015-0310 or CVE-2013-0634:new RegExp"
+    push cves, "CVE-2015-0311:domainMemory,uncompress"
     push cves, "CVE-2014-9163:parseFloat"
     push cves, "CVE-2014-0515:byteCode,Shader"
     push cves, "CVE-2014-0502:setSharedProperty,createWorker,.start,SharedObject"
     push cves, "CVE-2014-0497:writeUTFBytes,domainMemory"
+    push cves, "CVE-2012-0779:defaultObjectEncoding,AMF0,NetConnection"
+    push cves, "CVE-2012-0754:NetStream,NetConnection,attachNetStream,play"
+    push cves, "CVE-2012-5054:Matrix3D"
+    push cves, "CVE-2012-0779:Responder,NetConnection,AMF0"
+    push cves, "CVE-2012-1535:FontDescription,FontLookup"
+    push cves, "CVE-2011-0609:MovieClip,TimelineMax,TweenMax"
+    push cves, "CVE-2011-2110:Number(_args["
+    
+    If fPath = "cvelist" Then
+        cveScan = ";there are more than this, these are some I had on hand" & vbCrLf & _
+                  ";that were agreeable to script level detections. " & vbCrLf & _
+                  vbCrLf & Join(cves, vbCrLf)
+        Exit Function
+    End If
     
     If Not FileExists(fPath) Then Exit Function
     
     dat = ReadFile(fPath)
-    For Each cve In cves
-        c = Split(cve, ":")
+    For Each CVE In cves
+        c = Split(CVE, ":")
         checks = Split(c(1), ",")
         matched = False
         For Each k In checks
             If InStr(1, dat, k, vbTextCompare) > 0 Then matched = True Else matched = False
         Next
-        If matched Then push ret, """" & cve & """    FILE: """ & FileNameFromPath(fPath) & """"
+        If matched Then push ret, """" & CVE & """    FILE: """ & FileNameFromPath(fPath) & """"
     Next
     
     cveScan = Join(ret, vbCrLf)

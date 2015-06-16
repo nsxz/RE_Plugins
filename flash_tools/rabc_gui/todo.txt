@@ -1,4 +1,5 @@
 
 rabcdasm gui: 
               right click remove function
-              switch to syntax highlight control ?
+              search all files
+              graph xrefs to/from for functions
