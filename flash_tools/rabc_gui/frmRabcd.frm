@@ -412,6 +412,12 @@ Begin VB.Form frmRabcd
       Begin VB.Menu mnucopytable 
          Caption         =   "copy table"
       End
+      Begin VB.Menu mnugraphto 
+         Caption         =   "Graph Xrefs To"
+      End
+      Begin VB.Menu mnugraphfrom 
+         Caption         =   "Graph Xrefs From"
+      End
    End
    Begin VB.Menu mnuTreePopup 
       Caption         =   "mnuTreePopup"
@@ -479,8 +485,8 @@ Private Sub mnuAddUtil_Click()
       Set n = n.Next
     Loop While 1
     
-    For i = tv.Nodes.Count To 1 Step -1
-        If tv.Nodes(i).Tag = "delete_me" Then tv.Nodes.Remove i
+    For i = tv.nodes.count To 1 Step -1
+        If tv.nodes(i).Tag = "delete_me" Then tv.nodes.Remove i
     Next
     
     r2 = App.path & "\FlashDevelopExample\bin\NewProject-1\" & r2
@@ -503,12 +509,12 @@ Private Sub mnuAddUtil_Click()
     d2 = pf & "\" & curNode.Text & "\Util.script.asasm"
     
     If FileExists(r2) Then
-        Set n = tv.Nodes.Add(curNode, tvwChild, , FileNameFromPath(r2))
+        Set n = tv.nodes.Add(curNode, tvwChild, , FileNameFromPath(r2))
         n.Tag = r2
     End If
     
     If FileExists(d2) Then
-         Set n = tv.Nodes.Add(curNode, tvwChild, , FileNameFromPath(d2))
+         Set n = tv.nodes.Add(curNode, tvwChild, , FileNameFromPath(d2))
          n.Tag = d2
     End If
     
@@ -604,7 +610,7 @@ Private Sub cmdDissassemble_Click()
     rtf.Text = a
     
     Set curNode = Nothing
-    tv.Nodes.Clear
+    tv.nodes.Clear
     lvDetails.ListItems.Clear
     lvFiltered.ListItems.Clear
     lv.ListItems.Clear
@@ -637,10 +643,10 @@ Private Sub cmdDissassemble_Click()
     Dim n As Node, n2 As Node
     
     If Not AryIsEmpty(tmp) Then
-        Set n = tv.Nodes.Add(, , , "BinaryData")
+        Set n = tv.nodes.Add(, , , "BinaryData")
         For i = 0 To UBound(tmp)
             ff = tmp(i)
-            Set n2 = tv.Nodes.Add(n, tvwChild, , FileNameFromPath(ff))
+            Set n2 = tv.nodes.Add(n, tvwChild, , FileNameFromPath(ff))
             n2.Tag = ff
         Next
     End If
@@ -729,9 +735,9 @@ Public Function getChildren(n As Node) As Collection
     
     If n.Children > 0 Then
         Set nn = n.FirstSibling
-        c.Add tv.Nodes(n.Index)
+        c.Add tv.nodes(n.Index)
         For i = 1 To n.Children
-            c.Add tv.Nodes(n.Index + i)
+            c.Add tv.nodes(n.Index + i)
         Next
     End If
     
@@ -790,7 +796,7 @@ Private Sub mnuBasicCVEScan_Click()
     
     On Error Resume Next
     
-    For Each n In tv.Nodes
+    For Each n In tv.nodes
         If FileExists(CStr(n.Tag)) Then
             r = cveScan(CStr(n.Tag))
             If Len(r) > 0 Then
@@ -871,7 +877,7 @@ Private Sub mnuDeleteCached_Click()
     If Len(txtFile) = 0 Then Exit Sub
     pf = GetParentFolder(txtFile)
     
-    For Each n In tv.Nodes
+    For Each n In tv.nodes
         If n.Children > 0 Then
             f = pf & "\" & n.Text
             If FolderExists(f) Then DeleteFolder f, True
@@ -899,7 +905,7 @@ Private Sub mnuDeleteCached_Click()
     rtf.Text = Empty
     lv2.ListItems.Clear
     lv.ListItems.Clear
-    tv.Nodes.Clear
+    tv.nodes.Clear
     
 End Sub
 
@@ -933,6 +939,45 @@ Private Sub mnuDeleteComments_Click()
     
 End Sub
 
+Private Sub mnugraphfrom_Click()
+    
+    If selli Is Nothing Then Exit Sub
+    
+    Dim f As New frmFuncGraph
+    Dim ignore As String, a As Long
+    
+    On Error Resume Next
+    
+    ignore = curNode.Text
+    a = InStr(ignore, ".class.asasm")
+    If a > 0 Then
+        ignore = Mid(ignore, 1, a - 1)
+        f.ignoreClassName = ignore
+    End If
+    
+    f.GraphFrom selli.Text
+End Sub
+
+Private Sub mnugraphto_Click()
+
+    If selli Is Nothing Then Exit Sub
+    
+    Dim f As New frmFuncGraph
+    Dim ignore As String, a As Long
+    
+    On Error Resume Next
+    
+    ignore = curNode.Text
+    a = InStr(ignore, ".class.asasm")
+    If a > 0 Then
+        ignore = Mid(ignore, 1, a - 1)
+        f.ignoreClassName = ignore
+    End If
+    
+    f.GraphTo selli.Text
+    
+End Sub
+
 Private Sub mnuUncommentBlock_Click()
     x = rtf.SelText
     If Len(x) = 0 Then Exit Sub
@@ -953,7 +998,7 @@ Private Sub TabStrip1_Click()
     End If
 End Sub
 
-Private Sub tv_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub tv_MouseUp(Button As Integer, Shift As Integer, x As Single, Y As Single)
     If curNode Is Nothing Then Exit Sub
     If Button = 2 Then
         If curNode.Text <> "BinaryData" And curNode.Children > 0 Then PopupMenu mnuTreePopup
@@ -1028,15 +1073,15 @@ Sub addsubtree(pth As String, Optional pn As Node = Nothing)
     On Error Resume Next
     
     If pn Is Nothing Then
-        Set n = tv.Nodes.Add(, , , FileNameFromPath(pth))
+        Set n = tv.nodes.Add(, , , FileNameFromPath(pth))
     Else
-        Set n = tv.Nodes.Add(pn, tvwChild, , FileNameFromPath(pth))
+        Set n = tv.nodes.Add(pn, tvwChild, , FileNameFromPath(pth))
     End If
     
     ff() = GetFolderFiles(pth)
     If Not AryIsEmpty(ff) Then
         For Each f In ff
-            Set n2 = tv.Nodes.Add(n, tvwChild, , FileNameFromPath(f))
+            Set n2 = tv.nodes.Add(n, tvwChild, , FileNameFromPath(f))
             n2.Tag = f
             Set li = lvDetails.ListItems.Add(, , FileNameFromPath(f))
             tmp = ReadFile(f)
@@ -1081,11 +1126,11 @@ Private Sub lvfiltered_ColumnClick(ByVal ColumnHeader As MSComctlLib.ColumnHeade
     LV_ColumnSort lvFiltered, ColumnHeader
 End Sub
 
-Private Sub lv_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub lv_MouseUp(Button As Integer, Shift As Integer, x As Single, Y As Single)
     If Button = 2 Then PopupMenu mnuPopup
 End Sub
 
-Private Sub lvfiltered_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub lvfiltered_MouseUp(Button As Integer, Shift As Integer, x As Single, Y As Single)
     If Button = 2 Then PopupMenu mnuPopup
 End Sub
 
