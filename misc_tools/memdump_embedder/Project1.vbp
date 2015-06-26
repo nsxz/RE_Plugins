@@ -34,4 +34,4 @@ MaxNumberOfThreads=1
 AutoRefresh=1
 
 [fastBuild]
-fullPath=D:\_code\RE_Plugins\misc_tools\memdump_embedder\embedder.exe
+fullPath=.\embedder.exe

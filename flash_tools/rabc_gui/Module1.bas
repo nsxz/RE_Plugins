@@ -15,15 +15,16 @@ End Sub
 Function cveScan(fPath As String) As String
 
     Dim cves() As String
-    Dim matched As Boolean
+    Dim hits As Long
     Dim ret() As String
     
+    push cves, "CVE-2015-3113:play,info,code,video,attachNetStream"
     push cves, "CVE-2015-0556:copyPixelsToByteArray"
     push cves, "CVE-2015-0313:createMessageChannel,createWorker"
     push cves, "CVE-2015-0310 or CVE-2013-0634:new RegExp"
     push cves, "CVE-2015-0311:domainMemory,uncompress"
     push cves, "CVE-2014-9163:parseFloat"
-    push cves, "CVE-2014-0515:byteCode,Shader"
+    push cves, "CVE-2014-0515 (if in while loop):byteCode,Shader"
     push cves, "CVE-2014-0502:setSharedProperty,createWorker,.start,SharedObject"
     push cves, "CVE-2014-0497:writeUTFBytes,domainMemory"
     push cves, "CVE-2012-0779:defaultObjectEncoding,AMF0,NetConnection"
@@ -33,6 +34,7 @@ Function cveScan(fPath As String) As String
     push cves, "CVE-2012-1535:FontDescription,FontLookup"
     push cves, "CVE-2011-0609:MovieClip,TimelineMax,TweenMax"
     push cves, "CVE-2011-2110:Number(_args["
+    push cves, "Loads embedded flash object:loadbytes"
     
     If fPath = "cvelist" Then
         cveScan = ";there are more than this, these are some I had on hand" & vbCrLf & _
@@ -47,11 +49,11 @@ Function cveScan(fPath As String) As String
     For Each CVE In cves
         c = Split(CVE, ":")
         checks = Split(c(1), ",")
-        matched = False
+        hits = 0
         For Each k In checks
-            If InStr(1, dat, k, vbTextCompare) > 0 Then matched = True Else matched = False
+            If InStr(1, dat, k, vbTextCompare) > 0 Then hits = hits + 1
         Next
-        If matched Then push ret, """" & CVE & """    FILE: """ & FileNameFromPath(fPath) & """"
+        If hits = UBound(checks) + 1 Then push ret, CVE
     Next
     
     cveScan = Join(ret, vbCrLf)
@@ -70,14 +72,14 @@ Function FileExists(path As String) As Boolean
 hell: FileExists = False
 End Function
 
-Sub push(ary, Value) 'this modifies parent ary object
+Sub push(ary, value) 'this modifies parent ary object
     On Error GoTo init
     Dim x As Long
     x = UBound(ary) '<-throws Error If Not initalized
     ReDim Preserve ary(UBound(ary) + 1)
-    ary(UBound(ary)) = Value
+    ary(UBound(ary)) = value
     Exit Sub
-init: ReDim ary(0): ary(0) = Value
+init: ReDim ary(0): ary(0) = value
 End Sub
 
 Function FolderExists(path As String) As Boolean
@@ -367,7 +369,7 @@ End Sub
 
 Sub LV_LastColumnResize(lv As ListView)
     On Error Resume Next
-    lv.ColumnHeaders(lv.ColumnHeaders.Count).Width = lv.Width - lv.ColumnHeaders(lv.ColumnHeaders.Count).Left - 100
+    lv.ColumnHeaders(lv.ColumnHeaders.count).Width = lv.Width - lv.ColumnHeaders(lv.ColumnHeaders.count).Left - 100
 End Sub
 
 Public Sub LV_ColumnSort(ListViewControl As ListView, Column As ColumnHeader)
