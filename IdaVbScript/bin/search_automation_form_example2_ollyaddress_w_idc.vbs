@@ -47,7 +47,8 @@ function main()
 	
 	pb.value = 0
 	pb.max = ubound(t)+2
-
+    idc = ""
+    
 	for each x in t
 		pb.value = pb.value + 1
 		if len(x) > 0 then 
@@ -68,6 +69,7 @@ function main()
 								form.DoUndefine clng("&h" & my_hash)              'addxref may auto analyze and convert addr to code...
 					    		form.Setname clng("&h" & my_hash), cstr(my_name)  'in which case we could not setname...
 								form.Set_Comment va,  cstr(my_name)               'this is probably redundant I forget doesnt hurt..
+								idc = idc & "MakeComm( 0x" & hex(va) & ", """ & my_name & """);" & vbcrlf  
 							end if 
 						next
 	
@@ -80,7 +82,10 @@ function main()
 	next
 
 	pb.value = 0
-	msgbox "Done!"
+	
+	clipboard.clear
+	clipboard.settext idc
+	msgbox "Done! (reusable idc copied to clipboard)"
 
 end function
 

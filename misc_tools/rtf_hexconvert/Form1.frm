@@ -6,25 +6,33 @@ Begin VB.Form Form1
    ClientHeight    =   8910
    ClientLeft      =   60
    ClientTop       =   345
-   ClientWidth     =   14280
+   ClientWidth     =   14325
    LinkTopic       =   "Form1"
    ScaleHeight     =   8910
-   ScaleWidth      =   14280
+   ScaleWidth      =   14325
    StartUpPosition =   2  'CenterScreen
+   Begin VB.CommandButton Command1 
+      Caption         =   "Save Mod Back to RTF"
+      Height          =   240
+      Left            =   11385
+      TabIndex        =   11
+      Top             =   900
+      Width           =   2265
+   End
    Begin VB.CommandButton cmdCollapse 
       Caption         =   "Collapse"
-      Height          =   375
-      Left            =   12915
+      Height          =   240
+      Left            =   12735
       TabIndex        =   10
-      Top             =   675
+      Top             =   585
       Width           =   915
    End
    Begin VB.CommandButton cmdZero 
       Caption         =   "Zero out blocks"
-      Height          =   375
-      Left            =   11610
+      Height          =   240
+      Left            =   11385
       TabIndex        =   8
-      Top             =   675
+      Top             =   585
       Width           =   1230
    End
    Begin VB.TextBox txtMod 
@@ -57,8 +65,8 @@ Begin VB.Form Form1
       Left            =   2970
       TabIndex        =   4
       Top             =   1260
-      Width           =   10860
-      _ExtentX        =   19156
+      Width           =   11265
+      _ExtentX        =   19870
       _ExtentY        =   12806
    End
    Begin VB.CommandButton cmdLoad 
@@ -159,6 +167,7 @@ Attribute VB_Exposed = False
 Dim r As New RegExp
 Dim dlg As New clsCmnDlg2
 Const LANG_US = &H409
+Dim selItem As ListItem
 
 Private Sub cmdBrowse_Click()
     txtFile = dlg.OpenDialog(AllFiles)
@@ -230,6 +239,7 @@ Private Sub cmdLoad_Click()
         Set li.Tag = m
     Next
 
+    Me.Caption = mm.Count & " Hex encoded sections found in file - " & Now
 
 End Sub
 
@@ -362,6 +372,58 @@ Private Sub cmdZero_Click()
     
 End Sub
 
+Private Sub Command1_Click()
+    On Error GoTo hell
+    
+    If selItem Is Nothing Then Exit Sub
+    
+    If Not he.IsDirty Then
+        MsgBox "You have not modified the data yet"
+        Exit Sub
+    End If
+    
+    Dim m As Match
+    Dim h As String
+    Dim b() As Byte
+    Dim s() As String
+    
+    Set m = selItem.Tag
+    
+    he.SelectAll
+    tmp = he.SelTextAsHexCodes
+    b() = StrConv(tmp, vbFromUnicode, LANG_US)
+    
+    If Not FileExists(txtMod) Then
+        FileCopy txtFile, txtMod
+    End If
+    
+    f = FreeFile
+    Open txtMod For Binary As f
+    Put f, m.FirstIndex - 1, b()
+    Close f
+    
+    MsgBox "Binary data converted back to hexcodes and embedded at offset: " & Hex(m.FirstIndex) & _
+            vbCrLf & vbCrLf & txtMod
+    
+    Exit Sub
+hell:
+    MsgBox Err.Description
+    
+End Sub
+
+Private Sub Form_Load()
+    Dim f As String
+    f = GetSetting("rtf_convert", "settings", "lastPath", "")
+    If FileExists(f) Then
+        txtFile = f
+        txtMod = txtFile & ".mod"
+    End If
+End Sub
+
+Private Sub Form_Unload(Cancel As Integer)
+    SaveSetting "rtf_convert", "settings", "lastPath", txtFile
+End Sub
+
 Private Sub Label3_Click()
 
     MsgBox "This feature is just to zero out these blocks in " & vbCrLf & _
@@ -375,7 +437,8 @@ End Sub
 Private Sub lv_ItemClick(ByVal Item As MSComctlLib.ListItem)
     Dim m As Match
     Set m = Item.Tag
-    he.LoadString HexStringUnescape(m.Value, True)
+    he.LoadString HexStringUnescape(m.value, True), False
+    Set selItem = Item
 End Sub
 
 Private Sub txtFile_OLEDragDrop(Data As DataObject, Effect As Long, Button As Integer, Shift As Integer, x As Single, Y As Single)
@@ -389,3 +452,41 @@ Private Sub txtFile_OLEDragDrop(Data As DataObject, Effect As Long, Button As In
         cmdLoad_Click
     End If
 End Sub
+
+Sub push(ary, value) 'this modifies parent ary object
+    On Error GoTo init
+    x = UBound(ary) '<-throws Error If Not initalized
+    ReDim Preserve ary(UBound(ary) + 1)
+    ary(UBound(ary)) = value
+    Exit Sub
+init:     ReDim ary(0): ary(0) = value
+End Sub
+
+
+
+'    'tmp = Environ("temp") & "\tmp.bin"
+'    he.Save
+'    f = FreeFile
+'    Open he.LoadedFile For Binary As f
+'    ReDim b(LOF(f) - 1)
+'    Get f, , b()
+'    Close f
+'
+'    For i = 0 To UBound(b)
+'       tmp = Hex(b(i))
+'       If Len(tmp) = 1 Then tmp = "0" & tmp
+'       push s, tmp
+'    Next
+'
+'    f = FreeFile
+'    Open he.LoadedFile For Binary As f
+'    Put f, , CStr(Join(s, ""))
+'    Close f
+'
+'    f = FreeFile
+'    Open he.LoadedFile For Binary As f
+'    ReDim b(LOF(f) - 1)
+'    Get f, , b()
+'    Close f
+'
+'    Kill he.LoadedFile
