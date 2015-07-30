@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{0E59F1D2-1FBE-11D0-8FF2-00A0D10038BC}#1.0#0"; "msscript.ocx"
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
-Object = "{FBE17B58-A1F0-4B91-BDBD-C9AB263AC8B0}#78.0#0"; "scivb_lite.ocx"
+Object = "{2668C1EA-1D34-42E2-B89F-6B92F3FF627B}#5.0#0"; "scivb2.ocx"
 Begin VB.Form Form1 
    Caption         =   "IDA JScript - http://sandsprite.com"
    ClientHeight    =   7020
@@ -23,14 +23,14 @@ Begin VB.Form Form1
    ScaleHeight     =   7020
    ScaleWidth      =   10230
    StartUpPosition =   2  'CenterScreen
-   Begin SCIVB_LITE.SciSimple txtJS 
-      Height          =   3660
-      Left            =   180
+   Begin sci2.SciSimple txtJS 
+      Height          =   3570
+      Left            =   90
       TabIndex        =   9
-      Top             =   45
-      Width           =   9960
-      _ExtentX        =   17568
-      _ExtentY        =   6456
+      Top             =   90
+      Width           =   10050
+      _ExtentX        =   17727
+      _ExtentY        =   6297
    End
    Begin MSScriptControlCtl.ScriptControl sc 
       Left            =   8190

@@ -3,12 +3,14 @@ this is a GUI front end for RABCDAsm to disasm, reasm, and reinsert
 modified script blocks back into flash files.
 
 dependancies: 
-  scivb_lite scintinilla control for syntax highlighting.
+  scivb2 scintinilla control for syntax highlighting.
   hexed: hexeditor control for binary data viewing.
   wingraphviz: 
   MSCOMCTL.OCX
   RICHTX32.OCX
   vbscript.dll
+
+-> note: SciLexer.dll is a special compile for this project
 
 All of these are installed with pdfstreamdumper
 

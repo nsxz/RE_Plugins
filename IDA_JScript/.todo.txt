@@ -1,2 +1,3 @@
 compatiable icon
+use the dukdbg js engine / debugger component once binary compat set
 

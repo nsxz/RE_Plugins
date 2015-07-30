@@ -2,7 +2,7 @@
 
 dependancies:
    spSubclass.dll - activex 
-   SCIVBX.ocx     - activex 
+   SCIVB2.ocx     - activex 
    msscript.ocx   - activex  
    vb6 runtimes   - from MS probably already have installed
    SciLexer.dll   - must be in same dir as SCIVBX.ocx, in this dir

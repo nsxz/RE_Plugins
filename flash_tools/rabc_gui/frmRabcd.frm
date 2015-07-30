@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
-Object = "{FBE17B58-A1F0-4B91-BDBD-C9AB263AC8B0}#78.0#0"; "scivb_lite.ocx"
 Object = "{9A143468-B450-48DD-930D-925078198E4D}#1.1#0"; "hexed.ocx"
+Object = "{2668C1EA-1D34-42E2-B89F-6B92F3FF627B}#5.0#0"; "scivb2.ocx"
 Begin VB.Form frmRabcd 
    Caption         =   "RABC Tools UI"
    ClientHeight    =   9465
@@ -15,7 +15,7 @@ Begin VB.Form frmRabcd
    Begin MSComctlLib.ListView lvDetails 
       Height          =   2220
       Left            =   1980
-      TabIndex        =   21
+      TabIndex        =   20
       Top             =   1890
       Visible         =   0   'False
       Width           =   2895
@@ -55,7 +55,7 @@ Begin VB.Form frmRabcd
    Begin rhexed.HexEd hexed 
       Height          =   4920
       Left            =   6525
-      TabIndex        =   19
+      TabIndex        =   18
       Top             =   1485
       Visible         =   0   'False
       Width           =   7485
@@ -67,7 +67,7 @@ Begin VB.Form frmRabcd
       Left            =   8100
       Picture         =   "frmRabcd.frx":0000
       Style           =   1  'Graphical
-      TabIndex        =   18
+      TabIndex        =   17
       ToolTipText     =   "Delete Comments"
       Top             =   540
       Width           =   510
@@ -77,7 +77,7 @@ Begin VB.Form frmRabcd
       Left            =   8640
       Picture         =   "frmRabcd.frx":07FC
       Style           =   1  'Graphical
-      TabIndex        =   17
+      TabIndex        =   16
       ToolTipText     =   "Uncommen tBlock"
       Top             =   540
       Width           =   510
@@ -87,19 +87,10 @@ Begin VB.Form frmRabcd
       Left            =   9180
       Picture         =   "frmRabcd.frx":0FF8
       Style           =   1  'Graphical
-      TabIndex        =   16
+      TabIndex        =   15
       ToolTipText     =   "Comment Block"
       Top             =   540
       Width           =   465
-   End
-   Begin SCIVB_LITE.SciSimple rtf 
-      Height          =   6540
-      Left            =   5130
-      TabIndex        =   15
-      Top             =   900
-      Width           =   9465
-      _ExtentX        =   16695
-      _ExtentY        =   11536
    End
    Begin MSComctlLib.ListView lvFiltered 
       Height          =   3210
@@ -314,7 +305,7 @@ Begin VB.Form frmRabcd
    Begin MSComctlLib.TabStrip TabStrip1 
       Height          =   3750
       Left            =   45
-      TabIndex        =   20
+      TabIndex        =   19
       Top             =   900
       Width           =   4965
       _ExtentX        =   8758
@@ -332,6 +323,15 @@ Begin VB.Form frmRabcd
             ImageVarType    =   2
          EndProperty
       EndProperty
+   End
+   Begin sci2.SciSimple rtf 
+      Height          =   6495
+      Left            =   5085
+      TabIndex        =   21
+      Top             =   945
+      Width           =   9510
+      _ExtentX        =   16775
+      _ExtentY        =   11456
    End
    Begin VB.Label Label3 
       Caption         =   "search"
