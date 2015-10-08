@@ -18,6 +18,11 @@ Function cveScan(fPath As String) As String
     Dim hits As Long
     Dim ret() As String
     
+    push cves, "accesses capabilities:capabilities"
+    push cves, "accesses loader:loader"
+    push cves, "accesses params:parameters"
+
+    push cves, "CVE-2015-5122:opaqueBackground"
     push cves, "CVE-2015-3113:play,info,code,video,attachNetStream"
     push cves, "CVE-2015-0556:copyPixelsToByteArray"
     push cves, "CVE-2015-0313:createMessageChannel,createWorker"
@@ -56,7 +61,9 @@ Function cveScan(fPath As String) As String
         If hits = UBound(checks) + 1 Then push ret, CVE
     Next
     
-    cveScan = Join(ret, vbCrLf)
+    If Not AryIsEmpty(ret) Then
+        cveScan = "File: " & FileNameFromPath(fPath) & vbCrLf & vbTab & Join(ret, vbCrLf & vbTab) & vbCrLf & "--------------------------------" & vbCrLf
+    End If
     
 End Function
 

@@ -1,11 +1,11 @@
 VERSION 5.00
 Object = "{9A143468-B450-48DD-930D-925078198E4D}#1.1#0"; "hexed.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.ocx"
 Begin VB.Form Form1 
    Caption         =   "Form1"
    ClientHeight    =   8910
    ClientLeft      =   60
-   ClientTop       =   345
+   ClientTop       =   630
    ClientWidth     =   14325
    LinkTopic       =   "Form1"
    ScaleHeight     =   8910
@@ -157,6 +157,12 @@ Begin VB.Form Form1
       TabIndex        =   1
       Top             =   225
       Width           =   330
+   End
+   Begin VB.Menu mnuPopup 
+      Caption         =   "mnuPopup"
+      Begin VB.Menu mnuSearchString 
+         Caption         =   "Search String"
+      End
    End
 End
 Attribute VB_Name = "Form1"
@@ -413,6 +419,7 @@ End Sub
 
 Private Sub Form_Load()
     Dim f As String
+    mnuPopup.Visible = False
     f = GetSetting("rtf_convert", "settings", "lastPath", "")
     If FileExists(f) Then
         txtFile = f
@@ -441,7 +448,62 @@ Private Sub lv_ItemClick(ByVal Item As MSComctlLib.ListItem)
     Set selItem = Item
 End Sub
 
-Private Sub txtFile_OLEDragDrop(Data As DataObject, Effect As Long, Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub lv_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+    If Button = 2 Then PopupMenu mnuPopup
+End Sub
+
+Private Sub mnuSearchString_Click()
+    Dim li As ListItem
+    Dim m As Match
+    Dim dat As String, tmp As String, ret() As String
+    Dim pos As Long
+    
+    If lv.ListItems.Count = 0 Then Exit Sub
+    
+    tmp = InputBox("Enter string to search for:")
+    If Len(tmp) = 0 Then Exit Sub
+    
+    If FileExists(txtFile) Then
+        dat = ReadFile(txtFile)
+        pos = 1
+        Do
+            pos = InStr(pos, dat, tmp, vbTextCompare)
+            If pos > 0 Then
+                    push ret, "Raw parent file @ offset: 0x" & Hex(pos)
+                    pos = pos + 1
+            End If
+        Loop While pos > 0
+    End If
+    
+    For Each li In lv.ListItems
+        Set m = li.Tag
+        dat = HexStringUnescape(m.value, True)
+        dat = Replace(dat, Chr(0), Empty) 'ascii or unicode..lazy
+        If InStr(1, dat, tmp, vbTextCompare) > 0 Then
+            push ret, "HexBlob: " & li.Text
+        End If
+    Next
+    
+    If AryIsEmpty(ret) Then
+        MsgBox "No results found", vbInformation
+    Else
+        MsgBox Join(ret, vbCrLf), vbInformation
+    End If
+    
+    
+End Sub
+
+
+
+Function AryIsEmpty(ary) As Boolean
+  On Error GoTo oops
+    i = UBound(ary)  '<- throws error if not initalized
+    AryIsEmpty = False
+  Exit Function
+oops: AryIsEmpty = True
+End Function
+
+Private Sub txtFile_OLEDragDrop(Data As DataObject, Effect As Long, Button As Integer, Shift As Integer, x As Single, y As Single)
     Dim f As String
     On Error Resume Next
     f = Data.Files(1)
