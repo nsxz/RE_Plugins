@@ -607,7 +607,7 @@ Private Sub txtJS_AutoCompleteEvent(className As String)
     
     ElseIf className = "app" Or prev = "app" Then
     
-        txtJS.ShowAutoComplete "clearlog caption getclipboard setclipboard askvalue openfiledialog savefiledialog exec list benchmark enableIDADebugMessages"
+        txtJS.ShowAutoComplete "caption getclipboard setclipboard askvalue openfiledialog savefiledialog exec list benchmark enableIDADebugMessages"
        
     End If
         

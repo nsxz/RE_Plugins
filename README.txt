@@ -6,6 +6,12 @@ IDA_Jscript:
    script interface is in external process for ease of development. Uses scintinella
    control for syntax highlighting, and intellisense features. See screen shot.   
 
+IDA_JScript_w_DukDbg:
+   as above but now using the dukdbg.ocx as full on javascript debugger. The ocx 
+   is usable, but binary compatability has not been set yet so you may have to recompile
+   one or both projects to use yourself.
+   https://github.com/dzzie/duk4vb/tree/master/vb_examples/full_ocx
+
 olly_hittrace: 
    You set breakpoints in the UI and it will then run
    the app automating it and logging which ones were hit.

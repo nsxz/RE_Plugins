@@ -154,6 +154,34 @@ Private Sub Command1_Click()
         
     Loop
     
+    'method3 cryptolocker 3
+    's2:0040BC5E B8 5C 00 00 00                          mov     eax, 5Ch
+    's2:0040BC63 66 89 45 B4                             mov     [ebp+var_4C], ax
+    's2:0040BC67 B9 52 00 00 00                          mov     ecx, 52h
+    's2:0040BC6C 66 89 4D B6                             mov     [ebp+var_4A], cx
+    's2:0040BC70 BA 65 00 00 00                          mov     edx, 65h
+    's2:0040BC75 66 89 55 B8                             mov     [ebp+var_48], dx
+    's2:0040BC79 B8 67 00 00 00                          mov     eax, 67h
+    's2:0040BC7E 66 89 45 BA                             mov     [ebp+var_46], ax
+    's2:0040BC82 B9 69 00 00 00                          mov     ecx, 69h
+    's2:0040BC87 66 89 4D BC                             mov     [ebp+var_44], cx
+    's2:0040BC8B BA 73 00 00 00                          mov     edx, 73h
+    's2:0040BC90 66 89 55 BE                             mov     [ebp+var_42], dx
+    's2:0040BC94 B8 74 00 00 00                          mov     eax, 74h
+    's2:0040BC99 66 89 45 C0                             mov     [ebp+var_40], ax
+    's2:0040BC9D B9 72 00 00 00                          mov     ecx, 72h
+    's2:0040BCA2 66 89 4D C2                             mov     [ebp+var_3E], cx
+    's2:0040BCA6 BA 79 00 00 00                          mov     edx, 79h
+    's2:0040BCAB 66 89 55 C4                             mov     [ebp+var_3C], dx
+    's2:0040BCAF B8 5C 00 00 00                          mov     eax, 5Ch
+    's2:0040BCB4 66 89 45 C6                             mov     [ebp+var_3A], ax
+    's2:0040BCB8 33 C9                                   xor     ecx, ecx
+    's2:0040BCBA 66 89 4D C8                             mov     [ebp+var_38], cx
+    's2:0040BCBE BA 4D 00 00 00                          mov     edx, 4Dh
+
+
+    
+    
     Text2 = Join(ret, vbCrLf)
     Me.Caption = "done"
     
