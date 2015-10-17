@@ -1,7 +1,6 @@
 VERSION 5.00
-Object = "{0E59F1D2-1FBE-11D0-8FF2-00A0D10038BC}#1.0#0"; "msscript.ocx"
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
-Object = "{2668C1EA-1D34-42E2-B89F-6B92F3FF627B}#5.0#0"; "scivb2.ocx"
+Object = "{047848A0-21DD-421D-951E-B4B1F3E1718D}#68.0#0"; "dukDbg.ocx"
 Begin VB.Form Form1 
    Caption         =   "IDA JScript - http://sandsprite.com"
    ClientHeight    =   7020
@@ -23,28 +22,14 @@ Begin VB.Form Form1
    ScaleHeight     =   7020
    ScaleWidth      =   10230
    StartUpPosition =   2  'CenterScreen
-   Begin sci2.SciSimple txtJS 
+   Begin dukDbg.ucDukDbg txtjs 
       Height          =   3570
-      Left            =   90
-      TabIndex        =   9
+      Left            =   225
+      TabIndex        =   8
       Top             =   90
-      Width           =   10050
-      _ExtentX        =   17727
+      Width           =   9960
+      _ExtentX        =   17568
       _ExtentY        =   6297
-   End
-   Begin MSScriptControlCtl.ScriptControl sc 
-      Left            =   8190
-      Top             =   45
-      _ExtentX        =   1005
-      _ExtentY        =   1005
-      Language        =   "JScript"
-   End
-   Begin MSScriptControlCtl.ScriptControl sc2 
-      Left            =   9675
-      Top             =   0
-      _ExtentX        =   1005
-      _ExtentY        =   1005
-      Language        =   "jscript"
    End
    Begin VB.Frame Frame1 
       Caption         =   "Log Window and Output Pane"
@@ -76,13 +61,13 @@ Begin VB.Form Form1
          EndProperty
          Height          =   495
          Left            =   4500
-         TabIndex        =   6
+         TabIndex        =   5
          Top             =   2640
          Width           =   3765
          Begin MSComctlLib.ImageCombo cboSaved 
             Height          =   375
             Left            =   1080
-            TabIndex        =   7
+            TabIndex        =   6
             TabStop         =   0   'False
             Top             =   0
             Width           =   2655
@@ -116,7 +101,7 @@ Begin VB.Form Form1
             EndProperty
             Height          =   315
             Left            =   0
-            TabIndex        =   8
+            TabIndex        =   7
             Top             =   30
             Width           =   1155
          End
@@ -134,28 +119,10 @@ Begin VB.Form Form1
          EndProperty
          Height          =   255
          Left            =   150
-         TabIndex        =   4
+         TabIndex        =   3
          TabStop         =   0   'False
          Top             =   2670
          Width           =   1935
-      End
-      Begin VB.CommandButton Command1 
-         Caption         =   "Run Script"
-         BeginProperty Font 
-            Name            =   "MS Sans Serif"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   465
-         Left            =   8460
-         TabIndex        =   3
-         TabStop         =   0   'False
-         Top             =   2550
-         Width           =   1320
       End
       Begin VB.ListBox List1 
          BeginProperty Font 
@@ -207,7 +174,7 @@ Begin VB.Form Form1
          EndProperty
          Height          =   375
          Left            =   2160
-         TabIndex        =   5
+         TabIndex        =   4
          Top             =   2670
          Width           =   6135
       End
@@ -253,7 +220,8 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Public ida As New CIDAScript
 Public LoadedFile As String
-      
+Public sci As sci2.SciSimple
+
 Private Sub cboSaved_Click()
     On Error Resume Next
     Dim ci As ComboItem, f As String
@@ -263,21 +231,21 @@ Private Sub cboSaved_Click()
     
     If LoadedFile <> f Then
     
-        If txtJS.isDirty Then
+        If sci.isDirty Then
             If MsgBox("Save changes?", vbYesNo) = vbYes Then
                 If Len(LoadedFile) = 0 Then
                     LoadedFile = dlg.SaveDialog(AllFiles)
                     If Len(LoadedFile) > 0 Then
-                        fso.WriteFile LoadedFile, txtJS.Text
+                        fso.WriteFile LoadedFile, txtjs.Text
                     End If
                 Else
-                    fso.WriteFile LoadedFile, txtJS.Text
+                    fso.WriteFile LoadedFile, txtjs.Text
                 End If
             End If
         End If
         
         LoadedFile = f
-        txtJS.LoadFile f
+        txtjs.LoadFile f
     End If
     
 End Sub
@@ -286,46 +254,36 @@ Private Sub Check1_Click()
     List1.Visible = CBool(Check1.Value)
 End Sub
 
-Private Sub Command1_Click()
+Private Sub txtjs_StateChanged(state As dukDbg.dbgStates)
+    
     On Error Resume Next
     Dim idb As String
     Dim hwnd As Long
     
-    Text1 = Empty
+    If state = dsStarted Then
     
-    ida.WriteFile App.path & "\lastScript.txt", txtJS.Text
-    
-    If Not ida.isUp Then
-        hwnd = Form2.SelectIDAInstance(True, False)
-        If hwnd <> 0 Then
-            ida.ipc.RemoteHWND = hwnd
-            idb = ida.LoadedFile
-            List1.AddItem "IDA Server Up hwnd=" & ida.ipc.RemoteHWND & " (0x" & Hex(ida.ipc.RemoteHWND) & ")"
-            List1.AddItem "IDB: " & idb
-            lblIDB = "Current IDB: " & fso.FileNameFromPath(idb)
-        Else
-            Text1 = "IDA Server instances not found"
-            lblIDB.Caption = "Current IDB: (null)"
-            Exit Sub
+        Text1 = Empty
+        
+        ida.WriteFile App.path & "\lastScript.txt", txtjs.Text
+        
+        If Not ida.isUp Then
+            hwnd = Form2.SelectIDAInstance(True, False)
+            If hwnd <> 0 Then
+                ida.ipc.RemoteHWND = hwnd
+                idb = ida.LoadedFile
+                List1.AddItem "IDA Server Up hwnd=" & ida.ipc.RemoteHWND & " (0x" & Hex(ida.ipc.RemoteHWND) & ")"
+                List1.AddItem "IDB: " & idb
+                lblIDB = "Current IDB: " & fso.FileNameFromPath(idb)
+            Else
+                Text1 = "IDA Server instances not found"
+                lblIDB.Caption = "Current IDB: (null)"
+                Exit Sub
+            End If
         End If
+
     End If
     
-    sc.Reset
-    sc.AddObject "list", List1, True
-    sc.AddObject "ida", ida, True
-    sc.AddObject "app", ida, True
-    sc.AddObject "fso", ida, True  'parlor trick to break up intellisense list into smaller segments..
-    
-    Const wrappers = "function h(x){ return ida.intToHex(x);};" & _
-                     "function t(x){ ida.t(x);};" & _
-                     "function d(x){ list1.additem(x);};" & _
-                     "function alert(x){ ida.alert(x);};" & _
-                     vbCrLf
-    
-    sc.AddCode wrappers & txtJS.Text
-    
 End Sub
-
  
 
 Private Sub Form_Load()
@@ -342,11 +300,50 @@ Private Sub Form_Load()
     FormPos Me, True
     Me.Visible = True
     
-    txtJS.LoadCallTips App.path & "\api.txt"
-    txtJS.DisplayCallTips = True
-    txtJS.WordWrap = True
-    txtJS.ShowIndentationGuide = True
-    txtJS.Folding = True
+    Set sci = txtjs.sci
+    If sci Is Nothing Then MsgBox "Failed to get DukDbg.sci"
+
+    'to use with duk we MUST use correct case on these since the relay is through JS
+    
+    txtjs.AddIntellisense "fso", "ReadFile WriteFile AppendFile FileExists DeleteFile OpenFileDialog SaveFileDialog"
+    
+    txtjs.AddIntellisense "ida", "isUp Message MakeStr MakeUnk LoadedFile() PatchString PatchByte GetAsm InstSize " & _
+                                "XRefsTo XRefsFrom GetName FunctionName HideBlock ShowBlock Setname AddComment GetComment AddCodeXRef AddDataXRef " & _
+                                "DelCodeXRef DelDataXRef FuncVAByName RenameFunc Find Decompile Jump JumpRVA refresh Undefine ShowEA HideEA " & _
+                                "RemoveName MakeCode FuncIndexFromVA NextEA PrevEA funcCount() NumFuncs() FunctionStart FunctionEnd ReadByte " & _
+                                "OriginalByte ImageBase() ScreenEA() QuickCall "
+                               
+     txtjs.AddIntellisense "list", "AddItem Clear ListCount Enabled"
+    
+     txtjs.AddIntellisense "app", "die intToHex t ClearLog Caption alert getClipboard setClipboard BenchMark AskValue Exec EnableIDADebugMessages"
+       
+    'divide up into these classes for intellise sense cleanliness?
+    'ui -> jump refresh() hideea showea hideblock showblock getcomment addcomment loadedfile
+    'refs -> getrefsto getrefsfrom addcodexref adddataxref delcodexref deldataxref
+    'func -> numfuncs() functionstart functionend functionname getname removename setname funcindexfromva funcvabyname
+    'code -> imagebase undefine makecode getasm instsize patchbyte orginalbyte readbyte nextea
+
+
+    txtjs.LoadCallTips App.path & "\api.txt"
+    
+    If Not txtjs.AddLibFile(App.path & "\userlib.js") Then
+        MsgBox "Failed to add userlib?"
+    End If
+    
+    txtjs.userCOMDir = App.path & "\COM"
+    If Not txtjs.AddObject(ida, "ida") Then
+        MsgBox "Failed to add ida object?"
+    End If
+    
+    If Not txtjs.AddObject(List1, "list") Then
+        MsgBox "Failed to add list object?"
+    End If
+    
+    
+'    txtjs.DisplayCallTips = True
+'    txtjs.WordWrap = True
+'    txtjs.ShowIndentationGuide = True
+'    txtjs.Folding = True
     
     List1.AddItem "Listening on hwnd: " & Me.hwnd & " (0x" & Hex(Me.hwnd) & ")"
     
@@ -376,7 +373,7 @@ Private Sub Form_Load()
     
     If fso.FileExists(c) Then
         LoadedFile = c
-        txtJS.LoadFile c
+        txtjs.LoadFile c
     'ElseIf fso.FileExists(App.path & "\lastScript.txt") Then
         'LoadedFile = App.path & "\lastScript.txt"
         'txtJS.LoadFile LoadedFile
@@ -411,7 +408,13 @@ Private Sub Form_Load()
     End If
     
     List1.Move Text1.Left, Text1.Top, Text1.Width, Text1.Height
-    x = " Built in classes: ida. fso. app. [hitting the dot will display intellisense and open paran codetip intellisense] \n\n global functions: \n\t alert(x), \n\t h(x) [int to hex], \n\t t(x) [append this textbox with x] \n\t d(x) [add x to debug pane list]"
+    
+    x = " Built in classes: ida. fso. app. [hitting the dot will display intellisense and open paran codetip intellisense] \n\n" & _
+        "global functions: \n\t alert(x), \n\t h(x) [int to hex], \n" & _
+        "\t t(x) [append this textbox with x] \n" & _
+        "\t d(x) [add x to debug pane list]\n\n" & _
+        "Note: you must use correct case for calls to built in objects intellisense will help you."
+        
     Text1 = Replace(Replace(x, "\n", vbCrLf), "\t", vbTab)
     
 End Sub
@@ -419,10 +422,10 @@ End Sub
 
 Private Sub Form_Resize()
     On Error Resume Next
-    txtJS.Width = Me.Width - txtJS.Left - 140
-    txtJS.Height = Me.Height - txtJS.Top - Frame1.Height - 550
+    txtjs.Width = Me.Width - txtjs.Left - 140
+    txtjs.Height = Me.Height - txtjs.Top - Frame1.Height - 550
     Frame1.Width = Me.Width - Frame1.Left - 140
-    Frame1.Top = txtJS.Top + txtJS.Height
+    Frame1.Top = txtjs.Top + txtjs.Height
     Text1.Width = Frame1.Width - Text1.Left - 140
     List1.Move Text1.Left, Text1.Top, Text1.Width, Text1.Height
     List1.Width = Text1.Width
@@ -433,40 +436,67 @@ End Sub
 Private Sub Form_Unload(Cancel As Integer)
     On Error Resume Next
     FormPos Me, True, True
-    If Len(txtJS.Text) > 2 And txtJS.isDirty Then
+    If Len(txtjs.Text) > 2 And sci.isDirty Then
         If Len(LoadedFile) > 0 Then
             If InStr(LoadedFile, App.path & "\scripts") > 0 Then
                 If MsgBox("A Saved script was modified, save changes?", vbYesNo) = vbYes Then
-                    fso.WriteFile LoadedFile, txtJS.Text
+                    fso.WriteFile LoadedFile, txtjs.Text
                 End If
             Else
-                fso.WriteFile LoadedFile, txtJS.Text
+                fso.WriteFile LoadedFile, txtjs.Text
             End If
         Else
-            ida.WriteFile App.path & "\lastScript.txt", txtJS.Text
+            ida.WriteFile App.path & "\lastScript.txt", txtjs.Text
         End If
     End If
 End Sub
 
 Private Sub mnuFormatJS_Click()
 
+'    On Error Resume Next
+'    Dim js As String
+'
+'    js = fso.ReadFile(App.path & "\beautify.js")
+'
+'    sc2.Reset
+'    sc2.AddCode js
+'    sc2.AddObject "txtJS", txtjs, True
+'    sc2.AddCode "txtJS.text = js_beautify(txtJS.text, {indent_size: 1, indent_char: '\t'}).split('\n').join('\r\n');"
+'
+'    DoEvents
+
     On Error Resume Next
     Dim js As String
+    Dim c As New Collection
+    Dim rv
+    Dim duk As CDukTape
     
-    js = fso.ReadFile(App.path & "\beautify.js")
+    'txtjs.Text = "a=0;if(a){a++;}else{a++;}a=0;a=0"
     
-    sc2.Reset
-    sc2.AddCode js
-    sc2.AddObject "txtJS", txtJS, True
-    sc2.AddCode "txtJS.text = js_beautify(txtJS.text, {indent_size: 1, indent_char: '\t'}).split('\n').join('\r\n');"
-
-    DoEvents
+    Set duk = New CDukTape
+    tmrFormatting.enabled = True
+    If Not duk.AddObject(txtjs, "textbox") Then
+        Exit Sub
+    End If
+    
+    If Not duk.AddFile(App.path & "\beautify.js") Then
+        MsgBox "Could not add beautify.js Error: " & duk.LastError
+        Exit Sub
+    End If
+    
+    rv = duk.Eval("js_beautify(textbox.Text, {indent_size: 1, indent_char: '\t'}).split('\n').join('\r\n');")
+    
+    If duk.HadError Then
+        MsgBox "Error running beautify: " & duk.LastError
+    Else
+        txtjs.Text = rv
+    End If
     
 End Sub
 
 Private Sub mnuLoadLast_Click()
     On Error Resume Next
-    txtJS.LoadFile App.path & "\lastscript.txt"
+    txtjs.LoadFile App.path & "\lastscript.txt"
 End Sub
 
 Private Sub mnuOpenScript_Click()
@@ -476,14 +506,14 @@ Private Sub mnuOpenScript_Click()
     If Len(fpath) = 0 Then Exit Sub
     
     LoadedFile = fpath
-    txtJS.LoadFile fpath 'only way to set the readonly modified property to false..
+    txtjs.LoadFile fpath 'only way to set the readonly modified property to false..
     
 End Sub
 
 Private Sub mnuSave_Click()
     
     If Len(LoadedFile) > 0 Then
-        txtJS.SaveFile LoadedFile
+        sci.SaveFile LoadedFile
     Else
         mnuSaveAs_Click
     End If
@@ -500,13 +530,13 @@ Private Sub mnuSaveAs_Click()
     If Len(fpath) = 0 Then Exit Sub
     If VBA.Right(fpath, Len(ext)) <> ext Then fpath = fpath & ext
     
-    fso.WriteFile fpath, txtJS.Text
-    txtJS.LoadFile fpath
+    fso.WriteFile fpath, txtjs.Text
+    txtjs.LoadFile fpath
     
 End Sub
 
 Private Sub mnuScintOpts_Click()
-    txtJS.ShowAbout
+    sci.ShowAbout
 End Sub
 
 Private Sub mnuSelectIDAInstance_Click()
@@ -551,74 +581,50 @@ Function FileExists(path) As Boolean
   Else FileExists = False
 End Function
 
-Private Sub sc_Error()
-    
-    On Error Resume Next
-    Dim tmp() As String
-    Dim cCount As Long
-    Dim adjustedLine As Long
-    Dim curLine As Long
-    
-    'if showing debug log, switch back to textbox view for error message
-    If Check1.Value Then Check1.Value = 0
-    
-    adjustedLine = sc.Error.Line - 1   '-1 is for the extra line we add silently for wrappers
-    
-    Text1 = "Error on line: " & adjustedLine & vbCrLf & sc.Error.Description
-    txtJS.GotoLine sc.Error.Line
-     
-    tmp = Split(txtJS.Text, vbCrLf)
-    For i = 0 To adjustedLine - 1
-        If i = (adjustedLine - 1) Then
-            txtJS.SelStart = cCount
-            txtJS.SelLength = Len(tmp(i))
-            Exit For
-        Else
-            cCount = cCount + Len(tmp(i)) + 2 'for the crlf
-        End If
-    Next
-        
-End Sub
-
-Private Sub txtJS_AutoCompleteEvent(className As String)
-    
-    Dim prev As String
-    prev = txtJS.PreviousWord() 'scintinilla is smart enough that if partial word shows up in list it will auto select it.
-                                'so fso.rea [CTRL-H] will display list and auto jump to readfile
-    
-    If className = "fso" Or prev = "fso" Then
-        
-        txtJS.ShowAutoComplete "readfile writefile appendfile fileexists deletefile"
-        
-    ElseIf className = "ida" Or prev = "ida" Then
-    
-        'do i want to break these up into smaller chunks for intellisense?
-        txtJS.ShowAutoComplete "imagebase() loadedfile() jump patchbyte originalbyte readbyte inttohex refresh() " & _
-                               "numfuncs() functionstart functionend functionname getasm instsize xrefsto " & _
-                               "xrefsfrom undefine getname jumprva screenea() funccount() find " & _
-                               "hideea showea hideblock showblock removename setname makecode message " & _
-                               "getcomment addcomment addcodexref adddataxref delcodexref deldataxref " & _
-                               "funcindexfromva funcvabyname nextea prevea patchstring makestr makeunk " & _
-                               "renamefunc decompile quickcall"
-                               
-    ElseIf className = "list" Or prev = "list" Then
-    
-        txtJS.ShowAutoComplete "additem clear"
-    
-    ElseIf className = "app" Or prev = "app" Then
-    
-        txtJS.ShowAutoComplete "caption getclipboard setclipboard askvalue openfiledialog savefiledialog exec list benchmark enableIDADebugMessages"
-       
-    End If
-        
-    'divide up into these classes for intellise sense cleanliness?
-    'ui -> jump refresh() hideea showea hideblock showblock getcomment addcomment loadedfile
-    'refs -> getrefsto getrefsfrom addcodexref adddataxref delcodexref deldataxref
-    'func -> numfuncs() functionstart functionend functionname getname removename setname funcindexfromva funcvabyname
-    'code -> imagebase undefine makecode getasm instsize patchbyte orginalbyte readbyte nextea
-    
-End Sub
+'Private Sub sc_Error()
+'
+'    On Error Resume Next
+'    Dim tmp() As String
+'    Dim cCount As Long
+'    Dim adjustedLine As Long
+'    Dim curLine As Long
+'
+'    'if showing debug log, switch back to textbox view for error message
+'    If Check1.Value Then Check1.Value = 0
+'
+'    adjustedLine = sc.Error.line - 1   '-1 is for the extra line we add silently for wrappers
+'
+'    Text1 = "Error on line: " & adjustedLine & vbCrLf & sc.Error.Description
+'    sci.GotoLine sc.Error.line
+'
+'    tmp = Split(txtjs.Text, vbCrLf)
+'    For i = 0 To adjustedLine - 1
+'        If i = (adjustedLine - 1) Then
+'            txtjs.SelStart = cCount
+'            txtjs.SelLength = Len(tmp(i))
+'            Exit For
+'        Else
+'            cCount = cCount + Len(tmp(i)) + 2 'for the crlf
+'        End If
+'    Next
+'
+'End Sub
+ 
 
 Private Sub txtJS_FileLoaded(fpath As String)
     Me.Caption = "IDAJScript - http://sandsprite.com        File: " & fso.FileNameFromPath(fpath)
 End Sub
+
+Private Sub txtjs_dbgOut(msg As String)
+    ida.t "dukDbg> " & msg
+End Sub
+
+Private Sub txtjs_dukErr(line As Long, msg As String)
+    ida.t "dukErr> " & line & " " & msg
+End Sub
+
+Private Sub txtjs_printOut(msg As String)
+    ida.t "duk.print> " & msg
+End Sub
+
+

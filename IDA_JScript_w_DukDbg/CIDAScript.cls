@@ -26,6 +26,11 @@ Property Get isUp() As Boolean
     isUp = IIf(IsWindow(ipc.RemoteHWND) = 1, True, False)
 End Property
 
+Sub die(msg)
+    Form1.txtjs.StopExecution
+    t msg
+End Sub
+
 Sub Caption(msg)
     Form1.Caption = msg
     Form1.refresh
@@ -40,7 +45,7 @@ Function alert(msg)
     End If
 End Function
 
-Function Message(msg As String)
+Function Message(msg)
     ipc.Send "msg:" & msg
 End Function
 
@@ -56,7 +61,7 @@ Property Get LoadedFile() As String
     LoadedFile = ipc.SendCmdRecvText("loadedfile:" & Form1.hwnd)
 End Property
 
-Sub t(data As String)
+Sub t(data)
     Form1.Text1.Text = Form1.Text1.Text & vbCrLf & data
     Form1.Text1.SelStart = Len(Form1.Text1.Text)
 End Sub
@@ -208,11 +213,11 @@ End Function
 
 '--------------[ QUICK CALLS ]----------------------------------------
 
-Function Jump(va As Long)
+Function Jump(va)
     ipc.QuickCall qcmJmpAddr, va
 End Function
 
-Function JumpRVA(rva As Long)
+Function JumpRVA(rva)
     ipc.QuickCall qcmJmpRVA, rva
 End Function
 
@@ -276,7 +281,7 @@ Function OriginalByte(va)
     OriginalByte = CByte(ipc.QuickCall(qcmOrgByte, CLng(va)))
 End Function
 
-Function ImageBase() As Long
+Function ImageBase()
     ImageBase = ipc.QuickCall(qcmImgBase)
 End Function
 
@@ -357,7 +362,7 @@ Function ReadFile(filename) As Variant
    ReadFile = Temp
 End Function
 
-Sub WriteFile(path As String, it As Variant)
+Sub WriteFile(path, it)
     Dim f As Long
     f = FreeFile
     Open path For Output As #f
@@ -373,7 +378,7 @@ Sub AppendFile(path, it)
     Close f
 End Sub
 
-Function FileExists(path As String) As Boolean
+Function FileExists(path) As Boolean
   On Error GoTo hell
   Dim tmp As String
   tmp = Replace(path, "'", Empty)
@@ -384,7 +389,7 @@ Function FileExists(path As String) As Boolean
 hell: FileExists = False
 End Function
 
-Function DeleteFile(fpath As String) As Boolean
+Function DeleteFile(fpath) As Boolean
  On Error GoTo hadErr
     Kill fpath
     DeleteFile = True
