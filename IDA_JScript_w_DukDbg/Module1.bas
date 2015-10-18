@@ -6,7 +6,7 @@ End Type
 
 Public Declare Function QueryPerformanceCounter Lib "kernel32" (lpPerformanceCount As LARGE_INTEGER) As Long
 Declare Function IsWindow Lib "user32" (ByVal hwnd As Long) As Long
-Global dlg As New clsCmnDlg
+Global dlg As New vbDevKit.clsCmnDlg2
 Global fso As New CFileSystem2
 
 Sub FormPos(fform As Form, Optional andSize As Boolean = False, Optional save_mode As Boolean = False)

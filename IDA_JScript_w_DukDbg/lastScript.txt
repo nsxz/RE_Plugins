@@ -1,4 +1,1 @@
-
- app.die("test")
- app.alert(2)
-  app.alert(3)
+print( fso.ReadFile('c:\\lastGraph.txt') ) 

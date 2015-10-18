@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
-Object = "{047848A0-21DD-421D-951E-B4B1F3E1718D}#68.0#0"; "dukDbg.ocx"
+Object = "{047848A0-21DD-421D-951E-B4B1F3E1718D}#69.0#0"; "dukDbg.ocx"
 Begin VB.Form Form1 
    Caption         =   "IDA JScript - http://sandsprite.com"
    ClientHeight    =   7020
@@ -307,7 +307,7 @@ Private Sub Form_Load()
     
     txtjs.AddIntellisense "fso", "ReadFile WriteFile AppendFile FileExists DeleteFile OpenFileDialog SaveFileDialog"
     
-    txtjs.AddIntellisense "ida", "isUp Message MakeStr MakeUnk LoadedFile() PatchString PatchByte GetAsm InstSize " & _
+    txtjs.AddIntellisense "ida", "isUp Message MakeStr MakeUnk LoadedFile PatchString PatchByte GetAsm InstSize " & _
                                 "XRefsTo XRefsFrom GetName FunctionName HideBlock ShowBlock Setname AddComment GetComment AddCodeXRef AddDataXRef " & _
                                 "DelCodeXRef DelDataXRef FuncVAByName RenameFunc Find Decompile Jump JumpRVA refresh Undefine ShowEA HideEA " & _
                                 "RemoveName MakeCode FuncIndexFromVA NextEA PrevEA funcCount() NumFuncs() FunctionStart FunctionEnd ReadByte " & _
@@ -616,7 +616,7 @@ Private Sub txtJS_FileLoaded(fpath As String)
 End Sub
 
 Private Sub txtjs_dbgOut(msg As String)
-    ida.t "dukDbg> " & msg
+    List1.AddItem "dukDbg> " & msg
 End Sub
 
 Private Sub txtjs_dukErr(line As Long, msg As String)

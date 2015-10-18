@@ -214,11 +214,13 @@ End Function
 '--------------[ QUICK CALLS ]----------------------------------------
 
 Function Jump(va)
-    ipc.QuickCall qcmJmpAddr, va
+    On Error Resume Next
+    ipc.QuickCall qcmJmpAddr, CLng(va)
 End Function
 
 Function JumpRVA(rva)
-    ipc.QuickCall qcmJmpRVA, rva
+    On Error Resume Next
+    ipc.QuickCall qcmJmpRVA, CLng(rva)
 End Function
 
 Function refresh()
@@ -226,34 +228,42 @@ Function refresh()
 End Function
 
 Function Undefine(offset)
+    On Error Resume Next
     ipc.QuickCall qcmUndef, CLng(offset)
 End Function
 
 Function ShowEA(offset)
+    On Error Resume Next
     ipc.QuickCall qcmShow, CLng(offset)
 End Function
 
 Function HideEA(offset)
+    On Error Resume Next
     ipc.QuickCall qcmHide, CLng(offset)
 End Function
 
  Sub RemoveName(offset)
+    On Error Resume Next
     ipc.QuickCall qcmRemName, CLng(offset)
  End Sub
 
 Sub MakeCode(offset)
+    On Error Resume Next
     ipc.QuickCall qcmMakeCode, CLng(offset)
 End Sub
 
 Function FuncIndexFromVA(va)
+    On Error Resume Next
     FuncIndexFromVA = ipc.QuickCall(qcmFuncIdx, CLng(va))
 End Function
 
 Function NextEA(va)
+    On Error Resume Next
     NextEA = ipc.QuickCall(qcmNextEa, CLng(va))
 End Function
 
 Function PrevEA(va)
+    On Error Resume Next
     PrevEA = ipc.QuickCall(qcmPrevEa, CLng(va))
 End Function
 
@@ -266,18 +276,22 @@ End Function
  End Function
 
  Function FunctionStart(functionIndex)
+     On Error Resume Next
     FunctionStart = ipc.QuickCall(qcmFuncStart, CLng(functionIndex))
  End Function
 
  Function FunctionEnd(functionIndex)
+     On Error Resume Next
     FunctionEnd = ipc.QuickCall(qcmFuncEnd, CLng(functionIndex))
  End Function
   
  Function ReadByte(va)
+     On Error Resume Next
     ReadByte = CByte(ipc.QuickCall(qcmReadByte, CLng(va)))
 End Function
 
 Function OriginalByte(va)
+    On Error Resume Next
     OriginalByte = CByte(ipc.QuickCall(qcmOrgByte, CLng(va)))
 End Function
 
@@ -293,8 +307,9 @@ Function EnableIDADebugMessages(Optional enabled As Boolean = True)
     ipc.QuickCall qcmDebugMessages, IIf(enabled, 1, 0)
 End Function
 
-Function QuickCall(msg As Long, Optional arg1 As Long = 0) As Long
-    QuickCall = ipc.QuickCall(msg, arg1)
+Function QuickCall(msg As Long, Optional arg1 = 0) As Long
+    On Error Resume Next
+    QuickCall = ipc.QuickCall(msg, CLng(arg1))
 End Function
 
 

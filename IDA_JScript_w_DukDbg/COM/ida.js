@@ -1,12 +1,12 @@
 /*
-	Property Get isUp() As Boolean
-        Sub die(msg)
+	Property get isUp As Boolean
+    Sub die(msg)
 	Sub Caption(msg)
 	Function alert(msg)
 	Function Message(msg As String)
 	Function MakeStr(va,  ascii As Boolean = True)
 	Function MakeUnk(va, size)
-	Property Get LoadedFile() As String
+	Property get LoadedFile As String
 	Sub t(data As String)
 	Sub ClearLog()
 	Function PatchString(va, str,  isUnicode = False)
@@ -75,6 +75,8 @@
 
 function idaClass(){
 
+	this.hInst = 0
+	
 	this.die = function(msg){
 		return resolver('ida.die', arguments.length,0, msg);
 	}
@@ -327,6 +329,20 @@ function idaClass(){
 		return resolver('ida.BenchMark', arguments.length,0);
 	}
 
+}
+
+idaClass.prototype = {
+	get isUp(){
+		return resolver('ida.isUp.get', 0, this.hInst);
+	},
+
+	/*set Enabled(val){
+		return resolver('list.Enabled.let', 1, this.hInst, val);
+	},*/
+
+	get LoadedFile(){
+		return resolver('ida.LoadedFile.get', 0, this.hInst);
+	}
 }
 
 var ida = new idaClass()
