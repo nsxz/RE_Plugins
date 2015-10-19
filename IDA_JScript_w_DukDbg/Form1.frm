@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
-Object = "{047848A0-21DD-421D-951E-B4B1F3E1718D}#69.0#0"; "dukDbg.ocx"
+Object = "{047848A0-21DD-421D-951E-B4B1F3E1718D}#70.0#0"; "dukDbg.ocx"
 Begin VB.Form Form1 
    Caption         =   "IDA JScript - http://sandsprite.com"
    ClientHeight    =   7020
@@ -219,7 +219,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Public ida As New CIDAScript
-Public LoadedFile As String
+Public loadedFile As String
 Public sci As sci2.SciSimple
 
 Private Sub cboSaved_Click()
@@ -229,22 +229,22 @@ Private Sub cboSaved_Click()
     Set ci = cboSaved.SelectedItem
     f = ci.Tag
     
-    If LoadedFile <> f Then
+    If loadedFile <> f Then
     
         If sci.isDirty Then
             If MsgBox("Save changes?", vbYesNo) = vbYes Then
-                If Len(LoadedFile) = 0 Then
-                    LoadedFile = dlg.SaveDialog(AllFiles)
-                    If Len(LoadedFile) > 0 Then
-                        fso.WriteFile LoadedFile, txtjs.Text
+                If Len(loadedFile) = 0 Then
+                    loadedFile = dlg.SaveDialog(AllFiles)
+                    If Len(loadedFile) > 0 Then
+                        fso.writeFile loadedFile, txtjs.Text
                     End If
                 Else
-                    fso.WriteFile LoadedFile, txtjs.Text
+                    fso.writeFile loadedFile, txtjs.Text
                 End If
             End If
         End If
         
-        LoadedFile = f
+        loadedFile = f
         txtjs.LoadFile f
     End If
     
@@ -264,19 +264,19 @@ Private Sub txtjs_StateChanged(state As dukDbg.dbgStates)
     
         Text1 = Empty
         
-        ida.WriteFile App.path & "\lastScript.txt", txtjs.Text
+        ida.writeFile App.path & "\lastScript.txt", txtjs.Text
         
         If Not ida.isUp Then
             hwnd = Form2.SelectIDAInstance(True, False)
             If hwnd <> 0 Then
                 ida.ipc.RemoteHWND = hwnd
-                idb = ida.LoadedFile
+                idb = ida.loadedFile
                 List1.AddItem "IDA Server Up hwnd=" & ida.ipc.RemoteHWND & " (0x" & Hex(ida.ipc.RemoteHWND) & ")"
                 List1.AddItem "IDB: " & idb
                 lblIDB = "Current IDB: " & fso.FileNameFromPath(idb)
             Else
                 Text1 = "IDA Server instances not found"
-                lblIDB.Caption = "Current IDB: (null)"
+                lblIDB.caption = "Current IDB: (null)"
                 Exit Sub
             End If
         End If
@@ -305,17 +305,17 @@ Private Sub Form_Load()
 
     'to use with duk we MUST use correct case on these since the relay is through JS
     
-    txtjs.AddIntellisense "fso", "ReadFile WriteFile AppendFile FileExists DeleteFile OpenFileDialog SaveFileDialog"
+    txtjs.AddIntellisense "fso", "readFile writeFile appendFile fileExists deleteFile openFileDialog saveFileDialog"
     
-    txtjs.AddIntellisense "ida", "isUp Message MakeStr MakeUnk LoadedFile PatchString PatchByte GetAsm InstSize " & _
-                                "XRefsTo XRefsFrom GetName FunctionName HideBlock ShowBlock Setname AddComment GetComment AddCodeXRef AddDataXRef " & _
-                                "DelCodeXRef DelDataXRef FuncVAByName RenameFunc Find Decompile Jump JumpRVA refresh Undefine ShowEA HideEA " & _
-                                "RemoveName MakeCode FuncIndexFromVA NextEA PrevEA funcCount() NumFuncs() FunctionStart FunctionEnd ReadByte " & _
-                                "OriginalByte ImageBase() ScreenEA() QuickCall "
+    txtjs.AddIntellisense "ida", "isUp message makeStr makeUnk loadedFile patchString patchByte getAsm instSize " & _
+                                "xRefsTo xRefsFrom getName functionName hideBlock showBlock setname addComment getComment addCodeXRef addDataXRef " & _
+                                "delCodeXRef delDataXRef funcVAByName renameFunc find decompile jump jumpRVA refresh undefine showEA hideEA " & _
+                                "removeName makeCode funcIndexFromVA nextEA prevEA funcCount() numFuncs() functionStart functionEnd readByte " & _
+                                "originalByte imageBase screenEA() quickCall "
                                
      txtjs.AddIntellisense "list", "AddItem Clear ListCount Enabled"
     
-     txtjs.AddIntellisense "app", "die intToHex t ClearLog Caption alert getClipboard setClipboard BenchMark AskValue Exec EnableIDADebugMessages"
+     txtjs.AddIntellisense "app", "intToHex t clearLog caption alert getClipboard setClipboard benchMark askValue exec enableIDADebugMessages"
        
     'divide up into these classes for intellise sense cleanliness?
     'ui -> jump refresh() hideea showea hideblock showblock getcomment addcomment loadedfile
@@ -371,8 +371,8 @@ Private Sub Form_Load()
         If IsWindow(autoConnectHWND) = 0 Then autoConnectHWND = 0
     End If
     
-    If fso.FileExists(c) Then
-        LoadedFile = c
+    If fso.fileExists(c) Then
+        loadedFile = c
         txtjs.LoadFile c
     'ElseIf fso.FileExists(App.path & "\lastScript.txt") Then
         'LoadedFile = App.path & "\lastScript.txt"
@@ -381,7 +381,7 @@ Private Sub Form_Load()
     
     If autoConnectHWND <> 0 Then
         ida.ipc.RemoteHWND = autoConnectHWND
-        idb = ida.LoadedFile
+        idb = ida.loadedFile
         List1.AddItem "IDA Server Up hwnd=" & ida.ipc.RemoteHWND & " (0x" & Hex(ida.ipc.RemoteHWND) & ")"
         List1.AddItem "IDB: " & idb
         lblIDB = "Current IDB: " & fso.FileNameFromPath(idb)
@@ -391,7 +391,7 @@ Private Sub Form_Load()
             List1.AddItem "No open IDA Windows detected. Use Tools menu to connect latter."
         ElseIf windows = 1 Then
             ida.ipc.RemoteHWND = ida.ipc.Servers(1)
-            idb = ida.LoadedFile
+            idb = ida.loadedFile
             List1.AddItem "IDA Server Up hwnd=" & ida.ipc.RemoteHWND & " (0x" & Hex(ida.ipc.RemoteHWND) & ")"
             List1.AddItem "IDB: " & idb
             lblIDB = "Current IDB: " & fso.FileNameFromPath(idb)
@@ -399,7 +399,7 @@ Private Sub Form_Load()
             hwnd = Form2.SelectIDAInstance()
             If hwnd <> 0 Then
                 ida.ipc.RemoteHWND = hwnd
-                idb = ida.LoadedFile
+                idb = ida.loadedFile
                 List1.AddItem "IDA Server Up hwnd=" & ida.ipc.RemoteHWND & " (0x" & Hex(ida.ipc.RemoteHWND) & ")"
                 List1.AddItem "IDB: " & idb
                 lblIDB = "Current IDB: " & fso.FileNameFromPath(idb)
@@ -437,16 +437,16 @@ Private Sub Form_Unload(Cancel As Integer)
     On Error Resume Next
     FormPos Me, True, True
     If Len(txtjs.Text) > 2 And sci.isDirty Then
-        If Len(LoadedFile) > 0 Then
-            If InStr(LoadedFile, App.path & "\scripts") > 0 Then
+        If Len(loadedFile) > 0 Then
+            If InStr(loadedFile, App.path & "\scripts") > 0 Then
                 If MsgBox("A Saved script was modified, save changes?", vbYesNo) = vbYes Then
-                    fso.WriteFile LoadedFile, txtjs.Text
+                    fso.writeFile loadedFile, txtjs.Text
                 End If
             Else
-                fso.WriteFile LoadedFile, txtjs.Text
+                fso.writeFile loadedFile, txtjs.Text
             End If
         Else
-            ida.WriteFile App.path & "\lastScript.txt", txtjs.Text
+            ida.writeFile App.path & "\lastScript.txt", txtjs.Text
         End If
     End If
 End Sub
@@ -505,15 +505,15 @@ Private Sub mnuOpenScript_Click()
     fpath = dlg.OpenDialog(AllFiles, , , Me.hwnd)
     If Len(fpath) = 0 Then Exit Sub
     
-    LoadedFile = fpath
+    loadedFile = fpath
     txtjs.LoadFile fpath 'only way to set the readonly modified property to false..
     
 End Sub
 
 Private Sub mnuSave_Click()
     
-    If Len(LoadedFile) > 0 Then
-        sci.SaveFile LoadedFile
+    If Len(loadedFile) > 0 Then
+        sci.SaveFile loadedFile
     Else
         mnuSaveAs_Click
     End If
@@ -530,7 +530,7 @@ Private Sub mnuSaveAs_Click()
     If Len(fpath) = 0 Then Exit Sub
     If VBA.Right(fpath, Len(ext)) <> ext Then fpath = fpath & ext
     
-    fso.WriteFile fpath, txtjs.Text
+    fso.writeFile fpath, txtjs.Text
     txtjs.LoadFile fpath
     
 End Sub
@@ -548,7 +548,7 @@ Private Sub mnuSelectIDAInstance_Click()
     If hwnd = 0 Then Exit Sub
     
     ida.ipc.RemoteHWND = hwnd
-    idb = ida.LoadedFile()
+    idb = ida.loadedFile()
     lblIDB = "Current IDB: " & fso.FileNameFromPath(idb)
     
 End Sub
@@ -558,7 +558,7 @@ Private Sub mnuSHellExt_Click()
     Dim homedir As String
     
     homedir = App.path & "\IDA_JScript.exe"
-    If Not FileExists(homedir) Then Exit Sub
+    If Not fileExists(homedir) Then Exit Sub
     cmd = "cmd /c ftype IDAJS.Document=""" & homedir & """ %1 && assoc .idajs=IDAJS.Document"
     
     On Error Resume Next
@@ -575,10 +575,10 @@ End Sub
 
 
 
-Function FileExists(path) As Boolean
+Function fileExists(path) As Boolean
   If Len(path) = 0 Then Exit Function
-  If Dir(path, vbHidden Or vbNormal Or vbReadOnly Or vbSystem) <> "" Then FileExists = True _
-  Else FileExists = False
+  If Dir(path, vbHidden Or vbNormal Or vbReadOnly Or vbSystem) <> "" Then fileExists = True _
+  Else fileExists = False
 End Function
 
 'Private Sub sc_Error()
@@ -612,7 +612,7 @@ End Function
  
 
 Private Sub txtJS_FileLoaded(fpath As String)
-    Me.Caption = "IDAJScript - http://sandsprite.com        File: " & fso.FileNameFromPath(fpath)
+    Me.caption = "IDAJScript - http://sandsprite.com        File: " & fso.FileNameFromPath(fpath)
 End Sub
 
 Private Sub txtjs_dbgOut(msg As String)

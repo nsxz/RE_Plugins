@@ -31,8 +31,8 @@ Sub die(msg)
     t msg
 End Sub
 
-Sub Caption(msg)
-    Form1.Caption = msg
+Sub caption(msg)
+    Form1.caption = msg
     Form1.refresh
     DoEvents
 End Sub
@@ -45,20 +45,20 @@ Function alert(msg)
     End If
 End Function
 
-Function Message(msg)
+Function message(msg)
     ipc.Send "msg:" & msg
 End Function
 
-Function MakeStr(va, Optional ascii As Boolean = True)
+Function makeStr(va, Optional ascii As Boolean = True)
     ipc.Send "makestring:" & va & ":" & IIf(ascii, "ascii", "unicode")
 End Function
 
-Function MakeUnk(va, size)
+Function makeUnk(va, size)
     ipc.Send "makeunk:" & va & ":" & size
 End Function
 
-Property Get LoadedFile() As String
-    LoadedFile = ipc.SendCmdRecvText("loadedfile:" & Form1.hwnd)
+Property Get loadedFile() As String
+    loadedFile = ipc.SendCmdRecvText("loadedfile:" & Form1.hwnd)
 End Property
 
 Sub t(data)
@@ -66,23 +66,23 @@ Sub t(data)
     Form1.Text1.SelStart = Len(Form1.Text1.Text)
 End Sub
 
-Sub ClearLog()
+Sub clearLog()
     Form1.Text1.Text = Empty
 End Sub
 
-Function PatchString(va, str, Optional isUnicode = False)
+Function patchString(va, str, Optional isUnicode = False)
     
     Dim b() As Byte, i As Long
     b() = StrConv(str, vbFromUnicode)
     For i = 0 To UBound(b)
-        PatchByte va, b(i)
-        If isUnicode Then PatchByte va + 1, 0
+        patchByte va, b(i)
+        If isUnicode Then patchByte va + 1, 0
         va = IIf(isUnicode, va + 2, va + 1)
     Next
     
 End Function
 
-Function PatchByte(va, newVal)
+Function patchByte(va, newVal)
     If CInt(newVal) > 255 Then Err.Raise 1, "PatchByte", "byte value must be 0-254"
     ipc.Send "patchbyte:" & va & ":" & newVal
 End Function
@@ -96,106 +96,106 @@ Function intToHex(x)
     If Err.Number <> 0 Then intToHex = x 'hex can throw overflow bleh...
 End Function
 
-Function GetAsm(va)
-    GetAsm = ipc.SendCmdRecvText("getasm:" & va & ":" & Form1.hwnd)
+Function getAsm(va)
+    getAsm = ipc.SendCmdRecvText("getasm:" & va & ":" & Form1.hwnd)
 End Function
 
-Function InstSize(offset)
+Function instSize(offset)
     Dim n
-    n = NextEA(offset)
+    n = nextEA(offset)
     If n = 0 Then Exit Function
-    InstSize = n - offset
+    instSize = n - offset
 End Function
 
-Function XRefsTo(offset) 'returns CSV list
+Function xRefsTo(offset) 'returns CSV list
     Dim tmp
     tmp = ipc.SendCmdRecvText("refsto:" & offset & ":" & Form1.hwnd)
     If Right(tmp, 1) = "," Then tmp = Mid(tmp, 1, Len(tmp) - 1)
     'tmp = Split(tmp, ",") javascript cant deal with string() must be variant()?
-    XRefsTo = tmp
+    xRefsTo = tmp
 End Function
 
-Function XRefsFrom(offset) 'returns CSV list
+Function xRefsFrom(offset) 'returns CSV list
     Dim tmp
     tmp = ipc.SendCmdRecvText("refsfrom:" & offset & ":" & Form1.hwnd)
     If Right(tmp, 1) = "," Then tmp = Mid(tmp, 1, Len(tmp) - 1)
     'tmp = Split(tmp, ",") javascript cant deal with string() must be variant()?
-    XRefsFrom = tmp
+    xRefsFrom = tmp
 End Function
 
 
-Function GetName(offset)
-    GetName = ipc.SendCmdRecvText("getname:" & offset & ":" & Form1.hwnd)
-    If GetName = "NULL" Then GetName = ""
+Function getName(offset)
+    getName = ipc.SendCmdRecvText("getname:" & offset & ":" & Form1.hwnd)
+    If getName = "NULL" Then getName = ""
 End Function
 
- Function FunctionName(functionIndex)
-    FunctionName = ipc.SendCmdRecvText("funcname:" & functionIndex & ":" & Form1.hwnd)
+ Function functionName(functionIndex)
+    functionName = ipc.SendCmdRecvText("funcname:" & functionIndex & ":" & Form1.hwnd)
  End Function
 
 '
-Function HideBlock(offset, leng)
+Function hideBlock(offset, leng)
     Dim x, i As Long
     x = offset + leng
     For i = offset To x
-        HideEA i
+        hideEA i
     Next
     refresh
 End Function
 
-Function ShowBlock(offset, leng)
+Function showBlock(offset, leng)
     Dim x, i As Long
     x = offset + leng
     For i = offset To x
-        ShowEA i
+        showEA i
     Next
     refresh
 End Function
 
-Sub Setname(offset, name)
+Sub setname(offset, name)
     ipc.Send "setname:" & offset & ":" & CStr(name)
  End Sub
 
-Sub AddComment(offset, comment)
+Sub addComment(offset, comment)
     ipc.Send "addcomment:" & offset & ":" & comment
 End Sub
 
-Function GetComment(offset)
-    GetComment = ipc.SendCmdRecvText("getcomment:" & offset & ":" & Form1.hwnd)
-    If GetComment = "NULL" Then GetComment = Empty
+Function getComment(offset)
+    getComment = ipc.SendCmdRecvText("getcomment:" & offset & ":" & Form1.hwnd)
+    If getComment = "NULL" Then getComment = Empty
 End Function
 
 
- Sub AddCodeXRef(offset, tova)
+ Sub addCodeXRef(offset, tova)
     ipc.Send "addcodexref:" & offset & ":" & tova
  End Sub
  
-  Sub AddDataXRef(offset, tova)
+  Sub addDataXRef(offset, tova)
     ipc.Send "adddataxref:" & offset & ":" & tova
  End Sub
  
- Sub DelCodeXRef(offset, tova)
+ Sub delCodeXRef(offset, tova)
     ipc.Send "delcodexref:" & offset & ":" & tova
  End Sub
  
- Sub DelDataXRef(offset, tova)
+ Sub delDataXRef(offset, tova)
     ipc.Send "deldataxref:" & offset & ":" & tova
  End Sub
  
-Function FuncVAByName(name)
-    FuncVAByName = ipc.SendCmdRecvInt("name_va:" & name)
+Function funcVAByName(name)
+    funcVAByName = ipc.SendCmdRecvInt("name_va:" & name)
 End Function
 
-Function RenameFunc(oldname, newName) As Boolean
-    RenameFunc = IIf(ipc.SendCmdRecvInt("rename:" & oldname & ":" & newName) = 1, True, False)
+Function renameFunc(oldname, newName) As Boolean
+    renameFunc = IIf(ipc.SendCmdRecvInt("rename:" & oldname & ":" & newName) = 1, True, False)
 End Function
 
-Function Find(startea, endea, hexstr) '-1 if fail
+Function find(startea, endea, hexstr) '-1 if fail
     'findcode:start:end:hexstr
-    Find = ipc.SendCmdRecvInt("findcode:" & startea & ":" & endea & ":" & hexstr)
+    find = ipc.SendCmdRecvInt("findcode:" & startea & ":" & endea & ":" & hexstr)
 End Function
 
-Function Decompile(va) As String
+Function decompile(va) As String
     Dim pth As String, r As Long
     
     pth = Environ("temp")
@@ -203,8 +203,8 @@ Function Decompile(va) As String
                                                         'its our token we will need to replace it latter :-\ foresight denied!
     r = ipc.SendCmdRecvInt("decompile:" & va & ":" & Replace(pth, ":", "_"))
     
-    If r = 1 And fso.FileExists(pth) Then
-        Decompile = fso.ReadFile(pth)
+    If r = 1 And fso.fileExists(pth) Then
+        decompile = fso.readFile(pth)
     End If
     
 End Function
@@ -213,103 +213,103 @@ End Function
 
 '--------------[ QUICK CALLS ]----------------------------------------
 
-Function Jump(va)
+Function jump(va)
     On Error Resume Next
-    ipc.QuickCall qcmJmpAddr, CLng(va)
+    ipc.quickCall qcmJmpAddr, CLng(va)
 End Function
 
-Function JumpRVA(rva)
+Function jumpRVA(rva)
     On Error Resume Next
-    ipc.QuickCall qcmJmpRVA, CLng(rva)
+    ipc.quickCall qcmJmpRVA, CLng(rva)
 End Function
 
 Function refresh()
-    ipc.QuickCall qcmRefresh
+    ipc.quickCall qcmRefresh
 End Function
 
-Function Undefine(offset)
+Function undefine(offset)
     On Error Resume Next
-    ipc.QuickCall qcmUndef, CLng(offset)
+    ipc.quickCall qcmUndef, CLng(offset)
 End Function
 
-Function ShowEA(offset)
+Function showEA(offset)
     On Error Resume Next
-    ipc.QuickCall qcmShow, CLng(offset)
+    ipc.quickCall qcmShow, CLng(offset)
 End Function
 
-Function HideEA(offset)
+Function hideEA(offset)
     On Error Resume Next
-    ipc.QuickCall qcmHide, CLng(offset)
+    ipc.quickCall qcmHide, CLng(offset)
 End Function
 
- Sub RemoveName(offset)
+ Sub removeName(offset)
     On Error Resume Next
-    ipc.QuickCall qcmRemName, CLng(offset)
+    ipc.quickCall qcmRemName, CLng(offset)
  End Sub
 
-Sub MakeCode(offset)
+Sub makeCode(offset)
     On Error Resume Next
-    ipc.QuickCall qcmMakeCode, CLng(offset)
+    ipc.quickCall qcmMakeCode, CLng(offset)
 End Sub
 
-Function FuncIndexFromVA(va)
+Function funcIndexFromVA(va)
     On Error Resume Next
-    FuncIndexFromVA = ipc.QuickCall(qcmFuncIdx, CLng(va))
+    funcIndexFromVA = ipc.quickCall(qcmFuncIdx, CLng(va))
 End Function
 
-Function NextEA(va)
+Function nextEA(va)
     On Error Resume Next
-    NextEA = ipc.QuickCall(qcmNextEa, CLng(va))
+    nextEA = ipc.quickCall(qcmNextEa, CLng(va))
 End Function
 
-Function PrevEA(va)
+Function prevEA(va)
     On Error Resume Next
-    PrevEA = ipc.QuickCall(qcmPrevEa, CLng(va))
+    prevEA = ipc.quickCall(qcmPrevEa, CLng(va))
 End Function
 
 Function funcCount() As Long 'alias for numfuncs for intellisense which is sorted alphabetically..
-    funcCount = NumFuncs()
+    funcCount = numFuncs()
 End Function
 
- Function NumFuncs() As Long
-    NumFuncs = ipc.QuickCall(qcmNumFuncs)
+ Function numFuncs() As Long
+    numFuncs = ipc.quickCall(qcmNumFuncs)
  End Function
 
- Function FunctionStart(functionIndex)
+ Function functionStart(functionIndex)
      On Error Resume Next
-    FunctionStart = ipc.QuickCall(qcmFuncStart, CLng(functionIndex))
+    functionStart = ipc.quickCall(qcmFuncStart, CLng(functionIndex))
  End Function
 
- Function FunctionEnd(functionIndex)
+ Function functionEnd(functionIndex)
      On Error Resume Next
-    FunctionEnd = ipc.QuickCall(qcmFuncEnd, CLng(functionIndex))
+    functionEnd = ipc.quickCall(qcmFuncEnd, CLng(functionIndex))
  End Function
   
- Function ReadByte(va)
+ Function readByte(va)
      On Error Resume Next
-    ReadByte = CByte(ipc.QuickCall(qcmReadByte, CLng(va)))
+    readByte = CByte(ipc.quickCall(qcmReadByte, CLng(va)))
 End Function
 
-Function OriginalByte(va)
+Function originalByte(va)
     On Error Resume Next
-    OriginalByte = CByte(ipc.QuickCall(qcmOrgByte, CLng(va)))
+    originalByte = CByte(ipc.quickCall(qcmOrgByte, CLng(va)))
 End Function
 
-Function ImageBase()
-    ImageBase = ipc.QuickCall(qcmImgBase)
+Function imageBase()
+    imageBase = ipc.quickCall(qcmImgBase)
 End Function
 
-Function ScreenEA() As Long
-    ScreenEA = ipc.QuickCall(qcmScreenEA)
+Function screenEA() As Long
+    screenEA = ipc.quickCall(qcmScreenEA)
 End Function
 
-Function EnableIDADebugMessages(Optional enabled As Boolean = True)
-    ipc.QuickCall qcmDebugMessages, IIf(enabled, 1, 0)
+Function enableIDADebugMessages(Optional enabled As Boolean = True)
+    ipc.quickCall qcmDebugMessages, IIf(enabled, 1, 0)
 End Function
 
-Function QuickCall(msg As Long, Optional arg1 = 0) As Long
+Function quickCall(msg As Long, Optional arg1 = 0) As Long
     On Error Resume Next
-    QuickCall = ipc.QuickCall(msg, CLng(arg1))
+    quickCall = ipc.quickCall(msg, CLng(arg1))
 End Function
 
 
@@ -357,16 +357,16 @@ End Function
 'End Sub
 '
 
-Function AskValue(Optional prompt, Optional defVal) As String
-    AskValue = InputBox(prompt, , defVal)
+Function askValue(Optional prompt, Optional defVal) As String
+    askValue = InputBox(prompt, , defVal)
 End Function
 
-Sub Exec(cmd)
+Sub exec(cmd)
    On Error Resume Next
    Shell cmd, vbNormalFocus
 End Sub
 
-Function ReadFile(filename) As Variant
+Function readFile(filename) As Variant
   Dim f As Long
   Dim Temp As Variant
   f = FreeFile
@@ -374,10 +374,10 @@ Function ReadFile(filename) As Variant
    Open filename For Binary As #f        ' Open file.(can be text or image)
      Temp = Input(FileLen(filename), #f) ' Get entire Files data
    Close #f
-   ReadFile = Temp
+   readFile = Temp
 End Function
 
-Sub WriteFile(path, it)
+Sub writeFile(path, it)
     Dim f As Long
     f = FreeFile
     Open path For Output As #f
@@ -385,7 +385,7 @@ Sub WriteFile(path, it)
     Close f
 End Sub
 
-Sub AppendFile(path, it)
+Sub appendFile(path, it)
     Dim f As Long
     f = FreeFile
     Open path For Append As #f
@@ -393,25 +393,25 @@ Sub AppendFile(path, it)
     Close f
 End Sub
 
-Function FileExists(path) As Boolean
+Function fileExists(path) As Boolean
   On Error GoTo hell
   Dim tmp As String
   tmp = Replace(path, "'", Empty)
   tmp = Replace(tmp, """", Empty)
   If Len(tmp) = 0 Then Exit Function
-  If Dir(tmp, vbHidden Or vbNormal Or vbReadOnly Or vbSystem) <> "" Then FileExists = True
+  If Dir(tmp, vbHidden Or vbNormal Or vbReadOnly Or vbSystem) <> "" Then fileExists = True
   Exit Function
-hell: FileExists = False
+hell: fileExists = False
 End Function
 
-Function DeleteFile(fpath) As Boolean
+Function deleteFile(fpath) As Boolean
  On Error GoTo hadErr
     Kill fpath
-    DeleteFile = True
+    deleteFile = True
  Exit Function
 hadErr:
 'MsgBox "DeleteFile Failed" & vbCrLf & vbCrLf & fpath
-DeleteFile = False
+deleteFile = False
 End Function
 
 Function getClipboard()
@@ -423,18 +423,18 @@ Function setClipboard(x)
     Clipboard.SetText x
 End Function
 
-Function OpenFileDialog() As String
-    OpenFileDialog = dlg.OpenDialog(AllFiles)
+Function openFileDialog() As String
+    openFileDialog = dlg.OpenDialog(AllFiles)
 End Function
 
-Function SaveFileDialog() As String
-    SaveFileDialog = dlg.SaveDialog(AllFiles)
+Function saveFileDialog() As String
+    saveFileDialog = dlg.SaveDialog(AllFiles)
 End Function
 
-Function BenchMark() As Long
+Function benchMark() As Long
     Dim i As LARGE_INTEGER
     QueryPerformanceCounter i
-    BenchMark = i.lowpart
+    benchMark = i.lowpart
 End Function
 
 'Function refListToArray(x) As Long() 'no way to use a vb6 array in js?

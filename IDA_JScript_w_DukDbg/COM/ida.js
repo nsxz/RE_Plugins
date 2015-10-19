@@ -1,6 +1,5 @@
 /*
 	Property get isUp As Boolean
-    Sub die(msg)
 	Sub Caption(msg)
 	Function alert(msg)
 	Function Message(msg As String)
@@ -76,12 +75,8 @@
 function idaClass(){
 
 	this.hInst = 0
-	
-	this.die = function(msg){
-		return resolver('ida.die', arguments.length,0, msg);
-	}
 
-	this.Caption = function(msg){
+	this.caption = function(msg){
 		return resolver('ida.Caption', arguments.length,0, msg);
 	}
 
@@ -89,15 +84,15 @@ function idaClass(){
 		return resolver('ida.alert', arguments.length,0, msg);
 	}
 
-	this.Message = function(msg){
+	this.message = function(msg){
 		return resolver('ida.Message', arguments.length,0, msg);
 	}
 
-	this.MakeStr = function(va, ascii){
+	this.makeStr = function(va, ascii){
 		return resolver('ida.MakeStr', arguments.length,0, va, ascii);
 	}
 
-	this.MakeUnk = function(va, size){
+	this.makeUnk = function(va, size){
 		return resolver('ida.MakeUnk', arguments.length,0, va, size);
 	}
 
@@ -105,15 +100,15 @@ function idaClass(){
 		return resolver('ida.t', arguments.length,0, data);
 	}
 
-	this.ClearLog = function(){
+	this.clearLog = function(){
 		return resolver('ida.ClearLog', arguments.length,0);
 	}
 
-	this.PatchString = function(va, str, isUnicode){
+	this.patchString = function(va, str, isUnicode){
 		return resolver('ida.PatchString', arguments.length,0, va, str, isUnicode);
 	}
 
-	this.PatchByte = function(va, newVal){
+	this.patchByte = function(va, newVal){
 		return resolver('ida.PatchByte', arguments.length,0, va, newVal);
 	}
 
@@ -121,87 +116,87 @@ function idaClass(){
 		return resolver('ida.intToHex', arguments.length,0, x);
 	}
 
-	this.GetAsm = function(va){
+	this.getAsm = function(va){
 		return resolver('ida.GetAsm', arguments.length,0, va);
 	}
 
-	this.InstSize = function(offset){
+	this.instSize = function(offset){
 		return resolver('ida.InstSize', arguments.length,0, offset);
 	}
 
-	this.XRefsTo = function(offset){
+	this.xRefsTo = function(offset){
 		return resolver('ida.XRefsTo', arguments.length,0, offset);
 	}
 
-	this.XRefsFrom = function(offset){
+	this.xRefsFrom = function(offset){
 		return resolver('ida.XRefsFrom', arguments.length,0, offset);
 	}
 
-	this.GetName = function(offset){
+	this.getName = function(offset){
 		return resolver('ida.GetName', arguments.length,0, offset);
 	}
 
-	this.FunctionName = function(functionIndex){
+	this.functionName = function(functionIndex){
 		return resolver('ida.FunctionName', arguments.length,0, functionIndex);
 	}
 
-	this.HideBlock = function(offset, leng){
+	this.hideBlock = function(offset, leng){
 		return resolver('ida.HideBlock', arguments.length,0, offset, leng);
 	}
 
-	this.ShowBlock = function(offset, leng){
+	this.showBlock = function(offset, leng){
 		return resolver('ida.ShowBlock', arguments.length,0, offset, leng);
 	}
 
-	this.Setname = function(offset, name){
+	this.setname = function(offset, name){
 		return resolver('ida.Setname', arguments.length,0, offset, name);
 	}
 
-	this.AddComment = function(offset, comment){
+	this.addComment = function(offset, comment){
 		return resolver('ida.AddComment', arguments.length,0, offset, comment);
 	}
 
-	this.GetComment = function(offset){
+	this.getComment = function(offset){
 		return resolver('ida.GetComment', arguments.length,0, offset);
 	}
 
-	this.AddCodeXRef = function(offset, tova){
+	this.addCodeXRef = function(offset, tova){
 		return resolver('ida.AddCodeXRef', arguments.length,0, offset, tova);
 	}
 
-	this.AddDataXRef = function(offset, tova){
+	this.addDataXRef = function(offset, tova){
 		return resolver('ida.AddDataXRef', arguments.length,0, offset, tova);
 	}
 
-	this.DelCodeXRef = function(offset, tova){
+	this.delCodeXRef = function(offset, tova){
 		return resolver('ida.DelCodeXRef', arguments.length,0, offset, tova);
 	}
 
-	this.DelDataXRef = function(offset, tova){
+	this.delDataXRef = function(offset, tova){
 		return resolver('ida.DelDataXRef', arguments.length,0, offset, tova);
 	}
 
-	this.FuncVAByName = function(name){
+	this.funcVAByName = function(name){
 		return resolver('ida.FuncVAByName', arguments.length,0, name);
 	}
 
-	this.RenameFunc = function(oldname, newName){
+	this.renameFunc = function(oldname, newName){
 		return resolver('ida.RenameFunc', arguments.length,0, oldname, newName);
 	}
 
-	this.Find = function(startea, endea, hexstr){
+	this.find = function(startea, endea, hexstr){
 		return resolver('ida.Find', arguments.length,0, startea, endea, hexstr);
 	}
 
-	this.Decompile = function(va){
+	this.decompile = function(va){
 		return resolver('ida.Decompile', arguments.length,0, va);
 	}
 
-	this.Jump = function(va){
+	this.jump = function(va){
 		return resolver('ida.Jump', arguments.length,0, va);
 	}
 
-	this.JumpRVA = function(rva){
+	this.jumpRVA = function(rva){
 		return resolver('ida.JumpRVA', arguments.length,0, rva);
 	}
 
@@ -209,35 +204,35 @@ function idaClass(){
 		return resolver('ida.refresh', arguments.length,0);
 	}
 
-	this.Undefine = function(offset){
+	this.undefine = function(offset){
 		return resolver('ida.Undefine', arguments.length,0, offset);
 	}
 
-	this.ShowEA = function(offset){
+	this.showEA = function(offset){
 		return resolver('ida.ShowEA', arguments.length,0, offset);
 	}
 
-	this.HideEA = function(offset){
+	this.hideEA = function(offset){
 		return resolver('ida.HideEA', arguments.length,0, offset);
 	}
 
-	this.RemoveName = function(offset){
+	this.removeName = function(offset){
 		return resolver('ida.RemoveName', arguments.length,0, offset);
 	}
 
-	this.MakeCode = function(offset){
+	this.makeCode = function(offset){
 		return resolver('ida.MakeCode', arguments.length,0, offset);
 	}
 
-	this.FuncIndexFromVA = function(va){
+	this.funcIndexFromVA = function(va){
 		return resolver('ida.FuncIndexFromVA', arguments.length,0, va);
 	}
 
-	this.NextEA = function(va){
+	this.nextEA = function(va){
 		return resolver('ida.NextEA', arguments.length,0, va);
 	}
 
-	this.PrevEA = function(va){
+	this.prevEA = function(va){
 		return resolver('ida.PrevEA', arguments.length,0, va);
 	}
 
@@ -245,67 +240,67 @@ function idaClass(){
 		return resolver('ida.funcCount', arguments.length,0);
 	}
 
-	this.NumFuncs = function(){
+	this.numFuncs = function(){
 		return resolver('ida.NumFuncs', arguments.length,0);
 	}
 
-	this.FunctionStart = function(functionIndex){
+	this.functionStart = function(functionIndex){
 		return resolver('ida.FunctionStart', arguments.length,0, functionIndex);
 	}
 
-	this.FunctionEnd = function(functionIndex){
+	this.functionEnd = function(functionIndex){
 		return resolver('ida.FunctionEnd', arguments.length,0, functionIndex);
 	}
 
-	this.ReadByte = function(va){
+	this.readByte = function(va){
 		return resolver('ida.ReadByte', arguments.length,0, va);
 	}
 
-	this.OriginalByte = function(va){
+	this.originalByte = function(va){
 		return resolver('ida.OriginalByte', arguments.length,0, va);
 	}
 
-	this.ImageBase = function(){
+	this.imageBase = function(){
 		return resolver('ida.ImageBase', arguments.length,0);
 	}
 
-	this.ScreenEA = function(){
+	this.screenEA = function(){
 		return resolver('ida.ScreenEA', arguments.length,0);
 	}
 
-	this.EnableIDADebugMessages = function(enabled){
+	this.enableIDADebugMessages = function(enabled){
 		return resolver('ida.EnableIDADebugMessages', arguments.length,0, enabled);
 	}
 
-	this.QuickCall = function(msg, arg1){
+	this.quickCall = function(msg, arg1){
 		return resolver('ida.QuickCall', arguments.length,0, msg, arg1);
 	}
 
-	this.AskValue = function(prompt, defVal){
+	this.askValue = function(prompt, defVal){
 		return resolver('ida.AskValue', arguments.length,0, prompt, defVal);
 	}
 
-	this.Exec = function(cmd){
+	this.exec = function(cmd){
 		return resolver('ida.Exec', arguments.length,0, cmd);
 	}
 
-	this.ReadFile = function(filename){
+	this.readFile = function(filename){
 		return resolver('ida.ReadFile', arguments.length,0, filename);
 	}
 
-	this.WriteFile = function(path, it){
+	this.writeFile = function(path, it){
 		return resolver('ida.WriteFile', arguments.length,0, path, it);
 	}
 
-	this.AppendFile = function(path, it){
+	this.appendFile = function(path, it){
 		return resolver('ida.AppendFile', arguments.length,0, path, it);
 	}
 
-	this.FileExists = function(path){
+	this.fileExists = function(path){
 		return resolver('ida.FileExists', arguments.length,0, path);
 	}
 
-	this.DeleteFile = function(fpath){
+	this.deleteFile = function(fpath){
 		return resolver('ida.DeleteFile', arguments.length,0, fpath);
 	}
 
@@ -317,15 +312,15 @@ function idaClass(){
 		return resolver('ida.setClipboard', arguments.length,0, x);
 	}
 
-	this.OpenFileDialog = function(){
+	this.openFileDialog = function(){
 		return resolver('ida.OpenFileDialog', arguments.length,0);
 	}
 
-	this.SaveFileDialog = function(){
+	this.saveFileDialog = function(){
 		return resolver('ida.SaveFileDialog', arguments.length,0);
 	}
 
-	this.BenchMark = function(){
+	this.benchMark = function(){
 		return resolver('ida.BenchMark', arguments.length,0);
 	}
 
@@ -340,7 +335,7 @@ idaClass.prototype = {
 		return resolver('list.Enabled.let', 1, this.hInst, val);
 	},*/
 
-	get LoadedFile(){
+	get loadedFile(){
 		return resolver('ida.LoadedFile.get', 0, this.hInst);
 	}
 }

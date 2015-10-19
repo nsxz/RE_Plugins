@@ -3,12 +3,12 @@
 
 namesOnly = true
 
-cnt = ida.numfuncs();
+cnt = ida.numFuncs();
 ret = '';
 
 for(i=0;i<cnt;i++){
-    start = ida.functionstart(i);
-    n = ida.functionname(i); 
+    start = ida.functionStart(i);
+    n = ida.functionName(i); 
     //MakeName(0X00405014,"CreateRemoteThread_");
     if(n.substring(0,4) != "sub_"){
         if( namesOnly )
@@ -19,7 +19,7 @@ for(i=0;i<cnt;i++){
 } 
 
 t(ret)
-fso.setclipboard(ret);
+app.setClipboard(ret);
 alert("User defined names IDC saved to clipboard");
 
 
