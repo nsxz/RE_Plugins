@@ -159,7 +159,7 @@ Private Sub Command1_Click()
 hell: MsgBox Err.Description
 End Sub
 
-Private Sub txtFile_OLEDragDrop(Data As DataObject, Effect As Long, Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub txtFile_OLEDragDrop(Data As DataObject, Effect As Long, Button As Integer, Shift As Integer, x As Single, y As Single)
     Dim f As String
     f = Data.Files(1)
     Process f
@@ -168,9 +168,12 @@ End Sub
 Sub Process(f)
     If FileExists(f) Then
         myFile = f
-        txtStart = 1
+        txtStart = 0
         txtFileReadLen = Hex(FileLen(f))
         txtFile = f
+        If LCase(right(f, 4)) = ".mem" Then
+            txtEA = Replace(Replace(f, ".mem", Empty), "_", Empty)
+        End If
     Else
         myFile = Empty
     End If

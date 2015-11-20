@@ -32,7 +32,8 @@ IDASrvr:
    wm_copydata IPC server running in IDA. allows you to send commands to IDA from another
    process to query data and control interface display. used from my uGrapher wingraph32 
    replacement so when you click on a node it will navigate to the function in IDA.
-   WM_COPYDATA was chosen because it is synchronous
+   WM_COPYDATA was chosen because it is synchronous. Sample projects in many languages
+   and also contains an ActiveX client library which is very easy to use.
 
 uGrapher:
    replaces default wingraph32, uses uDrawGraph. graphing up, still needs features. once
@@ -47,6 +48,12 @@ IdaVbScript:
    details. also include a udp based command socket to send commands and receive data 
    from IDA from external apps. Used by olly_vbscript and wingraph32 replacement. 
    (not uGrapher)
+
+IdaUdpBridge:
+   this replaces the udp command socket in idavbscript which was crashy. This will listen
+   on udp 3333 for command messages and then proxy them to IDA. It uses the IDASrvr plugin
+   and the \IDASrvr\ActiveX_clientLib. Used by olly_vbscript (ollysync) and wingraph32 
+   replacement. 
 
 Wingraph32:
    another wingraph32 replacement using a 3rd party graphing ocx (see readme), see screen 

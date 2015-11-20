@@ -50,3 +50,6 @@ DebugStartupOption=0
 
 [MS Transaction Server]
 AutoRefresh=1
+
+[fastBuild]
+fullPath=D:\_code\RE_Plugins\Olly_vbscript\bin\Olly_vbScript.dll

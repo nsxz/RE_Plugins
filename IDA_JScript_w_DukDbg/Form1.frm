@@ -60,13 +60,13 @@ Begin VB.Form Form1
             Strikethrough   =   0   'False
          EndProperty
          Height          =   495
-         Left            =   4500
+         Left            =   5940
          TabIndex        =   5
-         Top             =   2640
+         Top             =   2610
          Width           =   3765
          Begin MSComctlLib.ImageCombo cboSaved 
             Height          =   375
-            Left            =   1080
+            Left            =   1035
             TabIndex        =   6
             TabStop         =   0   'False
             Top             =   0
@@ -102,7 +102,7 @@ Begin VB.Form Form1
             Height          =   315
             Left            =   0
             TabIndex        =   7
-            Top             =   30
+            Top             =   45
             Width           =   1155
          End
       End
@@ -429,8 +429,7 @@ Private Sub Form_Resize()
     Text1.Width = Frame1.Width - Text1.Left - 140
     List1.Move Text1.Left, Text1.Top, Text1.Width, Text1.Height
     List1.Width = Text1.Width
-    Command1.Left = Frame1.Width - Command1.Width - 300
-    fraSaved.Left = Frame1.Width - Command1.Width - 600 - fraSaved.Width
+    fraSaved.Left = Frame1.Width - 600 - fraSaved.Width
 End Sub
 
 Private Sub Form_Unload(Cancel As Integer)

@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.ocx"
 Begin VB.Form frmPluginSample 
    Caption         =   "Misc IDA Functionality"
    ClientHeight    =   9075
@@ -191,7 +191,7 @@ Begin VB.Form frmPluginSample
          Height          =   255
          Left            =   120
          TabIndex        =   11
-         Top             =   240
+         Top             =   225
          Width           =   1690
       End
       Begin VB.CommandButton cmdIDAScript 

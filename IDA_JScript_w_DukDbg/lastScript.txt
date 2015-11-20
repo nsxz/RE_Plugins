@@ -1,33 +1,31 @@
- 
- list.Clear();
-//extract all calls from the current function 
 
- va = ida.screenEA()
- fi = ida.funcIndexFromVA(va);
- list.AddItem("ActiveVA: " + h(va) + " FuncIndex: " + fi)
- 
- s = ida.functionStart(fi);;;
- e = ida.functionEnd(fi);
- 
- list.AddItem("Start: " + h(s) + " End: " + h(e)) 
- 
- if(s > 0 && e > s){
- 
-     c = '';
-     
-     while(s < e){
-       a = ida.getAsm(s);
-       if(a.indexOf("call") == 0){
-           c+= a + "\r\n";
-       }
-       
-       s = ida.nextEA(s);
-       if( s == -1) break;
-     }
+pth="C:\\Documents and Settings\\david\\Desktop\\0063991_newsripper\\b3bc\\decrypted.txt"
 
-    t(c);   
- }
-  
+//.rdata:0043FBA4  http://jp.virhub.biz/?p=####
+//yDl88iLXDYy5aoOCN4FWGtJl5pMJwN3aGI2UANQP8bnA0zqBKtCyYQ==
 
+dat=fso.readFile (pth)
+dat=dat.split("\r\n")
+for(i=0;i<dat.length;i++){
+   x=dat[i]
+   if(x.charAt(0)=="."){
+        //parscit(x)
+        t(x)
+    }
+}
+t("done")
 
-
+function parscit(x){
+    a=x.indexOf(":")
+    if(a>0){
+        b=x.indexOf(" ")
+        if(b>0){
+            a++
+            o=parseInt('0x'+x.substr(a,b-a))-1
+            s=x.substr(b+1)
+            //t(s)
+            ida.patchString( (o), s)
+            ida.patchByte(o+s.length+1,0)
+        }
+    }
+}

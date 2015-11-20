@@ -32,7 +32,7 @@ End Sub
     
     On Error Resume Next
     Set IDASCK = Module1.IDASCK
-    If Not IDASCK.isUp Then IDASCK.Listen
+    'If Not IDASCK.isUp Then IDASCK.Listen
     
  End Sub
 

@@ -66,6 +66,8 @@ Private Sub ollySck_OnDataArrival(ByVal bytesTotal As Long)
 
     args = Split(cmd, " ")
     
+    MsgBox cmd
+    
     Select Case args(0)
         Case "jmp": Jump CLng(args(1))
         Case "jmpfunc": Jump GetFuncOffset(args(1))
@@ -81,6 +83,8 @@ Private Sub sckSend_OnDataArrival(ByVal bytesTotal As Long)
     Dim resp
     
     sckSend.GetData cmd, vbString
+    
+    MsgBox "scksend: " & cmd
     
     MessageUI "Received Cmd: " & cmd & vbCrLf
     

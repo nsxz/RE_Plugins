@@ -38,7 +38,6 @@ Begin VB.Form frmDumpFix
       _ExtentX        =   10821
       _ExtentY        =   5953
       _Version        =   393217
-      Enabled         =   -1  'True
       ScrollBars      =   3
       OLEDragMode     =   0
       OLEDropMode     =   1
@@ -74,7 +73,7 @@ Dim loadedFile As String
 
 Private Sub cmdSave_Click()
     On Error Resume Next
-    writeFile loadedFile & ".idc", Text2.Text
+    WriteFile loadedFile & ".idc", Text2.Text
 End Sub
 
 Private Sub cmdhelp_Click()
@@ -392,7 +391,7 @@ End Sub
 
 
 
-Sub writeFile(path, it)
+Sub WriteFile(path, it)
     f = FreeFile
     Open path For Output As #f
     Print #f, it

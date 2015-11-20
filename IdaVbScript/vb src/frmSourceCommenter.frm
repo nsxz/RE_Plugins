@@ -52,3 +52,4 @@ Private Sub Command1_Click()
     Text1 = Replace(Text1, ";", "//;")
     
 End Sub
+

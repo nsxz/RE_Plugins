@@ -75,13 +75,13 @@ Sub FireSync(eventid As Long, arg As Long)
                 If GetImageBaseAndNameForVA(va, imageBase, module) Then
                     rva = va - imageBase
                     If Me.ModuleToSync = "" Or InStr(1, Me.ModuleToSync, module, vbTextCompare) > 0 Then
-                        OlySck.SendCommand "jmp_rva " & rva 'rva so it works with dlls or exes...
-                        AppendToDebugLog "FireSync target module Found! sending jmprva " & rva
+                        OlySck.SendCommand "jmp_rva &h" & Hex(rva) 'rva so it works with dlls or exes...
+                        AppendToDebugLog "FireSync target module Found! sending jmprva &h" & Hex(rva)
                     Else
                         AppendToDebugLog "did not match target mod " & Me.ModuleToSync & " name was: " & module
                     End If
                 Else
-                    AppendToDebugLog "GetImageBaseAndNameForVa Failed: va: " & va
+                    AppendToDebugLog "GetImageBaseAndNameForVa Failed: va: " & Hex(va)
                 End If
     End Select
     
