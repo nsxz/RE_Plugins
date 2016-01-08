@@ -31,6 +31,10 @@ Sub die(msg)
     t msg
 End Sub
 
+Sub clearDecompilerCache()
+    Me.quickCall 40
+End Sub
+
 Sub caption(msg)
     Form1.caption = msg
     Form1.refresh

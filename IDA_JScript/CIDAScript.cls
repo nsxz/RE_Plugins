@@ -208,6 +208,11 @@ End Function
 
 '--------------[ QUICK CALLS ]----------------------------------------
 
+
+Sub clearDecompilerCache()
+    ipc.QuickCall 40
+End Sub
+
 Function Jump(va As Long)
     ipc.QuickCall qcmJmpAddr, va
 End Function
