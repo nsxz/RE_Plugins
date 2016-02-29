@@ -68,6 +68,7 @@
 	Function OpenFileDialog() As String
 	Function SaveFileDialog() As String
 	Function BenchMark() As Long
+	Sub clearDecompilerCache()
 #	'Function refListToArray(x) As Long() 
 #	'Function InstSize(offset)
 */
@@ -323,6 +324,11 @@ function idaClass(){
 	this.benchMark = function(){
 		return resolver('ida.BenchMark', arguments.length,0);
 	}
+	
+	this.clearDecompilerCache = function(){
+		return resolver('ida.clearDecompilerCache', arguments.length,0);
+	}
+	
 
 }
 
