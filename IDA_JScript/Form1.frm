@@ -599,7 +599,7 @@ Private Sub txtJS_AutoCompleteEvent(className As String)
                                "hideea showea hideblock showblock removename setname makecode message " & _
                                "getcomment addcomment addcodexref adddataxref delcodexref deldataxref " & _
                                "funcindexfromva funcvabyname nextea prevea patchstring makestr makeunk " & _
-                               "renamefunc decompile quickcall clearDecompilerCache()"
+                               "renamefunc decompile quickcall clearDecompilerCache(),isCode,isData"
                                
     ElseIf className = "list" Or prev = "list" Then
     

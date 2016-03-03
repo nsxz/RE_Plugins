@@ -32,7 +32,7 @@ Sub die(msg)
 End Sub
 
 Sub clearDecompilerCache()
-    Me.quickCall 40
+    Me.quickCall 40, 0
 End Sub
 
 Sub caption(msg)
@@ -105,10 +105,15 @@ Function getAsm(va)
 End Function
 
 Function instSize(offset)
-    Dim n
-    n = nextEA(offset)
-    If n = 0 Then Exit Function
-    instSize = n - offset
+    instSize = quickCall(qcmInstLen, CLng(offset))
+End Function
+
+Function isCode(offset)
+    isCode = quickCall(qcmIsCode, CLng(offset))
+End Function
+
+Function isData(offset)
+    isData = quickCall(qcmIsData, CLng(offset))
 End Function
 
 Function xRefsTo(offset) 'returns CSV list
@@ -311,9 +316,9 @@ Function enableIDADebugMessages(Optional enabled As Boolean = True)
     ipc.quickCall qcmDebugMessages, IIf(enabled, 1, 0)
 End Function
 
-Function quickCall(msg As Long, Optional arg1 = 0) As Long
+Function quickCall(msg, Optional arg1 = 0) As Long
     On Error Resume Next
-    quickCall = ipc.quickCall(msg, CLng(arg1))
+    quickCall = ipc.quickCall(CLng(msg), CLng(arg1))
 End Function
 
 

@@ -1,1 +1,1 @@
-ida.clearDecompilerCache()
+print(ida.quickCall(44,0x0AC792E))

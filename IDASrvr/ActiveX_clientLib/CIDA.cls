@@ -41,6 +41,9 @@ Public Enum quickCallMessages
     qcmIDAHwnd = 41     'gets main IDA Window HWND
     qcmGetVersion = 42  'version of interface
     qcmSetFocusSelectLine = 43 'bring IDA to forefront and select current line
+    qcmIsCode = 44
+    qcmIsData = 45
+    qcmInstLen = 46
 End Enum
 
 
@@ -194,11 +197,16 @@ Function GetAsm(va)
     GetAsm = SendCmdRecvText("getasm:" & va & ":" & SUBCLASSED_HWND)
 End Function
 
-Function InstSize(offset)
-    Dim n
-    n = NextEA(offset)
-    If n = 0 Then Exit Function
-    InstSize = n - offset
+Function instSize(offset)
+    instSize = QuickCall(qcmInstLen, CLng(offset))
+End Function
+
+Function isCode(offset)
+    isCode = QuickCall(qcmIsCode, CLng(offset))
+End Function
+
+Function isData(offset)
+    isData = QuickCall(qcmIsData, CLng(offset))
 End Function
 
 Function XRefsTo(offset) 'returns CSV list

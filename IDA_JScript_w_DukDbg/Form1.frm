@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
-Object = "{047848A0-21DD-421D-951E-B4B1F3E1718D}#77.0#0"; "dukDbg.ocx"
+Object = "{047848A0-21DD-421D-951E-B4B1F3E1718D}#78.0#0"; "dukDbg.ocx"
 Begin VB.Form Form1 
    Caption         =   "IDA JScript - http://sandsprite.com"
    ClientHeight    =   7020
@@ -311,7 +311,7 @@ Private Sub Form_Load()
                                 "xRefsTo xRefsFrom getName functionName hideBlock showBlock setname addComment getComment addCodeXRef addDataXRef " & _
                                 "delCodeXRef delDataXRef funcVAByName renameFunc find decompile jump jumpRVA refresh undefine showEA hideEA " & _
                                 "removeName makeCode funcIndexFromVA nextEA prevEA funcCount() numFuncs() functionStart functionEnd readByte " & _
-                                "originalByte imageBase screenEA() quickCall clearDecompilerCache()"
+                                "originalByte imageBase screenEA() quickCall clearDecompilerCache(),isCode,isData"
                                
      txtjs.AddIntellisense "list", "AddItem Clear ListCount Enabled"
     
@@ -615,7 +615,14 @@ Private Sub txtJS_FileLoaded(fpath As String)
 End Sub
 
 Private Sub txtjs_dbgOut(msg As String)
+    
+    If msg = "cls" Then
+        Text1.Text = Empty
+        Exit Sub
+    End If
+    
     List1.AddItem "dukDbg> " & msg
+    
 End Sub
 
 Private Sub txtjs_dukErr(line As Long, msg As String)

@@ -55,4 +55,6 @@ getName(offset)
 enableIDADebugMessages(Optional enabled As Boolean = True)
 find(startea, endea, hexstr) '-1 if fail
 decompile(va) As String 'requires hexrays decompiler v6.5+
-quickCall(msg As Long, Optional arg1 As Long = 0) as long 
+quickCall(msg As Long, arg1 As Long) as long
+isData(va)
+isCode(va) 

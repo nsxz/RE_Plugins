@@ -95,11 +95,16 @@ Function GetAsm(va)
     GetAsm = ipc.SendCmdRecvText("getasm:" & va & ":" & Form1.hwnd)
 End Function
 
-Function InstSize(offset)
-    Dim n
-    n = NextEA(offset)
-    If n = 0 Then Exit Function
-    InstSize = n - offset
+Function instSize(offset)
+    instSize = QuickCall(qcmInstLen, CLng(offset))
+End Function
+
+Function isCode(offset)
+    isCode = QuickCall(qcmIsCode, CLng(offset))
+End Function
+
+Function isData(offset)
+    isData = QuickCall(qcmIsData, CLng(offset))
 End Function
 
 Function XRefsTo(offset) 'returns CSV list

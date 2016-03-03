@@ -54,6 +54,11 @@ Public Enum quickCallMessages
     qcmhasDecompiler = 39
     qcmFlushDecompilationResults = 40
     qcmIDAHwnd = 41     'gets main IDA Window HWND
+    qcmGetVersion = 42  'version of interface
+    qcmSetFocusSelectLine = 43 'bring IDA to forefront and select current line
+    qcmIsCode = 44
+    qcmIsData = 45
+    qcmInstLen = 46
 End Enum
 
 Private Const WM_COPYDATA = &H4A

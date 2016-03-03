@@ -57,3 +57,5 @@ Find(startea, endea, hexstr) '-1 if fail
 Decompile(va) As String 'requires hexrays decompiler v6.5+
 QuickCall(msg As Long, Optional arg1 As Long = 0) as long 
 clearDecompilerCache()
+isCode(va)
+isData(va)

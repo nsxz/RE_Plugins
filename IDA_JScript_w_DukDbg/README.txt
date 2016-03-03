@@ -14,18 +14,16 @@ dependancies:
    Duk4VB.dll     - C dll
    dukDbg.ocx     - activex
 
-Most of the activeX dependancies are included in the IDA_JScript directory along
-with an install.bat script to register them.
+An installer can be found in the binary_snapshot directory to register
+all dependancies.
 
 The duktape dll and ocx can be found here:
 
 https://github.com/dzzie/duk4vb
 
-You may have to recompile this project to match the ocx version since
-binary compatability has not yet been set on the ocx. Once I get everything
-where I know there wont be any more interface changes then I will create an
-installer for this. For now you will have to do it manually. (rememebr to 
-run regsvr32 from a 32bit process with run as admin privs)
+If you get to compiling the ocx's on your own remember versions have to
+match since binary compatability has not yet been set on the ocx. 
+(rememebr to run regsvr32 from a 32bit process with run as admin privs)
 
 
 what is this?

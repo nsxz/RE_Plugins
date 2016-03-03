@@ -296,6 +296,13 @@ int HandleQuickCall(int fIndex, int arg1){
 		case 43:
 				SetFocusSelectLine();
 				return 0;
+		case 44:
+				return isCode(getFlags(arg1));
+		case 45:
+				return isData(getFlags(arg1));
+		case 46:
+				return decode_insn(arg1);
+
 	}
 
 	return -1; //not implemented

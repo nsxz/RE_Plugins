@@ -12,7 +12,7 @@
 	Function PatchByte(va, newVal)
 	Function intToHex(x)
 	Function GetAsm(va)
-	Function InstSize(offset)
+	Function InstSize(offset) As Long
 	Function XRefsTo(offset)
 	Function XRefsFrom(offset)
 	Function GetName(offset)
@@ -50,7 +50,7 @@
 	Function ImageBase() As Long
 	Function ScreenEA() As Long
 	Function EnableIDADebugMessages( enabled)
-	Function QuickCall(msg As Long,  arg1 as Long) As Long
+	Function quickCall(msg, arg1) As Long
 #	'Sub AddProgramComment(cmt)
 #	' Function ScreenEA()
 #	'Function GetAsmBlock(start, leng)
@@ -68,6 +68,8 @@
 	Function OpenFileDialog() As String
 	Function SaveFileDialog() As String
 	Function BenchMark() As Long
+	Function isCode(va) as Long
+	Function isData(va) as Long
 	Sub clearDecompilerCache()
 #	'Function refListToArray(x) As Long() 
 #	'Function InstSize(offset)
@@ -125,6 +127,14 @@ function idaClass(){
 		return resolver('ida.InstSize', arguments.length,0, offset);
 	}
 
+	this.isCode = function(offset){
+		return resolver('ida.isCode', arguments.length,0, offset);
+	}
+	
+	this.isData = function(offset){
+		return resolver('ida.isData', arguments.length,0, offset);
+	}
+	
 	this.xRefsTo = function(offset){
 		return resolver('ida.XRefsTo', arguments.length,0, offset);
 	}
@@ -274,7 +284,8 @@ function idaClass(){
 	}
 
 	this.quickCall = function(msg, arg1){
-		return resolver('ida.QuickCall', arguments.length,0, msg, arg1);
+		//alert('in quickcall')
+		return resolver('ida.quickCall', arguments.length,0, msg, arg1);
 	}
 
 	this.askValue = function(prompt, defVal){

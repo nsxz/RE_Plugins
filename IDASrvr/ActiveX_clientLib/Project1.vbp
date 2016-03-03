@@ -38,3 +38,6 @@ DebugStartupOption=0
 
 [MS Transaction Server]
 AutoRefresh=1
+
+[fastBuild]
+fullPath=D:\_code\RE_Plugins\IDASrvr\ActiveX_clientLib\IDAClientLib.dll

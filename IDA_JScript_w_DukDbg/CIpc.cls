@@ -54,6 +54,11 @@ Public Enum quickCallMessages
     qcmhasDecompiler = 39
     qcmFlushDecompilationResults = 40
     qcmIDAHwnd = 41     'gets main IDA Window HWND
+    qcmGetVersion = 42  'version of interface
+    qcmSetFocusSelectLine = 43 'bring IDA to forefront and select current line
+    qcmIsCode = 44
+    qcmIsData = 45
+    qcmInstLen = 46
 End Enum
 
 Private Const WM_COPYDATA = &H4A
@@ -143,15 +148,15 @@ Function SendCmdRecvInt(msg As String) As Long
     SendCmdRecvInt = Send(msg)
 End Function
 
-Function QuickCall(msg As quickCallMessages, Optional arg1 As Long = 0) As Long
+Function quickCall(msg As quickCallMessages, Optional arg1 As Long = 0) As Long
     
     If IsWindow(RemoteHWND) = 0 Then
         Form1.List1.AddItem "SendData Invalid hwnd: " & RemoteHWND
-        Form1.lblIDB.Caption = "Current DB (Null)"
+        Form1.lblIDB.caption = "Current DB (Null)"
         Exit Function
     End If
     
-    QuickCall = SendMessageByVal(RemoteHWND, IDA_QUICKCALL_MESSAGE, msg, arg1)
+    quickCall = SendMessageByVal(RemoteHWND, IDA_QUICKCALL_MESSAGE, msg, arg1)
 End Function
 
 Function Send(msg As String) As Long
@@ -163,7 +168,7 @@ Function Send(msg As String) As Long
     
     If IsWindow(RemoteHWND) = 0 Then
         Form1.List1.AddItem "SendData Invalid hwnd: " & RemoteHWND
-        Form1.lblIDB.Caption = "Current DB (Null)"
+        Form1.lblIDB.caption = "Current DB (Null)"
         Exit Function
     End If
     
