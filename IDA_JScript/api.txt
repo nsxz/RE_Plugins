@@ -59,3 +59,5 @@ QuickCall(msg As Long, Optional arg1 As Long = 0) as long
 clearDecompilerCache()
 isCode(va)
 isData(va)
+ScanProcess(pidOrName, response) As Boolean
+ResolveExport(apiOrAddress, response) As Boolean

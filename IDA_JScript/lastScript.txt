@@ -1,1 +1,38 @@
-ida.clearDecompilerCache(
+
+remote.ip = "192.168.0.10";
+
+var ret;
+var tests = ["msvcrt.atoi","atoi","GetProcAddress","70c4325"]
+
+var ok = remote.scanprocess("explorer")
+t('Scan '+remote.response); 
+if(!ok) return;
+
+for(i=0; i < tests.length; i++){ 
+    var test = tests[i];
+    if( lookup(test) ){
+        t('ok:'+ret);
+    }
+}
+
+//even this doesnt support byref args in msscript control...pfft
+function lookup(api){
+    if(!remote.resolveexport(api)){
+        t('resolve '+remote.response); //failed
+        return;
+    }
+    ret = remote.response;
+    return true;
+}
+
+
+
+
+
+
+
+
+
+
+
+

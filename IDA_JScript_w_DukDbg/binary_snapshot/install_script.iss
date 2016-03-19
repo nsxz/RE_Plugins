@@ -33,7 +33,7 @@ Source: ..\java.hilighter; DestDir: {app}
 Source: ..\userlib.js; DestDir: {app}
 Source: ..\..\IDASrvr\bin\IDASrvr.plw; DestDir: {app}
 Source: MSCOMCTL.OCX; DestDir: {win}; Flags: regserver uninsneveruninstall
-
+Source: richtx32.ocx; DestDir: {win}; Flags: regserver uninsneveruninstall
 
 [Icons]
 Name: {group}\IDA_Jscript; Filename: {app}\IDA_JScript.exe

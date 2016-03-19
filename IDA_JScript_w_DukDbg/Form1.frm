@@ -1,6 +1,7 @@
 VERSION 5.00
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
-Object = "{047848A0-21DD-421D-951E-B4B1F3E1718D}#78.0#0"; "dukDbg.ocx"
+Object = "{047848A0-21DD-421D-951E-B4B1F3E1718D}#79.0#0"; "dukDbg.ocx"
+Object = "{3B7C8863-D78F-101B-B9B5-04021C009402}#1.2#0"; "richtx32.ocx"
 Begin VB.Form Form1 
    Caption         =   "IDA JScript - http://sandsprite.com"
    ClientHeight    =   7020
@@ -25,7 +26,7 @@ Begin VB.Form Form1
    Begin dukDbg.ucDukDbg txtjs 
       Height          =   3570
       Left            =   225
-      TabIndex        =   8
+      TabIndex        =   7
       Top             =   90
       Width           =   9960
       _ExtentX        =   17568
@@ -61,13 +62,13 @@ Begin VB.Form Form1
          EndProperty
          Height          =   495
          Left            =   5940
-         TabIndex        =   5
+         TabIndex        =   4
          Top             =   2610
          Width           =   3765
          Begin MSComctlLib.ImageCombo cboSaved 
             Height          =   375
             Left            =   1035
-            TabIndex        =   6
+            TabIndex        =   5
             TabStop         =   0   'False
             Top             =   0
             Width           =   2655
@@ -101,7 +102,7 @@ Begin VB.Form Form1
             EndProperty
             Height          =   315
             Left            =   0
-            TabIndex        =   7
+            TabIndex        =   6
             Top             =   45
             Width           =   1155
          End
@@ -119,7 +120,7 @@ Begin VB.Form Form1
          EndProperty
          Height          =   255
          Left            =   150
-         TabIndex        =   3
+         TabIndex        =   2
          TabStop         =   0   'False
          Top             =   2670
          Width           =   1935
@@ -142,24 +143,17 @@ Begin VB.Form Form1
          Visible         =   0   'False
          Width           =   8865
       End
-      Begin VB.TextBox Text1 
-         BeginProperty Font 
-            Name            =   "Courier"
-            Size            =   9.75
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   2280
-         Left            =   120
-         MultiLine       =   -1  'True
-         ScrollBars      =   2  'Vertical
-         TabIndex        =   2
-         TabStop         =   0   'False
-         Top             =   240
-         Width           =   9615
+      Begin RichTextLib.RichTextBox Text1 
+         Height          =   2220
+         Left            =   135
+         TabIndex        =   8
+         Top             =   270
+         Width           =   9780
+         _ExtentX        =   17251
+         _ExtentY        =   3916
+         _Version        =   393217
+         ScrollBars      =   3
+         TextRTF         =   $"Form1.frx":0CCA
       End
       Begin VB.Label lblIDB 
          Caption         =   "Current IDB (null)"
@@ -174,7 +168,7 @@ Begin VB.Form Form1
          EndProperty
          Height          =   375
          Left            =   2160
-         TabIndex        =   4
+         TabIndex        =   3
          Top             =   2670
          Width           =   6135
       End
@@ -262,7 +256,7 @@ Private Sub txtjs_StateChanged(state As dukDbg.dbgStates)
     
     If state = dsStarted Then
     
-        Text1 = Empty
+        Text1.Text = Empty
         
         ida.writeFile App.path & "\lastScript.txt", txtjs.Text
         
@@ -275,7 +269,7 @@ Private Sub txtjs_StateChanged(state As dukDbg.dbgStates)
                 List1.AddItem "IDB: " & idb
                 lblIDB = "Current IDB: " & fso.FileNameFromPath(idb)
             Else
-                Text1 = "IDA Server instances not found"
+                Text1.Text = "IDA Server instances not found"
                 lblIDB.caption = "Current IDB: (null)"
                 Exit Sub
             End If
@@ -415,7 +409,7 @@ Private Sub Form_Load()
         "\t d(x) [add x to debug pane list]\n\n" & _
         "Note: you must use correct case for calls to built in objects intellisense will help you."
         
-    Text1 = Replace(Replace(x, "\n", vbCrLf), "\t", vbTab)
+    Text1.Text = Replace(Replace(x, "\n", vbCrLf), "\t", vbTab)
     
 End Sub
 

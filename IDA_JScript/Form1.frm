@@ -2,6 +2,7 @@ VERSION 5.00
 Object = "{0E59F1D2-1FBE-11D0-8FF2-00A0D10038BC}#1.0#0"; "msscript.ocx"
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Object = "{2668C1EA-1D34-42E2-B89F-6B92F3FF627B}#5.0#0"; "scivb2.ocx"
+Object = "{248DD890-BB45-11CF-9ABC-0080C7E7B78D}#1.0#0"; "MSWINSCK.OCX"
 Begin VB.Form Form1 
    Caption         =   "IDA JScript - http://sandsprite.com"
    ClientHeight    =   7020
@@ -23,6 +24,13 @@ Begin VB.Form Form1
    ScaleHeight     =   7020
    ScaleWidth      =   10230
    StartUpPosition =   2  'CenterScreen
+   Begin MSWinsockLib.Winsock Winsock1 
+      Left            =   1845
+      Top             =   6480
+      _ExtentX        =   741
+      _ExtentY        =   741
+      _Version        =   393216
+   End
    Begin sci2.SciSimple txtJS 
       Height          =   3570
       Left            =   90
@@ -252,6 +260,8 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Public ida As New CIDAScript
+Dim remote As New CRemoteExportClient
+
 Public LoadedFile As String
       
 Private Sub cboSaved_Click()
@@ -315,14 +325,16 @@ Private Sub Command1_Click()
     sc.AddObject "ida", ida, True
     sc.AddObject "app", ida, True
     sc.AddObject "fso", ida, True  'parlor trick to break up intellisense list into smaller segments..
+    sc.AddObject "remote", remote, True
     
     Const wrappers = "function h(x){ return ida.intToHex(x);};" & _
                      "function t(x){ ida.t(x);};" & _
                      "function d(x){ list1.additem(x);};" & _
                      "function alert(x){ ida.alert(x);};" & _
-                     vbCrLf
+                     "function myMain(){" & vbCrLf
     
-    sc.AddCode wrappers & txtJS.Text
+    'mymain() wrapper added so you can use return as an early exit..
+    sc.AddCode wrappers & txtJS.Text & "}myMain();"
     
 End Sub
 
@@ -342,11 +354,12 @@ Private Sub Form_Load()
     FormPos Me, True
     Me.Visible = True
     
+    Set remote.ws = Winsock1
     txtJS.LoadCallTips App.path & "\api.txt"
     txtJS.DisplayCallTips = True
     txtJS.WordWrap = True
     txtJS.ShowIndentationGuide = True
-    txtJS.Folding = True
+    txtJS.Folding = False
     
     List1.AddItem "Listening on hwnd: " & Me.hwnd & " (0x" & Hex(Me.hwnd) & ")"
     
@@ -609,6 +622,10 @@ Private Sub txtJS_AutoCompleteEvent(className As String)
     
         txtJS.ShowAutoComplete "clearlog caption getclipboard setclipboard askvalue openfiledialog savefiledialog exec list benchmark enableIDADebugMessages"
        
+    ElseIf className = "remote" Or prev = "remote" Then
+    
+        txtJS.ShowAutoComplete "scanprocess resolveexport ip response"
+        
     End If
         
     'divide up into these classes for intellise sense cleanliness?
