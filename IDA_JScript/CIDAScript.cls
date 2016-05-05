@@ -134,22 +134,36 @@ End Function
  End Function
 
 '
-Function HideBlock(offset, leng)
+Function HideBlock(offset, endAt)
     Dim x, i As Long
-    x = offset + leng
-    For i = offset To x
+    
+    If offset < 1 Or endAt < 1 Then
+        MsgBox "Address would go negative"
+        Exit Function
+    End If
+    
+    For i = offset To endAt
         HideEA i
     Next
+    
     refresh
+    
 End Function
 
-Function ShowBlock(offset, leng)
+Function ShowBlock(offset, endAt)
     Dim x, i As Long
-    x = offset + leng
-    For i = offset To x
+    
+    If offset < 1 Or endAt < 1 Then
+        MsgBox "Address would go negative"
+        Exit Function
+    End If
+    
+    For i = offset To endAt
         ShowEA i
     Next
+    
     refresh
+    
 End Function
 
 Sub Setname(offset, name)

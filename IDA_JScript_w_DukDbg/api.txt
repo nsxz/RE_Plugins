@@ -26,8 +26,8 @@ fileExists(path As String) As Boolean
 deleteFile(fpath As String) As Boolean
 hideEA(offset)
 showEA(offset)
-hideBlock(offset, leng)
-showBlock(offset, leng)
+hideBlock(offset, endAt)
+showBlock(offset, endAt)
 setName(offset,name)
 removeName(offset)
 makeCode(offset)
@@ -58,3 +58,5 @@ decompile(va) As String 'requires hexrays decompiler v6.5+
 quickCall(msg As Long, arg1 As Long) as long
 isData(va)
 isCode(va) 
+ScanProcess(pidOrName) As Boolean
+ResolveExport(apiOrAddress) As Boolean

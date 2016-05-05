@@ -206,7 +206,7 @@ bool SendIntMessage(int hwnd, int resp){
 	return SendTextMessage(hwnd,tmp, strlen(tmp));
 }
 
-int HandleQuickCall(int fIndex, int arg1){
+int HandleQuickCall(unsigned int fIndex, unsigned int arg1){
 
 	//msg("QuickCall( %d, 0x%x)\n" , fIndex, arg1);
 
@@ -654,9 +654,9 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam){
 		{
 			try{
 				if(m_debug) msg("QuickCall Message Received(%d, %x)\n", (int)wParam, (int)lParam );
-				return HandleQuickCall( (int)wParam, (int)lParam );
+				return HandleQuickCall( (unsigned int)wParam, (unsigned int)lParam );
 			}catch(...){ 
-				msg("Error in HandleQuickCall(%d, %x)\n", (int)wParam, (int)lParam );
+				msg("Error in HandleQuickCall(%d, %x)\n", (unsigned int)wParam, (unsigned int)lParam );
 				return -1;
 			}
 		}

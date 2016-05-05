@@ -1,7 +1,8 @@
 VERSION 5.00
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
-Object = "{047848A0-21DD-421D-951E-B4B1F3E1718D}#79.0#0"; "dukDbg.ocx"
-Object = "{3B7C8863-D78F-101B-B9B5-04021C009402}#1.2#0"; "richtx32.ocx"
+Object = "{047848A0-21DD-421D-951E-B4B1F3E1718D}#81.0#0"; "dukDbg.ocx"
+Object = "{3B7C8863-D78F-101B-B9B5-04021C009402}#1.2#0"; "RICHTX32.OCX"
+Object = "{248DD890-BB45-11CF-9ABC-0080C7E7B78D}#1.0#0"; "MSWINSCK.OCX"
 Begin VB.Form Form1 
    Caption         =   "IDA JScript - http://sandsprite.com"
    ClientHeight    =   7020
@@ -23,6 +24,13 @@ Begin VB.Form Form1
    ScaleHeight     =   7020
    ScaleWidth      =   10230
    StartUpPosition =   2  'CenterScreen
+   Begin MSWinsockLib.Winsock Winsock1 
+      Left            =   9045
+      Top             =   0
+      _ExtentX        =   741
+      _ExtentY        =   741
+      _Version        =   393216
+   End
    Begin dukDbg.ucDukDbg txtjs 
       Height          =   3570
       Left            =   225
@@ -215,6 +223,7 @@ Attribute VB_Exposed = False
 Public ida As New CIDAScript
 Public loadedFile As String
 Public sci As sci2.SciSimple
+Public remote As New CRemoteExportClient
 
 Private Sub cboSaved_Click()
     On Error Resume Next
@@ -294,6 +303,7 @@ Private Sub Form_Load()
     FormPos Me, True
     Me.Visible = True
     
+    Set remote.ws = Winsock1
     Set sci = txtjs.sci
     If sci Is Nothing Then MsgBox "Failed to get DukDbg.sci"
 
@@ -311,6 +321,8 @@ Private Sub Form_Load()
     
      txtjs.AddIntellisense "app", "intToHex t clearLog caption alert getClipboard setClipboard benchMark askValue exec enableIDADebugMessages"
        
+     txtjs.AddIntellisense "remote", "ip response ScanProcess ResolveExport"
+     
     'divide up into these classes for intellise sense cleanliness?
     'ui -> jump refresh() hideea showea hideblock showblock getcomment addcomment loadedfile
     'refs -> getrefsto getrefsfrom addcodexref adddataxref delcodexref deldataxref
@@ -333,6 +345,9 @@ Private Sub Form_Load()
         MsgBox "Failed to add list object?"
     End If
     
+    If Not txtjs.AddObject(remote, "remote") Then
+        MsgBox "Failed to add remote client object?"
+    End If
     
 '    txtjs.DisplayCallTips = True
 '    txtjs.WordWrap = True
@@ -403,7 +418,7 @@ Private Sub Form_Load()
     
     List1.Move Text1.Left, Text1.Top, Text1.Width, Text1.Height
     
-    x = " Built in classes: ida. fso. app. [hitting the dot will display intellisense and open paran codetip intellisense] \n\n" & _
+    x = " Built in classes: ida. fso. app. remote. [hitting the dot will display intellisense and open paran codetip intellisense] \n\n" & _
         "global functions: \n\t alert(x), \n\t h(x) [int to hex], \n" & _
         "\t t(x) [append this textbox with x] \n" & _
         "\t d(x) [add x to debug pane list]\n\n" & _

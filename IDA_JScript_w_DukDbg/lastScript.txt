@@ -1,32 +1,23 @@
-/*
-seg000:00092A19                 push    614E3B1h
-seg000:00092A1E                 push    0
-seg000:00092A20                 mov     [ebp+var_4], ecx
-seg000:00092A23                 call    getApiAddr
 
-0009E946 getApiAddr 
-*/
+//00AC717C   55               PUSH EBP
+//00ACAD55   C3               RETN
 
-refs = ida.xRefsTo(0x9E946).split(',');
-for(i=0; i<refs.length;i++){
-    a1 = "";
-    a2 = "";
-    ea = parseInt(refs[i]);
-    for(j=0;j<5;j++){
-        ea = ida.prevEA(ea);
-        tmp = ida.getAsm(ea)
-        if(tmp.indexOf('push') >= 0){
-            if(a1.length == 0){
-                a1 = tmp.substring(tmp.indexOf(' ')).trim();
-            }
-            else{
-                a2 = tmp.substring(tmp.indexOf(' ')).trim();
-                break;
-            }
+ea = 0x0A4717C
+while(ea < 0x0A4AD55 ){
+
+    asm = ida.isCode(ea);
+    if(asm == 1){
+        sz = ida.instSize(ea);
+    }else{
+        ida.makeCode(ea);
+        asm = ida.isCode(ea);
+        if(asm == 1){
+            sz = ida.instSize(ea);  
+        }else{
+            sz = 1;
         }
     }
-    t(h(ea) + ' ' + a1 + ' ' + a2)
+    ea += sz;
+
 }
-
-
 

@@ -24,6 +24,7 @@ Source: Duk4VB.dll; DestDir: {app}
 Source: ..\COM\ida.js; DestDir: {app}\COM\
 Source: ..\COM\list.js; DestDir: {app}\COM\
 Source: ..\COM\TextBox.js; DestDir: {app}\COM\
+Source: ..\COM\remote.js; DestDir: {app}\COM\
 Source: ..\scripts\extractFuncNames.idajs; DestDir: {app}\scripts\
 Source: ..\scripts\extractNamesRange.idajs; DestDir: {app}\scripts\
 Source: ..\scripts\funcCalls.idajs; DestDir: {app}\scripts\
