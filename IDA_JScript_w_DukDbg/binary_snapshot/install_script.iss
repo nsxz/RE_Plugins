@@ -14,13 +14,13 @@ Name: {app}\scripts
 
 
 [Files]
-Source: dukDbg.ocx; DestDir: {app}; Flags: regserver
-Source: IDA_JScript.exe; DestDir: {app}
+Source: dukDbg.ocx; DestDir: {app}; Flags: regserver replacesameversion
+Source: IDA_JScript.exe; DestDir: {app}; Flags: replacesameversion
 Source: spSubclass.dll; DestDir: {app}; Flags: regserver
-Source: SciLexer.dll; DestDir: {app}
-Source: scivb2.ocx; DestDir: {app}; Flags: regserver
+Source: SciLexer.dll; DestDir: {app}; Flags: replacesameversion
+Source: scivb2.ocx; DestDir: {app}; Flags: regserver   replacesameversion
 Source: vbDevKit.dll; DestDir: {app}; Flags: regserver
-Source: Duk4VB.dll; DestDir: {app}
+Source: Duk4VB.dll; DestDir: {app}; Flags: replacesameversion
 Source: ..\COM\ida.js; DestDir: {app}\COM\
 Source: ..\COM\list.js; DestDir: {app}\COM\
 Source: ..\COM\TextBox.js; DestDir: {app}\COM\

@@ -99,7 +99,7 @@ namespace gleeGraph
             }
 
             string[] tmp = Environment.GetCommandLineArgs();
-            string last = "c:\\lastGraph.txt";
+            string last = Path.GetTempPath() + "lastGraph.txt";
             string f = "";
 
             this.Visible = true;
@@ -122,8 +122,12 @@ namespace gleeGraph
                 {
                     try
                     {
-                        if (File.Exists(last)) File.Delete(last);
-                        File.Copy(f, last);
+                        try
+                        {
+                            if (File.Exists(last)) File.Delete(last);
+                            File.Copy(f, last);
+                        }
+                        catch (Exception ex) { /*fu win7*/ }
                         debugLog("Loading " + f);
                         graph.LoadFile(f);
                     }
@@ -154,7 +158,7 @@ namespace gleeGraph
                 }
             }
 
-            lvNodes.Columns[0].Text = gViewer.Graph.NodeMap.Count + " Nodes";
+            if(gViewer.Graph != null) lvNodes.Columns[0].Text = gViewer.Graph.NodeMap.Count + " Nodes";
 
         }
 
